@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="RTSEngine.Core/RTSEngine.Core.csproj" />
+  <Project Path="RTSEngine.DebugClient/RTSEngine.DebugClient.csproj" />
+  <Project Path="RTSEngine.Tests/RTSEngine.Tests.csproj" />
+</Solution>

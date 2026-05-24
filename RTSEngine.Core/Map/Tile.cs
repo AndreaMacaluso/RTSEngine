@@ -1,11 +1,9 @@
 namespace RTSEngine.Core.Map;
 public class Tile
 {
-    public TileType Type { get; set; }
+    public TileType TerrainType { get; set; }
 
-    public bool Walkable { get; set; }
+    public ResourceType? ResourceType { get; set; }
 
-    public bool Buildable { get; set; }
-    
-    
+    public bool HasBuilding { get; set; }
 }

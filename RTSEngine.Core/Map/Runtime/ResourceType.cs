@@ -1,4 +1,4 @@
-namespace RTSEngine.Core.Map;
+namespace RTSEngine.Core.Map.Runtime;
 public enum ResourceType
 {
     None,

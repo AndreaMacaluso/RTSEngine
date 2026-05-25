@@ -1,4 +1,4 @@
-namespace RTSEngine.Core.Map;
+namespace RTSEngine.Core.Map.Runtime;
 public struct GridPosition
 {
     public int X { get; set; }

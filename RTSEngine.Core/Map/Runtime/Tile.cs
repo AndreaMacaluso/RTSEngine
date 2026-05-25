@@ -1,4 +1,4 @@
-namespace RTSEngine.Core.Map;
+namespace RTSEngine.Core.Map.Runtime;
 public class Tile
 {
     public TileType TerrainType { get; set; }

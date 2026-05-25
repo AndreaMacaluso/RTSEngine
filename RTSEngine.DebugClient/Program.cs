@@ -1,6 +1,8 @@
 ﻿using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Simulation;
+using RTSEngine.Core.Entities;
+using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.DebugClient;
 class Program
@@ -25,8 +27,15 @@ class Program
 
         var world = new GameWorld(tileMap);
 
-        var simulation = new SimulationRunner(world);
+        //spawn a villager for testing
+        world.Entities.Add(new Villager
+        {
+            Id = 1,
+            Position = new GridPosition(5, 5)
+        });
 
+        var simulation = new SimulationRunner(world);
+        
         while (true)
         {
             Console.Clear();
@@ -39,5 +48,6 @@ class Program
 
             Thread.Sleep(200);
         }
+
     }
 }

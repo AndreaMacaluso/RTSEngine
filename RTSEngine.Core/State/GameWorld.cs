@@ -1,6 +1,6 @@
 using RTSEngine.Core.Map;
 using RTSEngine.Core.Map.Runtime;
-// using RTSEngine.Core.Entities;
+using RTSEngine.Core.Entities;
 
 namespace RTSEngine.Core.State;
 
@@ -11,6 +11,7 @@ public class GameWorld
      //  public List<Entity> Entities { get; }
 
     public int CurrentTick { get; private set; }
+    public List<Entity> Entities { get; } = [];
 
     public GameWorld(TileMap map)
     {

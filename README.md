@@ -44,13 +44,15 @@ Build a deterministic, renderer-independent simulation core.
 #### Simulation Core
 - [x] Basic simulation loop
 - [ ] Fixed deterministic tick pipeline
-- [ ] Entity system
+- [x] Basic entity runtime
+- [ ] Entity movement system
 - [ ] Command queue system
 - [ ] State management layer
 
 #### Map System
 - [x] Tile type mapping
 - [x] Symbol-based terrain parsing
+- [x] Colored console tile rendering
 - [x] Tile map validation
 - [ ] Walkable tile system
 - [ ] Buildable tile system
@@ -105,5 +107,7 @@ Build a deterministic, renderer-independent simulation core.
 
 - [ ] Replay system
 - [ ] Map editor
+- [x] Colored debug visualization
+- [ ] Runtime debug controls
 - [ ] Debug visualization improvements
 - [ ] Unity integration layer

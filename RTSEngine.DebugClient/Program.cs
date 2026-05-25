@@ -1,18 +1,29 @@
-﻿namespace RTSEngine.DebugClient;
-
-using System;
-using RTSEngine.Core.Map;
+﻿using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Simulation;
 
+namespace RTSEngine.DebugClient;
 class Program
 {
     static void Main()
     {
         Console.WriteLine("a RTS Debug Client");
-        var map = new TileMap(10, 10);
+       
+        var mapPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Data",
+            "Maps",
+            "map_00.json");
 
-        var world = new GameWorld(map);
+        var loader = new JsonMapLoader();
+
+        var mapData = loader.Load(mapPath);
+
+        var builder = new TileMapBuilder();
+
+        var tileMap = builder.Build(mapData);
+
+        var world = new GameWorld(tileMap);
 
         var simulation = new SimulationRunner(world);
 
@@ -26,7 +37,7 @@ class Program
 
             Renders.ConsoleRenderer.Render(world);
 
-            Thread.Sleep(100);
+            Thread.Sleep(200);
         }
     }
 }

@@ -1,6 +1,6 @@
 using RTSEngine.Core.Map;
 using RTSEngine.Core.State;
-
+using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.DebugClient.Renders;
 
 public static class ConsoleRenderer
@@ -19,6 +19,8 @@ public static class ConsoleRenderer
                 {
                     TileType.Grass => "GG",
                     TileType.Water => "~~",
+                    TileType.Mountain => "MM",
+                    TileType.Sand => "SS",
                     _ => "??"
                 };
 

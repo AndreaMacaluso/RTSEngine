@@ -1,4 +1,4 @@
-namespace RTSEngine.Core.Entities;
+namespace RTSEngine.Core.Entities.Units;
 
 public sealed class Villager : Unit
 {

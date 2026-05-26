@@ -1,4 +1,5 @@
 {
+  "Name": "map_00",
   "Width": 10,
   "Height": 10,
   "Rows": [
@@ -12,5 +13,34 @@
     "GGMMGGGGGG",
     "GGGGSSGGGG",
     "GGGGGGGGGG"
+  ],
+  "Resources": [
+  {
+      "type": "tree",
+      "x": 3,
+      "y": 2
+    },
+    {
+      "type": "tree",
+      "x": 4,
+      "y": 2
+    },
+    {
+      "type": "gold_mine",
+      "x": 7,
+      "y": 7
+    }
+  ],
+  "Spawns": [
+  {
+    "player": 1,
+    "x": 2,
+    "y": 2
+  },
+  {
+    "player": 2,
+    "x": 8,
+    "y": 8
+  }
   ]
 }

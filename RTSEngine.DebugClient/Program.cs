@@ -3,6 +3,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Simulation;
 using RTSEngine.Core.Entities;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.DebugClient.Renders;
 
 namespace RTSEngine.DebugClient;
 class Program
@@ -21,18 +22,14 @@ class Program
 
         var mapData = loader.Load(mapPath);
 
-        var builder = new TileMapBuilder();
-
-        var tileMap = builder.Build(mapData);
-
-        var world = new GameWorld(tileMap);
+        var world = WorldBuilder.Build(mapData);
 
         //spawn a villager for testing
-        world.Entities.Add(new Villager
-        {
-            Id = 1,
-            Position = new GridPosition(5, 5)
-        });
+        // world.Entities.Add(new Villager
+        // {
+        //     Id = 1,
+        //     Position = new GridPosition(5, 5)
+        // });
 
         var simulation = new SimulationRunner(world);
         
@@ -43,8 +40,10 @@ class Program
             simulation.Tick();
 
             Console.WriteLine($"Tick: {world.CurrentTick}");
-
-            Renders.ConsoleRenderer.Render(world);
+            
+            ConsoleRenderer.Render(
+                world,
+                RenderMode.Minimal);;
 
             Thread.Sleep(200);
         }

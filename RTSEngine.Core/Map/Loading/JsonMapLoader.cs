@@ -7,6 +7,14 @@ public class JsonMapLoader
     {
         var json = File.ReadAllText(path);
 
-        return JsonSerializer.Deserialize<Definitions.MapData>(json)!;
+        var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+      
+        return JsonSerializer.Deserialize<Definitions.MapData>(
+            json,
+            options)!;
     }
 }

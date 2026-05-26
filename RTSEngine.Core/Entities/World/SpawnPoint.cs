@@ -1,6 +1,6 @@
 namespace RTSEngine.Core.Entities.World;
 
-public sealed class SpawnPoint: Entity
+public class SpawnPoint
 {
     public required int PlayerId { get; init; }
 

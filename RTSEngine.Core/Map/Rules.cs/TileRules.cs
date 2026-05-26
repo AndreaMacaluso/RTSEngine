@@ -1,13 +1,27 @@
+using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Map.Rules;
+
 public static class TileRules
 {
-    public static bool IsWalkable(Runtime.Tile tile)
+    public static bool IsWalkable(Tile tile)
     {
-        return true; // Placeholder
+        var type = tile.TerrainType;
+        return type switch
+        {
+            TileType.Water => false,
+            TileType.Mountain => false,
+            _ => true
+        };
     }
 
-    public static bool IsBuildable(Runtime.Tile tile)
+    public static bool IsBuildable(Tile tile)
     {
-        return true; // Placeholder
+         var type = tile.TerrainType;
+        return type switch
+        {
+            TileType.Water => false,
+            TileType.Mountain => false,
+            _ => true
+        };
     }
 }

@@ -1,46 +1,153 @@
 {
-  "Name": "map_00",
-  "Width": 10,
-  "Height": 10,
-  "Rows": [
-    "GGGGGGGGGG",
-    "GGGGWWGGGG",
-    "GGGGWWGGGG",
-    "GGSSSSGGGG",
-    "GGSSSSGGGG",
-    "GGGGGGGGGG",
-    "GGMMGGGGGG",
-    "GGMMGGGGGG",
-    "GGGGSSGGGG",
-    "GGGGGGGGGG"
+  "name": "map_00",
+  "width": 40,
+  "height": 40,
+  "rows": [
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGGGSSGGGGGGGGGGGGGGSSGGGGGGGGGGGGGGGGGG",
+
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGGGSSGGGGGGGGGGGGGGSSGGGGGGGGGGGGGGGGGG",
+
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGGGSSGGGGGGGGGGGGGGSSGGGGGGGGGGGGGGGGGG",
+
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGGGGGWWGGGGGGGGGGGGGGWWGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGSSSSGGGGGGGGGGGGSSSSGGGGGGGGGGGGGGGG",
+    "GGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGMMGGGGGGGGGGGGGGGGMMGGGGGGGGGGGGGGGGGG",
+    "GGGGSSGGGGGGGGGGGGGGSSGGGGGGGGGGGGGGGGGG"
   ],
-  "Resources": [
-  {
+  "resources": [
+
+    {
       "type": "tree",
-      "x": 3,
-      "y": 2
+      "x": 7,
+      "y": 10
     },
     {
       "type": "tree",
-      "x": 4,
-      "y": 2
+      "x": 8,
+      "y": 10
+    },
+
+    {
+      "type": "gold_mine",
+      "x": 10,
+      "y": 7
     },
     {
       "type": "gold_mine",
-      "x": 7,
-      "y": 7
+      "x": 10,
+      "y": 8
+    },
+
+    {
+      "type": "stone_mine",
+      "x": 13,
+      "y": 10
+    },
+    {
+      "type": "stone_mine",
+      "x": 13,
+      "y": 11
+    },
+
+    {
+      "type": "berry_bush",
+      "x": 10,
+      "y": 13
+    },
+    {
+      "type": "berry_bush",
+      "x": 11,
+      "y": 13
+    },
+    
+    {
+      "type": "tree",
+      "x": 27,
+      "y": 30
+    },
+    {
+      "type": "tree",
+      "x": 28,
+      "y": 30
+    },
+
+    {
+      "type": "gold_mine",
+      "x": 30,
+      "y": 27
+    },
+    {
+      "type": "gold_mine",
+      "x": 30,
+      "y": 28
+    },
+
+    {
+      "type": "stone_mine",
+      "x": 33,
+      "y": 30
+    },
+    {
+      "type": "stone_mine",
+      "x": 33,
+      "y": 31
+    },
+
+    {
+      "type": "berry_bush",
+      "x": 30,
+      "y": 33
+    },
+    {
+      "type": "berry_bush",
+      "x": 31,
+      "y": 33
     }
   ],
-  "Spawns": [
-  {
-    "player": 1,
-    "x": 2,
-    "y": 2
-  },
-  {
-    "player": 2,
-    "x": 8,
-    "y": 8
-  }
+
+  "spawns": [
+    {
+      "playerId": 1,
+      "x": 10,
+      "y": 10
+    },
+    {
+      "playerId": 2,
+      "x": 30,
+      "y": 30
+    }
   ]
 }

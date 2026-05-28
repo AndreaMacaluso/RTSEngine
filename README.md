@@ -47,10 +47,10 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Data-driven map loading pipeline
 - [x] Runtime asset loading pipeline
 - [x] Map validation system
-- [ ] Terrain properties system
-- [ ] Walkable tile rules
-- [ ] Buildable tile rules
-- [ ] Tile occupancy system
+- [x] Terrain properties system
+- [x] Walkable tile rules
+- [x] Buildable tile rules
+- [x] Tile occupancy system
 - [ ] World state management
 
 ---

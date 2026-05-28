@@ -66,6 +66,13 @@ public static class ConsoleRenderer
 
         if (entity != null)
         {
+
+            if (entity is Unit unit)
+            {
+                RenderUnit(unit);
+
+                return;
+            }
             RenderEntity(entity);
 
             return;
@@ -101,16 +108,35 @@ public static class ConsoleRenderer
 
     private static void RenderEntity(Entity entity)
     {
-        Console.ForegroundColor = ConsoleColor.Yellow;
 
         string symbol = entity switch
         {
-            Villager => "vv",
-            _ => "??"
+            Villager => "● ",
+            _ => "● "
         };
 
         Console.Write(symbol);
     }
+
+    private static void RenderUnit(Unit unit)
+    {
+        Console.ForegroundColor =
+            unit.OwnerId switch
+            {
+                1 => ConsoleColor.Blue,
+                2 => ConsoleColor.Red,
+                _ => ConsoleColor.White
+            };
+
+        string symbol = unit switch
+        {
+            Villager => "● ",
+            _ => "? "
+        };
+
+        Console.Write(symbol);
+    }
+
 
     private static void RenderResource(
         ResourceNode resource)

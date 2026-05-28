@@ -1,10 +1,10 @@
 ﻿using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Simulation;
-using RTSEngine.Core.Entities;
+using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.DebugClient.Renders;
-
+using RTSEngine.Core.Systems;
 namespace RTSEngine.DebugClient;
 class Program
 {
@@ -25,27 +25,34 @@ class Program
         var world = WorldBuilder.Build(mapData);
 
         //spawn a villager for testing
-        // world.Entities.Add(new Villager
-        // {
-        //     Id = 1,
-        //     Position = new GridPosition(5, 5)
-        // });
+        var villager = new Villager(
+            ownerId: 1,
+            position: new GridPosition(5, 5));
+
+        villager.PathQueue.Enqueue(new GridPosition(6, 5));
+        villager.PathQueue.Enqueue(new GridPosition(7, 5));
+        villager.PathQueue.Enqueue(new GridPosition(8, 5));
+
+        villager.PathQueue.Enqueue(new GridPosition(8, 6));
+        villager.PathQueue.Enqueue(new GridPosition(8, 7));
+
+        world.AddEntity(villager);
 
         var simulation = new SimulationRunner(world);
         
         while (true)
         {
-            Console.Clear();
+            Console.SetCursorPosition(0, 0);
 
             simulation.Tick();
 
             Console.WriteLine($"Tick: {world.CurrentTick}");
-            
+            MovementSystem.Update(world);
             ConsoleRenderer.Render(
                 world,
-                RenderMode.Minimal);;
+                RenderMode.Minimal);
 
-            Thread.Sleep(200);
+            Thread.Sleep(300);
         }
 
     }

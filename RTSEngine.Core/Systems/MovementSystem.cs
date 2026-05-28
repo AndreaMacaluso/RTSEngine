@@ -16,9 +16,17 @@ public static class MovementSystem
                 continue;
             } 
 
-            if (unit.TargetPosition is null)
+             if (unit.TargetPosition is null)
             {
-                continue;
+                if (unit.PathQueue.Count > 0)
+                {
+                    unit.TargetPosition =
+                        unit.PathQueue.Dequeue();
+                }
+                else
+                {
+                    continue;
+                }
             }
 
             unit.MovementProgress += unit.MovementSpeed;
@@ -35,6 +43,7 @@ public static class MovementSystem
                 world,
                 unit,
                 unit.TargetPosition.Value);
+            unit.TargetPosition = null;
             
         }
     }

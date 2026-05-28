@@ -25,7 +25,8 @@ RTSEngine.Tests -> unit and integration tests
 
 
 ## Roadmap
-## Phase 1 — Core Simulation
+
+# Phase 1 — Core Simulation
 
 Goal:
 Build a deterministic, renderer-independent RTS simulation core.
@@ -39,6 +40,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Initial tile map runtime
 - [x] Tile-based grid world
 - [x] Grid position abstraction
+- [x] Immutable grid position value object
 - [x] Tile runtime definitions
 - [x] Tile type mapping
 - [x] Symbol-based terrain parsing
@@ -51,6 +53,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Walkable tile rules
 - [x] Buildable tile rules
 - [x] Tile occupancy system
+- [x] Runtime entity placement validation
 - [ ] World state management
 
 ---
@@ -60,9 +63,14 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Basic simulation loop
 - [x] Simulation runner
 - [x] Runtime world container
-- [ ] Fixed deterministic tick pipeline
+- [x] Runtime entity registration
+- [x] Runtime entity id generation
 - [x] Basic entity runtime
-- [ ] Entity movement system
+- [x] Runtime movement state
+- [x] Movement progress accumulation
+- [ ] Fixed deterministic tick pipeline
+- [x] Entity movement system
+- [x] Multi-step movement pipeline
 - [ ] Command queue system
 - [ ] State management layer
 
@@ -97,6 +105,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Minimal render mode
 - [x] Extended render mode
 - [x] UTF-8 symbol rendering
+- [x] Runtime unit rendering
 - [ ] Runtime debug controls
 - [ ] Tick pause system
 - [ ] Debug overlays
@@ -105,10 +114,16 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 ## Movement
 
-- [ ] 8-direction tile movement
-- [ ] Tile occupancy validation
-- [ ] Collision system
+- [x] 8-direction tile movement
+- [x] Tile occupancy validation
+- [x] Adjacent tile validation
+- [x] Terrain collision validation
+- [x] Entity collision validation
+- [x] Deterministic movement progression
+- [x] Multi-step path movement
+- [x] Path queue execution
 - [ ] Basic pathfinding foundations
+- [ ] Dynamic collision handling
 
 ---
 
@@ -120,9 +135,14 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Tile type mapping tests
 - [x] Resource definition tests
 - [x] Builder validation tests
+- [x] Terrain rule validation tests
+- [x] Movement system tests
+- [x] Occupancy validation tests
+- [x] Adjacent movement validation tests
+- [x] Queued movement tests
 - [ ] Tick determinism tests
-- [ ] Movement system tests
 - [ ] Resource runtime tests
+- [ ] Pathfinding tests
 
 ---
 

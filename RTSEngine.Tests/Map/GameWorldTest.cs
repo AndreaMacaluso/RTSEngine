@@ -2,6 +2,7 @@ using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
+using RTSEngine.Tests.TestHelpers;
 
 namespace RTSEngine.Tests.State;
 
@@ -11,7 +12,7 @@ public class GameWorldTest
     public void IsInsideBounds_ShouldReturnTrue_ForValidPosition()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
         var result = world.IsInsideBounds(5, 5);
@@ -24,7 +25,7 @@ public class GameWorldTest
     public void IsInsideBounds_ShouldReturnFalse_ForNegativePosition()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
         var result = world.IsInsideBounds(-1, 0);
@@ -37,7 +38,7 @@ public class GameWorldTest
     public void IsInsideBounds_ShouldReturnFalse_ForOutOfBoundsPosition()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
         var result = world.IsInsideBounds(10, 10);
@@ -50,7 +51,7 @@ public class GameWorldTest
     public void GetEntityAt_ShouldReturnEntity_WhenTileIsOccupied()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         var tree = new Tree(new GridPosition(2, 2));
 
@@ -68,7 +69,7 @@ public class GameWorldTest
     public void GetEntityAt_ShouldReturnNull_WhenTileIsEmpty()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
         var entity = world.GetEntityAt(2, 2);
@@ -81,7 +82,7 @@ public class GameWorldTest
     public void IsTileOccupied_ShouldReturnTrue_WhenEntityExists()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         world.Entities.Add(
             new Tree(new GridPosition(1, 1)));
@@ -97,7 +98,7 @@ public class GameWorldTest
     public void IsTileOccupied_ShouldReturnFalse_WhenTileIsEmpty()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
         var result = world.IsTileOccupied(1, 1);
@@ -153,7 +154,7 @@ public class GameWorldTest
     public void IsTileBlocked_ShouldReturnTrue_ForBlockingEntity()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         world.Entities.Add(
             new Tree(new GridPosition(3, 3)));
@@ -169,7 +170,7 @@ public class GameWorldTest
     public void IsTileBlocked_ShouldReturnTrue_ForOutOfBoundsTile()
     {
         // Arrange
-        var world = CreateWorld();
+        var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
         var result = world.IsTileBlocked(-1, 0);

@@ -13,7 +13,7 @@ public class GameWorld
     public List<Entity> Entities { get; } = [];
     public List<ResourceNode> Resources { get; } = [];
     public List<SpawnPointDefinition> Spawns { get; } = [];
-    
+    private int _nextEntityId = 1;
     public GameWorld(
         TileMap map,
         List<ResourceNode>? resources = null,
@@ -65,5 +65,17 @@ public class GameWorld
         var entity = GetEntityAt(x, y);
 
         return entity?.IsBlocking ?? false;
+    }
+
+    public int GenerateEntityId()
+    {
+        return _nextEntityId++;
+    }
+
+    public void AddEntity(Entity entity)
+    {
+        entity.Id = GenerateEntityId();
+
+        Entities.Add(entity);
     }
 }

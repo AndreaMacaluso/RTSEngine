@@ -204,7 +204,7 @@ public static class ConsoleRenderer
         {
             Tree => "♣",
 
-            BerryBush => "●",//"♦",
+            BerryBush => "♣",//"♦",
 
             GoldMine => "■",
 

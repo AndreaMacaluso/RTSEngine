@@ -71,7 +71,8 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Fixed deterministic tick pipeline
 - [x] Entity movement system
 - [x] Multi-step movement pipeline
-- [ ] Command queue system
+- [x] Command queue system
+- [x] Command dispatch pipeline
 - [ ] State management layer
 
 ---
@@ -111,6 +112,12 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Debug overlays
 
 ---
+## Command System
+
+- [x] Basic command queue system
+- [ ] Advanced command scheduling
+
+---
 
 ## Movement
 
@@ -140,6 +147,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Occupancy validation tests
 - [x] Adjacent movement validation tests
 - [x] Queued movement tests
+- [x] Command system tests
 - [ ] Tick determinism tests
 - [ ] Resource runtime tests
 - [ ] Pathfinding tests

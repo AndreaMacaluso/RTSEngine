@@ -4,7 +4,6 @@ using RTSEngine.Core.Simulation;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.DebugClient.Renders;
-using RTSEngine.Core.Systems;
 namespace RTSEngine.DebugClient;
 class Program
 {
@@ -47,7 +46,7 @@ class Program
             simulation.Tick();
 
             Console.WriteLine($"Tick: {world.CurrentTick}");
-            MovementSystem.Update(world);
+           
             ConsoleRenderer.Render(
                 world,
                 RenderMode.Minimal);

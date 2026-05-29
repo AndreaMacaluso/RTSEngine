@@ -1,9 +1,10 @@
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities;
+using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Map.Definitions;
 using RTSEngine.Core.Map.Rules;
-
+using RTSEngine.Core.Commands;
 namespace RTSEngine.Core.State;
 
 public class GameWorld
@@ -14,6 +15,9 @@ public class GameWorld
     public List<ResourceNode> Resources { get; } = [];
     public List<SpawnPointDefinition> Spawns { get; } = [];
     private int _nextEntityId = 1;
+    public List<Player> Players { get; } = [];
+
+    public Queue<ICommand> PendingCommands { get; } = [];
     public GameWorld(
         TileMap map,
         List<ResourceNode>? resources = null,
@@ -77,5 +81,9 @@ public class GameWorld
         entity.Id = GenerateEntityId();
 
         Entities.Add(entity);
+    }
+    public void AddCommand(ICommand command)
+    {
+        PendingCommands.Enqueue(command);
     }
 }

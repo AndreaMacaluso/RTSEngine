@@ -1,4 +1,5 @@
 using RTSEngine.Core.State;
+using RTSEngine.Core.Systems;
 
 namespace RTSEngine.Core.Simulation;
 
@@ -13,6 +14,8 @@ public class SimulationRunner
 
     public void Tick()
     {
+        CommandSystem.Update(_world);
+        MovementSystem.Update(_world);
         _world.AdvanceTick();
     }
 }

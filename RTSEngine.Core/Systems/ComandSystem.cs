@@ -54,30 +54,16 @@ public static class CommandSystem
     {
         unit.PathQueue.Clear();
 
-        unit.TargetPosition = null;
-
-        GenerateStraightPath(
-            unit,
+        var path = PathSystem.GeneratePath(
+            unit.Position,
             target);
-    }
 
-    private static void GenerateStraightPath(
-    Unit unit,
-    GridPosition target)
-    {
-        var current = unit.Position;
+        foreach (var step in path)
+            {
+                unit.PathQueue.Enqueue(step);
+            }
 
-        while (current != target)
-        {
-            int dx = Math.Sign(target.X - current.X);
+        unit.TargetPosition = target;
 
-            int dy = Math.Sign(target.Y - current.Y);
-
-            current = new GridPosition(
-                current.X + dx,
-                current.Y + dy);
-
-            unit.PathQueue.Enqueue(current);
-        }
     }
 }

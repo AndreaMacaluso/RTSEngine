@@ -38,15 +38,41 @@ class Program
         world.AddEntity(villager);
 
         var simulation = new SimulationRunner(world);
-        
+
         while (true)
         {
             Console.SetCursorPosition(0, 0);
+
+            if (Console.KeyAvailable)
+            {
+                var key = Console.ReadKey(true);
+
+                switch (key.Key)
+                {
+                    case ConsoleKey.Spacebar:
+                        simulation.TogglePause();
+                        break;
+                    case ConsoleKey.N:
+                        if (simulation.IsPaused)
+                        {
+                            simulation.Step();
+                        }
+                        break;
+
+                    case ConsoleKey.Escape:
+                        return;
+                }
+            }
 
             simulation.Tick();
 
             Console.WriteLine($"Tick: {world.CurrentTick}");
            
+            Console.WriteLine(
+                simulation.IsPaused
+                    ? "PAUSED"
+                    : "RUNNING");
+
             ConsoleRenderer.Render(
                 world,
                 RenderMode.Minimal);

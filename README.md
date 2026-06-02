@@ -7,6 +7,14 @@ The simulation core is intentionally renderer-independent.
 
 Rendering, input handling and networking are planned as separate layers in order to preserve deterministic simulation behavior.
 
+## Disclaimer
+
+This project is a personal learning and engineering challenge aimed at building a Real-Time Strategy (RTS) engine from scratch.
+
+Features such as pathfinding, unit management, building construction, resource economy, world state management, and AI are implemented as part of the learning process.
+
+As a result, some solutions may prioritize educational value and architectural clarity over production-level optimization.
+
 ## Project Structure
 
 RTSEngine.Core -> deterministic simulation logic

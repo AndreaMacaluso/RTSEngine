@@ -62,7 +62,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Buildable tile rules
 - [x] Tile occupancy system
 - [x] Runtime entity placement validation
-- [ ] World state management
+- [x] World state management
 
 ---
 
@@ -81,7 +81,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Multi-step movement pipeline
 - [x] Command queue system
 - [x] Command dispatch pipeline
-- [ ] State management layer
+- [x] State management layer
 
 ---
 
@@ -116,7 +116,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] UTF-8 symbol rendering
 - [x] Runtime unit rendering
 - [ ] Runtime debug controls
-- [ ] Tick pause system
+- [x] Tick pause system
 - [ ] Debug overlays
 
 ---
@@ -137,7 +137,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Deterministic movement progression
 - [x] Multi-step path movement
 - [x] Path queue execution
-- [ ] Basic pathfinding foundations
+- [x] Basic pathfinding foundations
 - [ ] Dynamic collision handling
 
 ---
@@ -158,7 +158,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Command system tests
 - [ ] Tick determinism tests
 - [ ] Resource runtime tests
-- [ ] Pathfinding tests
+- [x] Pathfinding tests
 
 ---
 
@@ -166,7 +166,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 ## Economy
 
-- [ ] Resource economy
+- [x] Resource economy
 - [ ] Resource gathering
 - [ ] Resource depletion
 - [ ] Deposit system
@@ -217,6 +217,6 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Save/load system
 - [ ] Map editor
 - [x] Colored debug visualization
-- [ ] Runtime debug controls
+- [x] Runtime debug controls
 - [ ] Debug visualization improvements
 - [ ] Unity integration layer

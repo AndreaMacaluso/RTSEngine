@@ -11,6 +11,7 @@ public class GameWorld
 {
     public TileMap Map { get; }
     public int CurrentTick { get; private set; }
+    public WorldState State { get; private set; } = WorldState.Running;
     public List<Entity> Entities { get; } = [];
     public List<ResourceNode> Resources { get; } = [];
     public List<SpawnPointDefinition> Spawns { get; } = [];
@@ -85,5 +86,20 @@ public class GameWorld
     public void AddCommand(ICommand command)
     {
         PendingCommands.Enqueue(command);
+    }
+
+    public void Pause()
+    {
+        State = WorldState.Paused;
+    }
+
+    public void Resume()
+    {
+        State = WorldState.Running;
+    }
+
+    public void Finish()
+    {
+        State = WorldState.Finished;
     }
 }

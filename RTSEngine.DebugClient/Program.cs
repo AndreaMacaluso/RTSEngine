@@ -50,10 +50,18 @@ class Program
                 switch (key.Key)
                 {
                     case ConsoleKey.Spacebar:
-                        simulation.TogglePause();
+                    
+                        if (world.State == WorldState.Paused)
+                        {
+                            world.Pause();
+                        }
+                        else
+                        {
+                            world.Resume();
+                        }
                         break;
                     case ConsoleKey.N:
-                        if (simulation.IsPaused)
+                        if (world.State == WorldState.Paused)
                         {
                             simulation.Step();
                         }
@@ -69,7 +77,7 @@ class Program
             Console.WriteLine($"Tick: {world.CurrentTick}");
            
             Console.WriteLine(
-                simulation.IsPaused
+                (world.State == WorldState.Paused)
                     ? "PAUSED"
                     : "RUNNING");
 

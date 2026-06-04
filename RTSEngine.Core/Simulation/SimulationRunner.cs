@@ -6,21 +6,14 @@ namespace RTSEngine.Core.Simulation;
 public class SimulationRunner
 {
     private readonly GameWorld _world;
-
-    public bool IsPaused { get; private set; }
-
     public SimulationRunner(GameWorld world)
     {
         _world = world;
     }
 
-    public void TogglePause()
-    {
-        IsPaused = !IsPaused;
-    }
     public void Tick()
     {
-        if (IsPaused)
+        if (_world.State != WorldState.Running)
         {
             return;
         }

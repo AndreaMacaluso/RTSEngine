@@ -1,29 +1,103 @@
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.State;
 
 namespace RTSEngine.Core.Systems;
 
 public static class PathSystem
 {
+    private static readonly GridPosition[] Directions =
+    [
+        new(-1, -1),
+        new( 0, -1),
+        new( 1, -1),
+
+        new(-1,  0),
+        new( 1,  0),
+
+        new(-1,  1),
+        new( 0,  1),
+        new( 1,  1)
+    ];
+
     public static Queue<GridPosition> GeneratePath(
+        GameWorld world,
         GridPosition start,
         GridPosition target)
     {
-        var path = new Queue<GridPosition>();
+        var frontier = new Queue<GridPosition>();
 
-        var current = start;
+        var visited = new HashSet<GridPosition>();
 
-        while (current != target)
+        var cameFrom =
+            new Dictionary<GridPosition, GridPosition>();
+
+        frontier.Enqueue(start);
+        visited.Add(start);
+
+        while (frontier.Count > 0)
         {
-            int dx = Math.Sign(target.X - current.X);
-            int dy = Math.Sign(target.Y - current.Y);
+            var current = frontier.Dequeue();
 
-            current = new GridPosition(
-                current.X + dx,
-                current.Y + dy);
+            if (current.Equals(target))
+            {
+                return ReconstructPath(
+                    start,
+                    target,
+                    cameFrom);
+            }
 
-            path.Enqueue(current);
+            foreach (var direction in Directions)
+            {
+                var neighbor = new GridPosition(
+                    current.X + direction.X,
+                    current.Y + direction.Y);
+
+                if (!world.IsInsideBounds(
+                        neighbor.X,
+                        neighbor.Y))
+                {
+                    continue;
+                }
+
+                if (world.IsTileBlocked(
+                        neighbor.X,
+                        neighbor.Y))
+                {
+                    continue;
+                }
+
+                if (visited.Contains(neighbor))
+                {
+                    continue;
+                }
+
+                visited.Add(neighbor);
+
+                cameFrom[neighbor] = current;
+
+                frontier.Enqueue(neighbor);
+            }
         }
 
-        return path;
+        return [];
+    }
+
+    private static Queue<GridPosition> ReconstructPath(
+        GridPosition start,
+        GridPosition target,
+        Dictionary<GridPosition, GridPosition> cameFrom)
+    {
+        var path = new Stack<GridPosition>();
+
+        var current = target;
+
+        while (!current.Equals(start))
+        {
+            path.Push(current);
+
+            current = cameFrom[current];
+        }
+
+        return new Queue<GridPosition>(path);
     }
 }

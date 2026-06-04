@@ -6,6 +6,7 @@ namespace RTSEngine.Core.Systems;
 
 public static class MovementSystem
 {
+    private const int RepathThreshold = 5;
     public static void Update(GameWorld world)
     {
         
@@ -75,10 +76,41 @@ public static class MovementSystem
 
         if (world.IsTileBlocked(target.X, target.Y))
         {
+            RecalculatePath(
+                world,
+                unit);
+
             return;
         }
 
         unit.Position = target;
         unit.TargetPosition = null;
+    }
+
+    private static void RecalculatePath(
+    GameWorld world,
+    Unit unit)
+    {
+       
+        if (unit.TargetPosition is null)
+        {
+            return;
+        }
+
+        unit.PathQueue =
+            PathSystem.GeneratePath(
+                world,
+                unit.Position,
+                unit.TargetPosition.Value);
+
+        // if( unit.PathQueue == [])
+        // {
+        //     unit.BlockedTicks++;
+        // }
+        // else
+        // {
+        //     unit.BlockedTicks = 0;
+        // }
+        
     }
 }

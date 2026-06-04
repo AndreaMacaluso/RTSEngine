@@ -44,17 +44,19 @@ public static class CommandSystem
                 continue;
             }
 
-            AssignMoveTarget(unit, command.Target);
+            AssignMoveTarget(unit, command.Target,world);
         }
     }
 
     private static void AssignMoveTarget(
         Unit unit,
-        GridPosition target)
+        GridPosition target,
+        GameWorld world)
     {
         unit.PathQueue.Clear();
 
         var path = PathSystem.GeneratePath(
+            world,
             unit.Position,
             target);
 

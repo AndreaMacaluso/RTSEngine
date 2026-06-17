@@ -1,0 +1,40 @@
+[
+  {
+    "id": "town_center",
+    "name": "Town Center",
+    "maxHealth": 1000,
+    "width": 3,
+    "height": 3,
+    "costs":{
+      "wood": 150
+    },
+    "produces":
+    [
+        "villager"
+    ]
+  },
+  {
+    "id": "house",
+    "name": "House",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "costs":{
+      "wood": 50
+    }
+  },
+  {
+    "id": "barracks",
+    "name": "Barracks",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "costs":{
+      "wood": 50
+    },
+    "produces":
+    [
+        "militia"
+    ]
+}
+]

@@ -10,7 +10,7 @@ public class BuildingDefinition
 
     public int Height { get; set; }
 
-    public int CostWood { get; set; }
+    public int BuildTimeTicks {get; set;}
 
-    public int CostStone { get; set; }
+    public Dictionary<string, int> Costs { get; set; } = [];
 }

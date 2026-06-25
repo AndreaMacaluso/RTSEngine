@@ -63,6 +63,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Tile occupancy system
 - [x] Runtime entity placement validation
 - [x] World state management
+- [x] Data-driven map units pipeline
 
 ---
 

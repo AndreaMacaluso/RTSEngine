@@ -22,4 +22,13 @@
     <ProjectReference Include="..\RTSEngine.Core\RTSEngine.Core.csproj" />
   </ItemGroup>
 
+  
+  <ItemGroup>
+    <None Include="..\Data\**\*.*">
+      <Link>Data\%(RecursiveDir)%(Filename)%(Extension)</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+
 </Project>

@@ -4,6 +4,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.Tests.Systems;
 
@@ -17,10 +18,18 @@ public class MovementSystemTests
       
 
         var world = TestWorldFactory.CreateWorld();
+        var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
 
-        var villager = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+        var villager = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villager.TargetPosition =
             new GridPosition(6, 5);
@@ -47,9 +56,18 @@ public class MovementSystemTests
 
         var world = TestWorldFactory.CreateWorld();
 
-        var villager = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+       var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villager.TargetPosition =
             new GridPosition(6, 5);
@@ -78,9 +96,18 @@ public class MovementSystemTests
             {
                 TerrainType = TileType.Water
             });
-        var villager = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+       var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villager.TargetPosition =
             new GridPosition(6, 5);
@@ -105,18 +132,28 @@ public class MovementSystemTests
     {
         // Arrange
         var world = TestWorldFactory.CreateWorld();
+        var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
 
-        var villagerA = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+        var villagerA = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villagerA.TargetPosition =
             new GridPosition(6, 5);
+       
 
-        var villagerB = new Villager(
-            ownerId: 2,
-            position: new GridPosition(6, 5));
-
+        var villagerB = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(6, 5));
+       
         world.AddEntity(villagerA);
         world.AddEntity(villagerB);
 
@@ -138,9 +175,18 @@ public class MovementSystemTests
         // Arrange
         var world = TestWorldFactory.CreateWorld();
 
-        var villager = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+        var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villager.TargetPosition =
             new GridPosition(9, 9);

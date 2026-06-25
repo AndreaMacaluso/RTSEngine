@@ -2,7 +2,7 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
-
+using RTSEngine.Core.Entities.Runtime;
 namespace RTSEngine.Tests.Systems.QueuedMovementTests;
 
 public class MovementSystemTests
@@ -14,9 +14,18 @@ public class MovementSystemTests
         // Arrange
         var world = TestWorldFactory.CreateWorld();
 
-        var villager = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+        var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villager.PathQueue.Enqueue(
             new GridPosition(6, 5));
@@ -47,7 +56,16 @@ public class MovementSystemTests
     {
         var world = TestWorldFactory.CreateWorld();
 
-        var villager = new Villager(
+        var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
             1,
             new GridPosition(5, 5));
 
@@ -80,7 +98,16 @@ public class MovementSystemTests
                 TerrainType = TileType.Water
             });
 
-        var villager = new Villager(
+        var villagerDefinition = new UnitDefinition
+        {
+            Id = "villager",
+            Name = "Villager",
+            MaxHealth = 50,
+            MovementSpeed = 0.25f
+        };
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
             1,
             new GridPosition(5, 5));
 

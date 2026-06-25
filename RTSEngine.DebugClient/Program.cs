@@ -4,6 +4,9 @@ using RTSEngine.Core.Simulation;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.DebugClient.Renders;
+using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Entities.Loader;
+using  RTSEngine.Core.Entities.Definitions;
 namespace RTSEngine.DebugClient;
 class Program
 {
@@ -17,21 +20,35 @@ class Program
             "Maps",
             "map_00.json");
 
+        var unitsPath = Path.Combine(
+            AppContext.BaseDirectory,
+            "Data",
+            "Units",
+            "units.json");
+    
+        //map
         var loader = new JsonMapLoader();
 
         var mapData = loader.Load(mapPath);
 
         var world = WorldBuilder.Build(mapData);
+        //unit
+        var unitLoader = new UnitDefinitionLoader();
+        var unitDefinitions = unitLoader.Load(unitsPath);
 
-        //spawn a villager for testing
-        var villager = new Villager(
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+        var unitRepository = new UnitDefinitionRepository(unitDefinitions);
+
+        var villagerDefinition = unitRepository.Get("villager");
+
+
+        var villager = UnitFactory.Create(
+            villagerDefinition,
+            1,
+            new GridPosition(5, 5));
 
         villager.PathQueue.Enqueue(new GridPosition(6, 5));
         villager.PathQueue.Enqueue(new GridPosition(7, 5));
         villager.PathQueue.Enqueue(new GridPosition(8, 5));
-
         villager.PathQueue.Enqueue(new GridPosition(8, 6));
         villager.PathQueue.Enqueue(new GridPosition(8, 7));
 

@@ -109,13 +109,13 @@ public static class ConsoleRenderer
     private static void RenderEntity(Entity entity)
     {
 
-        string symbol = entity switch
-        {
-            Villager => "● ",
-            _ => "● "
-        };
+        // string symbol = entity switch
+        // {
+        //     Villager => "● ",
+        //     _ => "● "
+        // };
 
-        Console.Write(symbol);
+        // Console.Write(symbol);
     }
 
     private static void RenderUnit(Unit unit)
@@ -128,15 +128,14 @@ public static class ConsoleRenderer
                 _ => ConsoleColor.White
             };
 
-        string symbol = unit switch
+        string symbol = unit.Definition.Id switch
         {
-            Villager => "● ",
+            "villager" => "● ",
             _ => "? "
         };
 
         Console.Write(symbol);
     }
-
 
     private static void RenderResource(
         ResourceNode resource)

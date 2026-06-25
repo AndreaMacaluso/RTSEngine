@@ -6,7 +6,8 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.DebugClient.Renders;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Loader;
-using  RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Commands;
 namespace RTSEngine.DebugClient;
 class Program
 {
@@ -44,15 +45,31 @@ class Program
         var villager = UnitFactory.Create(
             villagerDefinition,
             1,
-            new GridPosition(5, 5));
-
-        villager.PathQueue.Enqueue(new GridPosition(6, 5));
-        villager.PathQueue.Enqueue(new GridPosition(7, 5));
-        villager.PathQueue.Enqueue(new GridPosition(8, 5));
-        villager.PathQueue.Enqueue(new GridPosition(8, 6));
-        villager.PathQueue.Enqueue(new GridPosition(8, 7));
+            new GridPosition(5,12));
 
         world.AddEntity(villager);
+
+        var command= new MoveCommand
+        {
+            UnitIds = [villager.Id],
+            Target = new GridPosition(20, 25)
+        };
+        world.AddCommand(command);
+
+        var villager_2 = UnitFactory.Create(
+            villagerDefinition,
+            2,
+            new GridPosition(35, 30));
+
+        world.AddEntity(villager_2);
+
+        var command_2= new MoveCommand
+        {
+            UnitIds = [villager_2.Id],
+            Target = new GridPosition(10, 15)
+        };
+        world.AddCommand(command_2);
+
 
         var simulation = new SimulationRunner(world);
 
@@ -70,11 +87,11 @@ class Program
                     
                         if (world.State == WorldState.Paused)
                         {
-                            world.Pause();
+                            world.Resume();
                         }
                         else
                         {
-                            world.Resume();
+                             world.Pause();
                         }
                         break;
                     case ConsoleKey.N:

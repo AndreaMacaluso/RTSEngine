@@ -42,6 +42,6 @@ public class CommandSystemTests
 
         CommandSystem.Update(world);
 
-        Assert.NotEmpty(unit.PathQueue);
+        Assert.NotEmpty(unit.Movement.PathQueue);
     }
 }

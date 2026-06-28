@@ -31,7 +31,7 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.TargetPosition =
+        villager.Movement.TargetPosition =
             new GridPosition(6, 5);
 
         world.AddEntity(villager);
@@ -69,7 +69,7 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.TargetPosition =
+        villager.Movement.TargetPosition =
             new GridPosition(6, 5);
 
         world.AddEntity(villager);
@@ -109,7 +109,7 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.TargetPosition =
+        villager.Movement.TargetPosition =
             new GridPosition(6, 5);
 
         world.AddEntity(villager);
@@ -145,7 +145,7 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villagerA.TargetPosition =
+        villagerA.Movement.TargetPosition =
             new GridPosition(6, 5);
        
 
@@ -188,7 +188,7 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.TargetPosition =
+        villager.Movement.TargetPosition =
             new GridPosition(9, 9);
 
         world.AddEntity(villager);

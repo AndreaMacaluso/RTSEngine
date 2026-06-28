@@ -53,7 +53,7 @@ public static class CommandSystem
         GridPosition target,
         GameWorld world)
     {
-        unit.PathQueue.Clear();
+        unit.Movement.PathQueue.Clear();
 
         var path = PathSystem.GeneratePath(
             world,
@@ -62,10 +62,10 @@ public static class CommandSystem
 
         foreach (var step in path)
             {
-                unit.PathQueue.Enqueue(step);
+                unit.Movement.PathQueue.Enqueue(step);
             }
 
-        unit.TargetPosition = target;
+        unit.Movement.TargetPosition = target;
 
     }
 }

@@ -17,12 +17,12 @@ public static class MovementSystem
                 continue;
             } 
 
-             if (unit.TargetPosition is null)
+             if (unit.Movement.TargetPosition is null)
             {
-                if (unit.PathQueue.Count > 0)
+                if (unit.Movement.PathQueue.Count > 0)
                 {
-                    unit.TargetPosition =
-                        unit.PathQueue.Dequeue();
+                    unit.Movement.TargetPosition =
+                        unit.Movement.PathQueue.Dequeue();
                 }
                 else
                 {
@@ -30,21 +30,21 @@ public static class MovementSystem
                 }
             }
 
-            unit.MovementProgress += unit.MovementSpeed;
+            unit.Movement.Progress += unit.Movement.Speed;
 
-            if (unit.MovementProgress < 1f)
+            if (unit.Movement.Progress < 1f)
             {
                 continue;
             }
 
-            unit.MovementProgress = 0f;
+            unit.Movement.Progress = 0f;
 
             
             TryMove(
                 world,
                 unit,
-                unit.TargetPosition.Value);
-            unit.TargetPosition = null;
+                unit.Movement.TargetPosition.Value);
+            unit.Movement.TargetPosition = null;
             
         }
     }
@@ -84,7 +84,7 @@ public static class MovementSystem
         }
 
         unit.Position = target;
-        unit.TargetPosition = null;
+        unit.Movement.TargetPosition = null;
     }
 
     private static void RecalculatePath(
@@ -92,16 +92,16 @@ public static class MovementSystem
     Unit unit)
     {
        
-        if (unit.TargetPosition is null)
+        if (unit.Movement.TargetPosition is null)
         {
             return;
         }
 
-        unit.PathQueue =
+        unit.Movement.PathQueue =
             PathSystem.GeneratePath(
                 world,
                 unit.Position,
-                unit.TargetPosition.Value);
+                unit.Movement.TargetPosition.Value);
 
         // if( unit.PathQueue == [])
         // {

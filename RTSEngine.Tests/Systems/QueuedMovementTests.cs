@@ -27,13 +27,13 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.PathQueue.Enqueue(
+        villager.Movement.PathQueue.Enqueue(
             new GridPosition(6, 5));
 
-        villager.PathQueue.Enqueue(
+        villager.Movement.PathQueue.Enqueue(
             new GridPosition(7, 5));
 
-        villager.PathQueue.Enqueue(
+        villager.Movement.PathQueue.Enqueue(
             new GridPosition(8, 5));
 
         world.AddEntity(villager);
@@ -48,7 +48,7 @@ public class MovementSystemTests
         Assert.Equal(8, villager.Position.X);
         Assert.Equal(5, villager.Position.Y);
 
-        Assert.Empty(villager.PathQueue);
+        Assert.Empty(villager.Movement.PathQueue);
     }
     [Fact]
     [Trait("Category", "Movement")]
@@ -69,7 +69,7 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.PathQueue.Enqueue(
+        villager.Movement.PathQueue.Enqueue(
             new GridPosition(6, 5));
 
         world.AddEntity(villager);
@@ -79,9 +79,9 @@ public class MovementSystemTests
             MovementSystem.Update(world);
         }
 
-        Assert.Empty(villager.PathQueue);
+        Assert.Empty(villager.Movement.PathQueue);
 
-        Assert.Null(villager.TargetPosition);
+        Assert.Null(villager.Movement.TargetPosition);
     }
     [Fact]
     [Trait("Category", "Movement")]
@@ -111,10 +111,10 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.PathQueue.Enqueue(
+        villager.Movement.PathQueue.Enqueue(
             new GridPosition(6, 5));
 
-        villager.PathQueue.Enqueue(
+        villager.Movement.PathQueue.Enqueue(
             new GridPosition(7, 5));
 
         world.AddEntity(villager);

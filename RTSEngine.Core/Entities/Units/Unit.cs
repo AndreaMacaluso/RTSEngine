@@ -1,19 +1,15 @@
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Component;
 namespace RTSEngine.Core.Entities.Units;
 
 public abstract class Unit : Entity
 {
-    public override bool IsBlocking => true; 
     public int OwnerId { get; init; }
     public UnitDefinition Definition { get;}
-    public float MovementSpeed { get; protected set; }
-    public float MovementProgress { get; set; }
-    public GridPosition? TargetPosition { get; set; }
-    public Queue<GridPosition> PathQueue { get; set; } = [];
-
-    public GridPosition? FinalDestination { get; set; }
-
+    public MovementComponent Movement { get; }
+    public int GatherCapacity { get; init; }
     public int BlockedTicks { get; set; }
+    public override bool IsBlocking => true; 
 
     public Unit(
         int ownerId,
@@ -23,8 +19,11 @@ public abstract class Unit : Entity
         {
             Definition = definition;
             OwnerId = ownerId;
-            MovementSpeed = definition.MovementSpeed;
             Position = position;
+            Movement = new MovementComponent
+            {
+                Speed = definition.MovementSpeed
+            };
         }
 }
 

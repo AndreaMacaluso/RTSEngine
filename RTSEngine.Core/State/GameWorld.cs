@@ -25,7 +25,11 @@ public class GameWorld
         List<SpawnPointDefinition>? spawns = null)
     {
         Map = map;
-        Resources = resources ?? [];
+
+        foreach (var resource in resources ?? [])
+        {
+            AddResource(resource);
+        }
         Spawns = spawns ?? [];
         Entities = [];
         CurrentTick = 0;
@@ -101,5 +105,12 @@ public class GameWorld
     public void Finish()
     {
         State = WorldState.Finished;
+    }
+
+    public void AddResource(ResourceNode resource)
+    {
+        resource.Id = GenerateEntityId();
+
+        Resources.Add(resource);
     }
 }

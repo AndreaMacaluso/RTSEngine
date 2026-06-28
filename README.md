@@ -141,6 +141,48 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Basic pathfinding foundations
 - [ ] Dynamic collision handling
 
+### Pathfinding
+- [x] Basic path generation pipeline
+- [x] Command-to-path integration
+- [ ] True BFS pathfinding
+- [ ] Path reconstruction from BFS search
+- [ ] Unreachable target handling
+- [ ] Dynamic collision handling
+- [ ] Path replanning / blocked path recovery
+
+---
+## Gameplay Loops
+
+### Economy Loop
+- [ ] Gather command
+- [ ] Resource targeting loop
+- [ ] Unit gather runtime state
+- [ ] Gather execution system
+- [ ] Carry capacity loop
+- [ ] Deposit / drop-off loop
+- [ ] Resource depletion loop
+- [ ] End-to-end villager gather cycle
+
+### Production Loop
+- [ ] Building production queue
+- [ ] Unit training command
+- [ ] Training progress system
+- [ ] Resource payment on production
+- [ ] Unit spawn from building
+- [ ] End-to-end production cycle
+
+---
+
+## Data-Driven Entities
+
+- [x] Unit definitions from JSON
+- [x] Unit definition loader
+- [x] Unit definition repository
+- [x] Unit factory
+- [x] Building definitions from JSON
+- [ ] Building definition loader
+- [ ] Runtime unit state model
+- [ ] Runtime building state model
 ---
 
 ## Testing
@@ -161,6 +203,15 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Resource runtime tests
 - [x] Pathfinding tests
 
+## Debug Client
+
+- [x] Simulation bootstrap
+- [x] Runtime simulation host
+- [x] World initialization pipeline
+- [x] Movement demonstration scenario
+- [ ] Interactive unit selection
+- [ ] Runtime command issuing
+- [ ] Scenario selection
 ---
 
 # Phase 2 — Gameplay Systems
@@ -168,10 +219,11 @@ Build a deterministic, renderer-independent RTS simulation core.
 ## Economy
 
 - [x] Resource economy
-- [ ] Resource gathering
-- [ ] Resource depletion
-- [ ] Deposit system
-- [ ] Carry capacity system
+- [ ] Resource stockpile rules
+- [ ] Resource gathering rates
+- [ ] Resource depletion rules
+- [ ] Deposit validation rules
+- [ ] Multi-resource support balancing
 
 ---
 
@@ -181,6 +233,8 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Construction system
 - [ ] Multi-tile structures
 - [ ] Production buildings
+- [ ] Resource drop-off buildings
+- [ ] Spawn/placement validation for produced units
 
 ---
 

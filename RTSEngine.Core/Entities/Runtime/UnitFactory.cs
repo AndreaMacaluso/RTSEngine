@@ -1,6 +1,5 @@
-using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Units;
-
+using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Entities.Runtime;
 
 public static class UnitFactory
@@ -10,9 +9,9 @@ public static class UnitFactory
         int ownerId,
         GridPosition position)
     {
-        return new RuntimeUnit(
-            definition,
+        return new Unit(
             ownerId,
-            position);
+            position,
+            definition);
     }
 }

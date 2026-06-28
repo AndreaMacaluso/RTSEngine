@@ -1,14 +1,15 @@
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.Entities.Component;
+using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.State;
 namespace RTSEngine.Core.Entities.Units;
 
-public abstract class Unit : Entity
+public class Unit : Entity
 {
     public int OwnerId { get; init; }
     public UnitDefinition Definition { get;}
-    public MovementComponent Movement { get; }
-    public int GatherCapacity { get; init; }
-    public int BlockedTicks { get; set; }
+    public MovementState Movement { get; }
+    public GatherState Gather { get; }
+    public UnitTask CurrentTask { get; set; } = UnitTask.Idle;
     public override bool IsBlocking => true; 
 
     public Unit(
@@ -20,10 +21,8 @@ public abstract class Unit : Entity
             Definition = definition;
             OwnerId = ownerId;
             Position = position;
-            Movement = new MovementComponent
-            {
-                Speed = definition.MovementSpeed
-            };
+            Movement = new MovementState(definition);
+            Gather = new GatherState(definition);
         }
 }
 

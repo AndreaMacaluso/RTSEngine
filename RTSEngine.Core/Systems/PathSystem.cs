@@ -100,4 +100,34 @@ public static class PathSystem
 
         return new Queue<GridPosition>(path);
     }
+
+    public static GridPosition? FindAdjacentWalkableTile(
+        GameWorld world,
+        GridPosition center)
+    {
+        foreach (var direction in Directions)
+        {
+            var neighbor = new GridPosition(
+                center.X + direction.X,
+                center.Y + direction.Y);
+
+            if (!world.IsInsideBounds(
+                    neighbor.X,
+                    neighbor.Y))
+            {
+                continue;
+            }
+
+            if (world.IsTileBlocked(
+                    neighbor.X,
+                    neighbor.Y))
+            {
+                continue;
+            }
+
+            return neighbor;
+        }
+
+        return null;
+    }
 }

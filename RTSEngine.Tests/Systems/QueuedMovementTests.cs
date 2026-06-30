@@ -3,6 +3,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Entities.Definitions;
 namespace RTSEngine.Tests.Systems.QueuedMovementTests;
 
 public class MovementSystemTests

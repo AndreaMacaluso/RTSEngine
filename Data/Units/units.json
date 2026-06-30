@@ -6,7 +6,8 @@
     "movementSpeed": 1.0,
     "costs":{
       "food": 50
-    }
+    },
+    "gatherCapacity": 20
   },
   {
     "id": "militia",

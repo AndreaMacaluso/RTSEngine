@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Map.Definitions;
 using RTSEngine.Core.Map.Rules;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Entities.Units;
 namespace RTSEngine.Core.State;
 
 public class GameWorld
@@ -92,6 +93,10 @@ public class GameWorld
         PendingCommands.Enqueue(command);
     }
 
+    public void AddPlayer(Player player)
+    {
+        Players.Add(player);
+    }
     public void Pause()
     {
         State = WorldState.Paused;
@@ -113,4 +118,26 @@ public class GameWorld
 
         Resources.Add(resource);
     }
+    
+    public ResourceNode? GetResourceById(int id)
+    {
+        return Resources.FirstOrDefault(r => r.Id == id);
+    }
+
+    public Unit? GetUnitById(int id)
+    {
+        return Entities
+            .OfType<Unit>()
+            .FirstOrDefault(u => u.Id == id);
+    }
+
+    public Player? GetPlayerById(int id)
+    {
+        return Players.FirstOrDefault(p => p.Id == id);
+    }
+    public Entity? GetEntityById(int id)
+    {
+        return Entities.FirstOrDefault(e => e.Id == id);
+    }
+
 }

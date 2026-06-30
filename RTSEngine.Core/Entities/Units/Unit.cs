@@ -1,5 +1,6 @@
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.State;
 namespace RTSEngine.Core.Entities.Units;
 

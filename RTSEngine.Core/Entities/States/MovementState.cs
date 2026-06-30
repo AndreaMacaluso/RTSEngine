@@ -1,4 +1,5 @@
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Definitions;
 
 namespace RTSEngine.Core.Entities.States;
 public class MovementState
@@ -9,7 +10,7 @@ public class MovementState
 
     public GridPosition? TargetPosition { get; set; }
 
-    public GridPosition? FinalDestination { get; set; }
+   // public GridPosition? FinalDestination { get; set; }
 
     public Queue<GridPosition> PathQueue { get; set; } = [];
 

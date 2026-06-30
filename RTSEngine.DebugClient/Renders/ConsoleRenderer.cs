@@ -25,7 +25,7 @@ public static class ConsoleRenderer
 
             Console.WriteLine();
         }
-
+        RenderPlayerStats(world); 
         Console.ResetColor();
     }
 
@@ -211,5 +211,25 @@ public static class ConsoleRenderer
 
             _ => "?"
         };
+    }
+
+    public static void RenderPlayerStats(GameWorld world)
+    {
+        Console.WriteLine();
+        Console.WriteLine("=== PLAYERS ===");
+
+        foreach (var player in world.Players)
+        {
+            //Console.ForegroundColor = player.Color;
+
+            Console.WriteLine(
+                $"P{player.Id} {player.Name} | " +
+                $"Wood {player.Wood} | " +
+                $"Food {player.Food} | " +
+                $"Gold {player.Gold} | " +
+                $"Stone {player.Stone}");
+        }
+
+        Console.ResetColor();
     }
 }

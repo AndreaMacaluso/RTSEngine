@@ -1,52 +1,14 @@
-using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
-using RTSEngine.Core.Entities.Loader;
 using RTSEngine.Core.Entities.Definitions;
 
 namespace RTSEngine.DebugClient.Bootstrap;
 
-public static class SimulationBootstrap
+public sealed class SimulationContext
 {
-    public static SimulationContext Create()
-    {
-        var baseDirectory = AppContext.BaseDirectory;
+    public required GameWorld World { get; init; }
 
-        var mapPath = Path.Combine(
-            baseDirectory,
-            "Data",
-            "Maps",
-            "map_00.json");
+    public required UnitDefinitionRepository UnitRepository { get; init; }
 
-        var unitsPath = Path.Combine(
-            baseDirectory,
-            "Data",
-            "Units",
-            "units.json");
-
-        var world = LoadWorld(mapPath);
-        var unitRepository = LoadUnitRepository(unitsPath);
-
-        return new SimulationContext
-        {
-            World = world,
-            UnitRepository = unitRepository
-        };
-    }
-
-    private static GameWorld LoadWorld(string mapPath)
-    {
-        var mapLoader = new JsonMapLoader();
-        var mapData = mapLoader.Load(mapPath);
-
-        return WorldBuilder.Build(mapData);
-    }
-
-    private static UnitDefinitionRepository LoadUnitRepository(
-        string unitsPath)
-    {
-        var unitLoader = new UnitDefinitionLoader();
-        var unitDefinitions = unitLoader.Load(unitsPath);
-
-        return new UnitDefinitionRepository(unitDefinitions);
-    }
+   
+    // public required BuildingDefinitionRepository BuildingRepository { get; init; }
 }

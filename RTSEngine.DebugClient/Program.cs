@@ -13,7 +13,8 @@ class Program
 
         var context = SimulationBootstrap.Create();
 
-        ScenarioBuilder.CreateMovementScenario(context);
+        // ScenarioBuilder.CreateMovementScenario(context);
+        ScenarioBuilder.CreeateGatheringScenario(context);
 
         var simulation = new SimulationRunner(context.World);
 

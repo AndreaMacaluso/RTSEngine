@@ -1,4 +1,5 @@
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Definitions;
 
 namespace RTSEngine.Core.Entities.States;
 public class GatherState
@@ -10,6 +11,8 @@ public class GatherState
     public int? TargetResourceId { get; set; }
 
     public ResourceType? CarriedResource { get; set; }
+    public GatherPhase Phase { get; set; }
+    public GridPosition? DepositPosition { get; set; }
     public bool IsFull => CurrentLoad >= Capacity;
 
     public bool IsEmpty => CurrentLoad == 0;
@@ -22,14 +25,14 @@ public class GatherState
 
     public int AddLoad(int amount)
     {
-        int collected = amount;
+        int collected = 0;
         if(!IsFull)
         {
                collected = Math.Min(amount, RemainingCapacity);
 
-                CurrentLoad += collected;
+               CurrentLoad += collected;
 
-                return collected;
+               return collected;
         }
         return collected;
     }

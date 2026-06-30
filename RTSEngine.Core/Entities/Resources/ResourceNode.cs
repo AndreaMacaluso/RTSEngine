@@ -1,7 +1,5 @@
-namespace RTSEngine.Core.Entities.Resources;
-
 using RTSEngine.Core.Map.Runtime;
-
+namespace RTSEngine.Core.Entities.Resources;
 abstract public class ResourceNode : Entity
 {
     public int Amount { get; set; }

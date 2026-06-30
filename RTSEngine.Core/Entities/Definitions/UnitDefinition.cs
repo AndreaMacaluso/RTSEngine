@@ -1,6 +1,7 @@
+namespace RTSEngine.Core.Entities.Definitions;
 public class UnitDefinition
 {
-    public string Id { get; set; }
+    public string Id { get; set; } = "";
 
     public string Name { get; set; } = "";
 

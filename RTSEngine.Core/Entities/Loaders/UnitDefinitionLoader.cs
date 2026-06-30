@@ -1,4 +1,5 @@
 using System.Text.Json;
+using RTSEngine.Core.Entities.Definitions;
 
 namespace RTSEngine.Core.Entities.Loader;
 

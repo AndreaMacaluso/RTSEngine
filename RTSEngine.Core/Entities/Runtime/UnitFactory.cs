@@ -1,5 +1,7 @@
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Definitions;
+
 namespace RTSEngine.Core.Entities.Runtime;
 
 public static class UnitFactory

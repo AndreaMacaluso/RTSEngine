@@ -24,6 +24,12 @@ public static class SimulationBootstrap
             "Units",
             "units.json");
 
+        var buildingsPath = Path.Combine(
+            baseDirectory,
+            "Data",
+            "Units",
+            "buildings.json");
+
         var world = LoadWorld(mapPath);
 
         foreach (var spawn in world.Spawns)
@@ -33,11 +39,13 @@ public static class SimulationBootstrap
         }
         
         var unitRepository = LoadUnitRepository(unitsPath);
+        var buildingRepository = LoadBuildingRepository(buildingsPath);
 
         return new SimulationContext
         {
             World = world,
-            UnitRepository = unitRepository
+            UnitRepository = unitRepository,
+            BuildingRepository = buildingRepository
         };
     }
 
@@ -56,5 +64,15 @@ public static class SimulationBootstrap
         var unitDefinitions = unitLoader.Load(unitsPath);
 
         return new UnitDefinitionRepository(unitDefinitions);
+    }
+
+    private static BuildingDefinitionRepository LoadBuildingRepository(
+    string buildingsPath)
+    {
+        var loader = new BuildingDefinitionLoader();
+
+        var definitions = loader.Load(buildingsPath);
+
+        return new BuildingDefinitionRepository(definitions);
     }
 }

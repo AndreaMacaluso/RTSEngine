@@ -3,6 +3,8 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.DebugClient.Bootstrap;
 using RTSEngine.Core.Players;
+using RTSEngine.DebugClient.StartingConditions;
+
 
 namespace RTSEngine.DebugClient.Scenarios;
 
@@ -30,6 +32,7 @@ public static class ScenarioBuilder
     public static void CreeateGatheringScenario(
         SimulationContext context)
     {
+        MatchStartingConditions.CreateStandard(context);
         var world = context.World;
         var villagerDefinition =
             context.UnitRepository.Get("villager");
@@ -95,5 +98,4 @@ public static class ScenarioBuilder
             ResourceId = resourceId
         });
     }
-    
 }

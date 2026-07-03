@@ -11,6 +11,13 @@
     "produces":
     [
         "villager"
+    ],
+    "acceptedResources":
+    [
+        "Wood",
+        "Food",
+        "Gold",
+        "Stone"
     ]
   },
   {
@@ -22,6 +29,49 @@
     "costs":{
       "wood": 50
     }
+  },
+  {
+    "id": "lumbercamp",
+    "name": "Lumber Camp",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "costs":{
+      "wood": 100
+    },
+    "acceptedResources":
+    [
+        "Wood"
+    ]
+  },
+  {
+    "id": "minecamp",
+    "name": "Mine Camp",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "costs":{
+      "wood": 100
+    },
+    "acceptedResources":
+    [
+        "Gold",
+        "Stone"
+    ]
+  },
+  {
+    "id": "mill",
+    "name": "Mill",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "costs":{
+      "wood": 100
+    },
+    "acceptedResources":
+    [
+        "Food",
+    ]
   },
   {
     "id": "barracks",

@@ -1,16 +1,27 @@
+using  RTSEngine.Core.Map.Runtime;
+namespace RTSEngine.Core.Entities.Definitions;
+
 public class BuildingDefinition
 {
-    public string Id { get; set; }
+    public required string Id { get; init; }
 
-    public string Name { get; set; }
+    public required string Name { get; init; }
 
-    public int MaxHealth { get; set; }
+    public int MaxHealth { get; init; }
 
-    public int Width { get; set; }
+    public int Width { get; init; }
 
-    public int Height { get; set; }
+    public int Height { get; init; }
 
-    public int BuildTimeTicks {get; set;}
+    public int BuildTimeTicks { get; init; }
 
-    public Dictionary<string, int> Costs { get; set; } = [];
+    public Dictionary<ResourceType, int> Costs { get; init; } = [];
+
+    public List<string> Produces { get; init; } = [];
+
+    public List<ResourceType> AcceptedResources { get; init; } = [];
+    public bool CanDeposit(ResourceType resource)
+    {
+            return AcceptedResources.Contains(resource);
+    }
 }

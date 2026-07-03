@@ -1,8 +1,22 @@
-using RTSEngine.Core.Entities;
+using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Definitions;
 namespace RTSEngine.Core.Entities.Buildings;
 
 public sealed class Building : Entity
 {
-    public override bool IsBlocking => true; 
-    public BuildingDefinition Definition { get; private set; }
+    public int OwnerId { get; }
+
+    public BuildingDefinition Definition { get; }
+
+    public override bool IsBlocking => true;
+
+        public Building(
+        int ownerId,
+        GridPosition position,
+        BuildingDefinition definition)
+    {
+        OwnerId = ownerId;
+        Position = position;
+        Definition = definition;
+    }
 }

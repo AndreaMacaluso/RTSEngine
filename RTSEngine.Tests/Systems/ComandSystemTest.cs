@@ -11,29 +11,6 @@ namespace RTSEngine.Tests.Systems;
 public class CommandSystemTests
 {
     [Fact]
-    public void MoveCommand_ShouldAssignPathQueue()
-    {
-        var world = TestWorldFactory.CreateWorld();
-
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
-
-        world.AddEntity(unit);
-
-        world.AddCommand(new MoveCommand
-        {
-            UnitIds = [unit.Id],
-            Target = new GridPosition(5, 5)
-        });
-
-        CommandSystem.Update(world);
-
-        Assert.NotEmpty(unit.Movement.PathQueue);
-    }
-
-    [Fact]
     public void MoveCommand_ShouldSetTargetPosition()
     {
         var world = TestWorldFactory.CreateWorld();

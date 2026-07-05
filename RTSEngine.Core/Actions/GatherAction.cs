@@ -6,6 +6,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Helpers;
 
 namespace RTSEngine.Core.Actions;
 
@@ -24,8 +25,10 @@ public static class GatherActions
         }
 
         GridPosition? target =
-            PathSystem.FindAdjacentWalkableTile(world,resource.Position);
-
+            WorldQueries.FindClosestAdjacentWalkableTile(
+                    world,
+                    unit.Position,
+                    resource.Position);
         if (target is not GridPosition destination)
         {
             return;
@@ -41,9 +44,18 @@ public static class GatherActions
         {
             return;
         }
+        var resource = GetTargetResource(world,unit);
+
+        if (resource == null)
+        {
+            return;
+        }
 
         GridPosition? target =
-            PathSystem.FindAdjacentWalkableTile(world,deposit);
+            WorldQueries.FindClosestAdjacentWalkableTile(
+                    world,
+                    unit.Position,
+                    resource.Position);
 
         if (target is not GridPosition destination)
         {

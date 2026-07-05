@@ -35,8 +35,8 @@ public class GatherCommandTests
         };
 
         world.AddCommand(command);
-
-        CommandSystem.Update(world);
+        SimulationTestHelper.RunTicks(world,1);
+        //CommandSystem.Update(world);
 
         Assert.Equal(UnitTask.Gathering, unit.CurrentTask);
     }

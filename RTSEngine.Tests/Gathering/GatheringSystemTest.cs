@@ -7,7 +7,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Commands;
-
+using RTSEngine.Core.Players;
 namespace RTSEngine.Tests.Gathering;
 
 public class GatheringSystemTests
@@ -229,5 +229,93 @@ public class GatheringSystemTests
         Assert.Equal(
             GatherPhase.None,
             unit.Gather.Phase);
+    }
+  
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.Loop")]
+    public void GatherLoop_ShouldCollectAndDepositResources()
+    {
+        // Arrange
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        Player? player = world.GetPlayerById(1);
+        var villager = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(1, 1));
+
+        world.AddEntity(villager);
+
+        var tree = new Tree(new GridPosition(5, 1));
+        world.AddResource(tree);
+        int initialAmount = tree.Amount;
+        var townCenter = BuildingFactory.Create(
+        TestDefinitionFactory.CreateTownCenter(),
+        ownerId: 1,
+        position: new GridPosition(1, 5));
+
+
+        world.AddEntity(townCenter);
+        var command = new GatherCommand
+        {
+            UnitIds = [villager.Id],
+            ResourceId = tree.Id
+        };
+
+        world.AddCommand(command);
+        //1 STEP SEND TO GATHER
+        SimulationTestHelper.RunTicks(world,1);
+    
+        //SimulationTestHelper.RunTicks(world, 1);
+        // Assert.Equal(
+        //     new GridPosition(5, 5),
+        //     villager.Movement.TargetPosition);
+        Assert.Equal(UnitTask.Gathering,villager.CurrentTask);        
+        Assert.Equal(tree.Id,villager.Gather.TargetResourceId);
+        Assert.Equal(GatherPhase.MovingToResource,villager.Gather.Phase);
+        Assert.NotEmpty(villager.Movement.PathQueue);
+        Assert.Equal(0,villager.Gather.CurrentLoad);
+        Assert.Equal(ResourceType.Wood,villager.Gather.CarriedResource);
+        
+        //2 STEP GATHER
+        SimulationTestHelper.RunTicks(world, 4);
+        Assert.Equal(UnitTask.Gathering,villager.CurrentTask);
+        Assert.Equal(GatherPhase.Gathering,villager.Gather.Phase);
+        Assert.Equal(tree.Id,villager.Gather.TargetResourceId);
+        Assert.Equal(1,villager.Gather.CurrentLoad);
+
+        //3 STEP MOVE TO DEPOSIT
+        SimulationTestHelper.RunTicks(world, 19);
+        Assert.Equal(20, villager.Gather.CurrentLoad);
+        Assert.Null(villager.Gather.DepositPosition);
+        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(GatherPhase.MovingToDeposit, villager.Gather.Phase);
+
+      
+        //4 STEP DEPOSIT
+        SimulationTestHelper.RunTicks(world, 1);
+        Assert.Equal(20, villager.Gather.CurrentLoad);
+        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(GatherPhase.Depositing, villager.Gather.Phase);
+        Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
+
+        //5 STEP MOVING TO RESOURCE AGAIN
+        SimulationTestHelper.RunTicks(world, 1);
+        Assert.Equal(0, villager.Gather.CurrentLoad);
+        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
+        Assert.Equal(20, player.Wood);
+        Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
+        Assert.True(tree.Amount < initialAmount);
+                // Assert
+        // Assert.True(player.Wood > 0);
+
+        // Assert.True(tree.Amount < initialAmount);
+        // Assert.Equal(
+        //     new GridPosition(5, 5),
+        //     villager.Movement.TargetPosition);
+        //Assert.NotEmpty(villager.Movement.PathQueue);
     }
 }

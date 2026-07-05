@@ -1,4 +1,5 @@
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.Tests.TestHelpers;
 
@@ -27,5 +28,18 @@ public static class TestDefinitionFactory
             MaxHealth = 70,
             MovementSpeed = movementSpeed,    
         };
+    }
+
+    public static BuildingDefinition CreateTownCenter()
+    {
+        return new BuildingDefinition
+        {
+            Id = "militia",
+            Name = "Militia",
+            AcceptedResources = [
+                ResourceType.Wood,
+            ]  
+        };
+
     }
 }

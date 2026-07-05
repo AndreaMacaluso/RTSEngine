@@ -1,9 +1,6 @@
 namespace RTSEngine.Core.Map.Loading;
 
-using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
-using RTSEngine.Core.Simulation;
-using RTSEngine.Core.Map.Runtime;
 public class WorldBuilder
 {
     public static GameWorld Build(Definitions.MapData data)

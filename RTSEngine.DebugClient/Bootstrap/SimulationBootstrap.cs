@@ -27,7 +27,7 @@ public static class SimulationBootstrap
         var buildingsPath = Path.Combine(
             baseDirectory,
             "Data",
-            "Units",
+            "Buildings",
             "buildings.json");
 
         var world = LoadWorld(mapPath);

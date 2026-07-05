@@ -3,6 +3,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Helpers;
 
 namespace RTSEngine.Core.Systems;
 
@@ -52,9 +53,10 @@ public static class CommandSystem
                 continue;
             }
 
-            var target = PathSystem.FindAdjacentWalkableTile(
-                world,
-                resource.Position);
+            var target = WorldQueries.FindClosestAdjacentWalkableTile(
+                    world,
+                    unit.Position,
+                    resource.Position);
 
             if (target == null)
             {
@@ -66,6 +68,7 @@ public static class CommandSystem
             unit.CurrentTask = UnitTask.Gathering;
             unit.Gather.TargetResourceId = command.ResourceId;
             unit.Gather.Phase = GatherPhase.MovingToResource;
+            unit.Gather.CarriedResource = resource.ResourceType;
             AssignMoveTarget(unit, target.Value, world);
         }
     }

@@ -10,7 +10,12 @@ public class BuildingDefinitionLoader
     {
         var json = File.ReadAllText(path);
 
-        return JsonSerializer.Deserialize<List<BuildingDefinition>>(json)
+        var options = new JsonSerializerOptions
+        {
+            PropertyNameCaseInsensitive = true
+        };
+
+        return JsonSerializer.Deserialize<List<BuildingDefinition>>(json, options)
             ?? [];
     }
 }

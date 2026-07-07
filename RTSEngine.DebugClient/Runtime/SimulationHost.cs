@@ -1,6 +1,7 @@
 using RTSEngine.Core.Simulation;
 using RTSEngine.Core.State;
 using RTSEngine.DebugClient.Renders;
+using RTSEngine.Core.Diagnostics;
 
 namespace RTSEngine.DebugClient.Runtime;
 
@@ -24,7 +25,6 @@ public static class SimulationHost
             simulation.Tick();
 
             RenderFrame(world);
-
             Thread.Sleep(FrameDelayMs);
         }
     }
@@ -43,10 +43,12 @@ public static class SimulationHost
         switch (key.Key)
         {
             case ConsoleKey.Spacebar:
+                DebugSession.Log.Info("input.Spacebar.Pause");
                 TogglePause(world);
                 return true;
 
             case ConsoleKey.N:
+                DebugSession.Log.Info("input.N.Advance");
                 if (world.State == WorldState.Paused)
                 {
                     simulation.Step();
@@ -54,6 +56,7 @@ public static class SimulationHost
                 return true;
 
             case ConsoleKey.Escape:
+                DebugSession.Log.Info("input.Escape.Stop");
                 return false;
 
             default:

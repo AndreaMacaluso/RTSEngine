@@ -2,6 +2,9 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
@@ -38,13 +41,67 @@ public static class GatherSystem
                     HandleDepositing(world, unit);
                     break;
             }
+
+            DebugSession.Log.Info(
+            "Gather state",
+            [
+                ("Key", "GatherSystem_48"),
+                ("Tick", world.CurrentTick),
+                ("UnitId", unit.Id),
+                ("Task", unit.CurrentTask),
+                ("Phase", unit.Gather.Phase),
+                ("Load", $"{unit.Gather.CurrentLoad}/{unit.Gather.Capacity}"),
+                ("TargetResource", unit.Gather.TargetResourceId),
+                ("CarriedResource", unit.Gather.CarriedResource),
+                ("Deposit", unit.Gather.DepositPosition),
+                ("PathNodes", unit.Movement.PathQueue.Count),
+                ("Position", unit.Position),
+                ("Destination", unit.Movement.TargetPosition)
+            ]);
         }
     }
 
     //@toDo find a better place for this helper
-    private static bool HasReachedDestination(Unit unit)
+    private static bool HasReachedDestination(
+    GameWorld world,
+    Unit unit)
     {
-        return unit.Movement.PathQueue.Count == 0;
+        switch (unit.Gather.Phase)
+        {
+            case GatherPhase.MovingToResource:
+            {
+                if (unit.Gather.TargetResourceId is not int resourceId)
+                {
+                    return false;
+                }
+
+                var resource = world.GetResourceById(resourceId);
+
+                if (resource == null)
+                {
+                    return false;
+                }
+
+                return WorldQueries.IsAdjacent(
+                    unit.Position,
+                    resource.Position);
+            }
+
+            case GatherPhase.MovingToDeposit:
+            {
+                if (unit.Gather.DepositPosition is not GridPosition deposit)
+                {
+                    return false;
+                }
+
+                return WorldQueries.IsAdjacent(
+                    unit.Position,
+                    deposit);
+            }
+
+            default:
+                return false;
+        }
     }
     private static void HandleMovingToResource(
     GameWorld world,
@@ -55,7 +112,7 @@ public static class GatherSystem
             GatherActions.StopGathering(unit);
             return;
         }
-        if (!HasReachedDestination(unit))
+        if (!HasReachedDestination(world,unit))
         {
             return;
         }
@@ -81,15 +138,17 @@ public static class GatherSystem
 
         unit.Gather.Phase = GatherPhase.MovingToDeposit;
 
-        GatherActions.BeginMoveToDeposit(
-            world,
-            unit);
+        
+        if (!GatherActions.BeginMoveToDeposit(world, unit))
+        {
+            GatherActions.StopGathering(unit);
+        }
     }
     private static void HandleMovingToDeposit(
     GameWorld world,
     Unit unit)
-    {
-        if (!HasReachedDestination(unit))
+    {   
+        if (!HasReachedDestination(world,unit))
         {
             return;
         }
@@ -116,6 +175,7 @@ public static class GatherSystem
         else
         {
             GatherActions.StopGathering(unit);
+            unit.Gather.Clear();
         }
     }
         

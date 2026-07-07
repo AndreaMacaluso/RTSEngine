@@ -6,6 +6,7 @@ using RTSEngine.Core.Map.Definitions;
 using RTSEngine.Core.Map.Rules;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Diagnostics;
 namespace RTSEngine.Core.State;
 
 public class GameWorld
@@ -36,8 +37,9 @@ public class GameWorld
         CurrentTick = 0;
     }
     public void AdvanceTick()
-    {
+    {   
         CurrentTick++;
+        DebugSession.Log.Info($"CurrentTick: {CurrentTick}");
     }
 
     public Entity? GetEntityAt(int x, int y)

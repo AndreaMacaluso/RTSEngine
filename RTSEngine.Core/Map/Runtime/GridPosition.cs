@@ -42,4 +42,10 @@ public struct GridPosition : IEquatable<GridPosition>
     {
         return !left.Equals(right);
     }
+
+    public override string ToString()
+    {
+        return $"({X}, {Y})";
+    }
+    
 }

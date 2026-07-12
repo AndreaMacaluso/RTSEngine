@@ -2,6 +2,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Helpers;
 
 namespace RTSEngine.Core.Systems;
 
@@ -41,11 +42,7 @@ public static class GatherSystem
         }
     }
 
-    //@toDo find a better place for this helper
-    private static bool HasReachedDestination(Unit unit)
-    {
-        return unit.Movement.PathQueue.Count == 0;
-    }
+   
     private static void HandleMovingToResource(
     GameWorld world,
     Unit unit)
@@ -55,7 +52,7 @@ public static class GatherSystem
             GatherActions.StopGathering(unit);
             return;
         }
-        if (!HasReachedDestination(unit))
+        if (!WorldQueries.HasReachedDestination(unit))
         {
             return;
         }
@@ -89,7 +86,7 @@ public static class GatherSystem
     GameWorld world,
     Unit unit)
     {
-        if (!HasReachedDestination(unit))
+        if (!WorldQueries.HasReachedDestination(unit))
         {
             return;
         }
@@ -118,6 +115,4 @@ public static class GatherSystem
             GatherActions.StopGathering(unit);
         }
     }
-        
-
 }

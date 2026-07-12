@@ -16,6 +16,10 @@ public static class TestDefinitionFactory
             MaxHealth = 50,
             MovementSpeed = movementSpeed,
             GatherCapacity = gatherCapacity,
+            BuildableBuildings = [
+                "towncenter",
+                "house"
+                ]
         };
     }
      public static UnitDefinition CreateMilitia(
@@ -34,11 +38,21 @@ public static class TestDefinitionFactory
     {
         return new BuildingDefinition
         {
-            Id = "militia",
-            Name = "Militia",
+            Id = "towncenter",
+            Name = "towncenter",
             AcceptedResources = [
                 ResourceType.Wood,
             ]  
+        };
+
+    }
+        public static BuildingDefinition CreateHouse()
+    {
+        return new BuildingDefinition
+        {
+            Id = "house",
+            Name = "House",
+            BuildTimeTicks = 10
         };
 
     }

@@ -8,6 +8,12 @@ public sealed class Building : Entity
 
     public BuildingDefinition Definition { get; }
 
+    public int CurrentHealth { get; set; }
+
+    public int ConstructionProgress { get; set; }
+
+    public bool IsCompleted { get; set; }
+
     public override bool IsBlocking => true;
 
         public Building(

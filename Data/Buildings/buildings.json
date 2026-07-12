@@ -8,6 +8,7 @@
     "costs":{
       "wood": 150
     },
+    "buildTimeTicks": 100,
     "produces":
     [
         "villager"
@@ -19,6 +20,7 @@
         "Gold",
         "Stone"
     ]
+   
   },
   {
     "id": "house",
@@ -28,7 +30,8 @@
     "height": 2,
     "costs":{
       "wood": 50
-    }
+    },
+    "buildTimeTicks": 10
   },
   {
     "id": "lumbercamp",
@@ -42,7 +45,8 @@
     "acceptedResources":
     [
         "Wood"
-    ]
+    ],
+    "buildTimeTicks": 10
   },
   {
     "id": "minecamp",
@@ -57,7 +61,8 @@
     [
         "Gold",
         "Stone"
-    ]
+    ],
+    "buildTimeTicks": 10
   },
   {
     "id": "mill",
@@ -71,7 +76,8 @@
     "acceptedResources":
     [
         "Food"
-    ]
+    ],
+    "buildTimeTicks": 10
   },
   {
     "id": "barracks",
@@ -85,6 +91,7 @@
     "produces":
     [
         "militia"
-    ]
+    ],
+    "buildTimeTicks": 15
 }
 ]

@@ -26,6 +26,7 @@ public class SimulationRunner
         CommandSystem.Update(_world);
         MovementSystem.Update(_world);
         GatherSystem.Update(_world);
+        ConstructionSystem.Update(_world);
 
         _world.AdvanceTick();
     }

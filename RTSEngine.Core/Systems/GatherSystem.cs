@@ -178,6 +178,4 @@ public static class GatherSystem
             unit.Gather.Clear();
         }
     }
-        
-
 }

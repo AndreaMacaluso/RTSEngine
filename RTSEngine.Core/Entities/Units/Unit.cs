@@ -10,6 +10,7 @@ public class Unit : Entity
     public UnitDefinition Definition { get;}
     public MovementState Movement { get; }
     public GatherState Gather { get; }
+    public BuildState Build { get; }
     public UnitTask CurrentTask { get; set; } = UnitTask.Idle;
     public override bool IsBlocking => true; 
 
@@ -24,6 +25,7 @@ public class Unit : Entity
             Position = position;
             Movement = new MovementState(definition);
             Gather = new GatherState(definition);
+            Build = new BuildState();
         }
 }
 

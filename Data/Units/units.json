@@ -7,7 +7,11 @@
     "costs":{
       "food": 50
     },
-    "gatherCapacity": 20
+    "gatherCapacity": 20,
+    "buildableBuildings":[
+      "towncenter",
+      "house"
+    ]
   },
   {
     "id": "militia",

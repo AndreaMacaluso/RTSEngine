@@ -3,6 +3,7 @@ using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Entities.Units;
 
 namespace RTSEngine.Core.Helpers;
 
@@ -138,5 +139,10 @@ public static class WorldQueries
         int dy = a.Y - b.Y;
 
         return dx * dx + dy * dy;
+    }
+
+    public static bool HasReachedDestination(Unit unit)
+    {
+        return unit.Movement.PathQueue.Count == 0;
     }
 }

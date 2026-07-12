@@ -11,7 +11,7 @@ namespace RTSEngine.DebugClient.Scenarios;
 public static class ScenarioBuilder
 {
     // for the time being this will help with testing but the concept of scenario 
-    // will be separete  form the spawn + comand
+    // will be separete  form the spawn + command
     public static void CreateMovementScenario(
         SimulationContext context)
     {

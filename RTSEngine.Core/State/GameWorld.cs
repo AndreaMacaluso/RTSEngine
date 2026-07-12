@@ -6,6 +6,7 @@ using RTSEngine.Core.Map.Definitions;
 using RTSEngine.Core.Map.Rules;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.Buildings;
 namespace RTSEngine.Core.State;
 
 public class GameWorld
@@ -123,14 +124,6 @@ public class GameWorld
     {
         return Resources.FirstOrDefault(r => r.Id == id);
     }
-
-    public Unit? GetUnitById(int id)
-    {
-        return Entities
-            .OfType<Unit>()
-            .FirstOrDefault(u => u.Id == id);
-    }
-
     public Player? GetPlayerById(int id)
     {
         return Players.FirstOrDefault(p => p.Id == id);
@@ -138,6 +131,19 @@ public class GameWorld
     public Entity? GetEntityById(int id)
     {
         return Entities.FirstOrDefault(e => e.Id == id);
+    }
+    public Building? GetBuildingById(int id)
+    {
+        return GetEntityById(id) as Building;
+    }
+     public Unit? GetUnitById(int id)
+    {
+        return GetEntityById(id) as Unit;
+    }
+
+    public IEnumerable<Building> GetBuildings()
+    {
+        return Entities.OfType<Building>();
     }
 
 }

@@ -194,9 +194,8 @@ public class GatherActionsTests
         GatherActions.StopGathering(unit);
 
         Assert.Equal(UnitTask.Idle, unit.CurrentTask);
-        Assert.Equal(0, unit.Gather.CurrentLoad);
+        Assert.Equal(10, unit.Gather.CurrentLoad);//Stop gathering does not reset the load
         Assert.Null(unit.Gather.TargetResourceId);
-        Assert.Null(unit.Gather.CarriedResource);
         Assert.Equal(GatherPhase.None, unit.Gather.Phase);
     }
 }

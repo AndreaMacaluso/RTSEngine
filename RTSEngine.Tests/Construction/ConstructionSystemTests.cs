@@ -22,7 +22,14 @@ public class ConstructionSystemTests
                 new GridPosition(1, 1));
 
         world.AddEntity(unit);
+        var building  = BuildingFactory.Create(
+        TestDefinitionFactory.CreateHouse(),
+        ownerId: 1,
+        position: new GridPosition(1, 2));
 
+        world.AddEntity(building);
+
+        unit.Build.BuildingId = building.Id;
 
         unit.Build.Phase =
             BuildPhase.MovingToConstruction;
@@ -97,21 +104,18 @@ public class ConstructionSystemTests
         });
 
         SimulationTestHelper.RunTicks(world, 50);
-
+        Assert.Equal(
+            UnitTask.Idle,
+            villager.CurrentTask);
+        
+        Assert.Equal(
+            BuildPhase.None,
+            villager.Build.Phase);
+        Assert.Null(villager.Build.BuildingId);
         Assert.True(building.IsCompleted);
 
         Assert.Equal(
             building.Definition.MaxHealth,
             building.CurrentHealth);
-
-        Assert.Equal(
-            UnitTask.Idle,
-            villager.CurrentTask);
-
-        Assert.Equal(
-            BuildPhase.None,
-            villager.Build.Phase);
-
-        Assert.Null(villager.Build.BuildingId);
     }
 }

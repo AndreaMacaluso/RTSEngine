@@ -76,17 +76,25 @@ public class GatheringSystemTests
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(5, 5));
+       
         var tree = new Tree(new GridPosition(6, 5));
-
+     
+      
         world.AddResource(tree);
-        
+        var townCenter = BuildingFactory.Create(
+        TestDefinitionFactory.CreateTownCenter(),
+        ownerId: 1,
+        position: new GridPosition(1, 1));
+        world.AddEntity(townCenter);
         unit.Gather.TargetResourceId = tree.Id;
         unit.Gather.Phase = GatherPhase.Gathering;
         unit.Gather.CurrentLoad = unit.Gather.Capacity - 1;
-        unit.Gather.DepositPosition = new GridPosition(7, 7);
+        unit.Gather.CarriedResource = ResourceType.Wood;
+
         world.AddEntity(unit);
         GatherSystem.Update(world);
-
+        Assert.Equal(20,unit.Gather.Capacity);
+        Assert.NotNull(unit.Gather.DepositPosition);
         Assert.Equal(
             GatherPhase.MovingToDeposit,
             unit.Gather.Phase);
@@ -94,6 +102,36 @@ public class GatheringSystemTests
         Assert.Contains(
         world.PendingCommands,
         c => c is MoveCommand);
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    public void Update_ShouldSwitchToIdleIfDepositIsNotFound()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(5, 5));
+        var tree = new Tree(new GridPosition(6, 5));
+
+        world.AddResource(tree);
+        
+        unit.Gather.TargetResourceId = tree.Id;
+        unit.Gather.Phase = GatherPhase.Gathering;
+        unit.Gather.CurrentLoad = unit.Gather.Capacity - 1;
+        unit.Gather.CarriedResource = ResourceType.Wood;
+        world.AddEntity(unit);
+        GatherSystem.Update(world);
+
+        Assert.Equal(
+            GatherPhase.None,
+            unit.Gather.Phase);
+         Assert.Equal(
+            UnitTask.Idle,
+            unit.CurrentTask);
     }
 
     [Fact]
@@ -111,6 +149,10 @@ public class GatheringSystemTests
         world.AddEntity(unit);
 
         unit.Gather.Phase = GatherPhase.MovingToDeposit;
+
+        unit.Gather.DepositPosition =   new GridPosition(5, 6);
+
+
 
         GatherSystem.Update(world);
 
@@ -289,13 +331,13 @@ public class GatheringSystemTests
         //3 STEP MOVE TO DEPOSIT
         SimulationTestHelper.RunTicks(world, 19);
         Assert.Equal(20, villager.Gather.CurrentLoad);
-        Assert.Null(villager.Gather.DepositPosition);
+        Assert.NotNull(villager.Gather.DepositPosition);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToDeposit, villager.Gather.Phase);
 
       
         //4 STEP DEPOSIT
-        SimulationTestHelper.RunTicks(world, 1);
+        SimulationTestHelper.RunTicks(world, 4);
         Assert.Equal(20, villager.Gather.CurrentLoad);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Depositing, villager.Gather.Phase);

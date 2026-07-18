@@ -31,7 +31,6 @@ RTSEngine.Tests -> unit and integration tests
 - Test-driven development
 - Data-oriented world state
 
-
 ## Roadmap
 
 # Phase 1 — Core Simulation
@@ -77,7 +76,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Basic entity runtime
 - [x] Runtime movement state
 - [x] Movement progress accumulation
-- [ ] Fixed deterministic tick pipeline
+- [x] Fixed deterministic tick pipeline
 - [x] Entity movement system
 - [x] Multi-step movement pipeline
 - [x] Command queue system
@@ -116,7 +115,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Extended render mode
 - [x] UTF-8 symbol rendering
 - [x] Runtime unit rendering
-- [ ] Runtime debug controls
+- [x] Runtime debug controls
 - [x] Tick pause system
 - [ ] Debug overlays
 
@@ -154,14 +153,18 @@ Build a deterministic, renderer-independent RTS simulation core.
 ## Gameplay Loops
 
 ### Economy Loop
-- [ ] Gather command
-- [ ] Resource targeting loop
-- [ ] Unit gather runtime state
-- [ ] Gather execution system
-- [ ] Carry capacity loop
-- [ ] Deposit / drop-off loop
+
+- [x] Gather command
+- [x] Resource targeting loop
+- [x] Unit gather runtime state
+- [x] Gather execution system
+- [x] Carry capacity loop
+- [x] Deposit / drop-off loop
+- [x] Gather state machine
 - [ ] Resource depletion loop
 - [ ] End-to-end villager gather cycle
+- [ ] Gather interruption handling
+- [ ] Dynamic deposit selection
 
 ### Production Loop
 - [ ] Building production queue
@@ -170,6 +173,23 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Resource payment on production
 - [ ] Unit spawn from building
 - [ ] End-to-end production cycle
+
+## Runtime Gameplay Loop
+
+- [x] Runtime building entities
+- [x] Town Center initialization
+- [x] Villager spawn
+- [x] Initial economy setup
+- [ ] Full gather loop demonstration
+
+## World Queries
+
+- [x] Adjacent tile queries
+- [x] Adjacent walkable tile search
+- [x] Closest adjacent walkable tile
+- [x] Closest resource search
+- [x] Nearby resources search
+- [x] Closest deposit search
 
 ---
 
@@ -202,6 +222,9 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Tick determinism tests
 - [ ] Resource runtime tests
 - [x] Pathfinding tests
+- [x] Gather command tests
+- [x] Gather actions tests
+- [x] Gather system tests
 
 ## Debug Client
 
@@ -229,6 +252,9 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 ## Buildings
 
+- [x] Runtime building entities
+- [x] Town Center
+- [x] Building factory
 - [ ] Building placement
 - [ ] Construction system
 - [ ] Multi-tile structures

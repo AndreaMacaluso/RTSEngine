@@ -60,49 +60,6 @@ public static class GatherSystem
             ]);
         }
     }
-
-    //@toDo find a better place for this helper
-    private static bool HasReachedDestination(
-    GameWorld world,
-    Unit unit)
-    {
-        switch (unit.Gather.Phase)
-        {
-            case GatherPhase.MovingToResource:
-            {
-                if (unit.Gather.TargetResourceId is not int resourceId)
-                {
-                    return false;
-                }
-
-                var resource = world.GetResourceById(resourceId);
-
-                if (resource == null)
-                {
-                    return false;
-                }
-
-                return WorldQueries.IsAdjacent(
-                    unit.Position,
-                    resource.Position);
-            }
-
-            case GatherPhase.MovingToDeposit:
-            {
-                if (unit.Gather.DepositPosition is not GridPosition deposit)
-                {
-                    return false;
-                }
-
-                return WorldQueries.IsAdjacent(
-                    unit.Position,
-                    deposit);
-            }
-
-            default:
-                return false;
-        }
-    }
     private static void HandleMovingToResource(
     GameWorld world,
     Unit unit)
@@ -112,7 +69,21 @@ public static class GatherSystem
             GatherActions.StopGathering(unit);
             return;
         }
-        if (!HasReachedDestination(world,unit))
+
+        if (unit.Gather.TargetResourceId is not int resourceId)
+        {
+            return;
+        }
+
+        var resource = world.GetResourceById(resourceId);
+
+        if (resource == null)
+        {
+            GatherActions.StopGathering(unit);
+            return;
+        }
+
+        if (!WorldQueries.HasReachedDestination(unit, resource.Position))
         {
             return;
         }
@@ -148,7 +119,12 @@ public static class GatherSystem
     GameWorld world,
     Unit unit)
     {   
-        if (!HasReachedDestination(world,unit))
+        if (unit.Gather.DepositPosition is not GridPosition destination)
+        {
+            return;
+        }
+
+        if (!WorldQueries.HasReachedDestination(unit, destination))
         {
             return;
         }

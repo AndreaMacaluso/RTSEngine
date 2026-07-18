@@ -7,8 +7,8 @@ public class BuildState
     public int? BuildingId { get; set; }
 
     public BuildPhase Phase { get; set; }
-
-    public GridPosition? BuildPosition { get; set; }
+    //@ToDo redondance take it from Building id
+    public GridPosition? BuildPosition { get; set; } 
 
     public bool IsBuilding => Phase != BuildPhase.None;
 

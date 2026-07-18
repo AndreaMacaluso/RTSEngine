@@ -3,6 +3,7 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
@@ -40,12 +41,17 @@ public class ConstructionSystem
     GameWorld world,
     Unit unit)
     {   
-        if (!WorldQueries.HasReachedDestination(unit))
-        {
-            return;
-        }
+        if (unit.Build.BuildPosition is not GridPosition destination)
+            {
+                return;
+            }
 
-        unit.Build.Phase = BuildPhase.Constructing;
+        if (!WorldQueries.HasReachedDestination(unit, destination))
+            {
+                return;
+            }
+
+            unit.Build.Phase = BuildPhase.Constructing;
     }
 
     private static void HandleConstructing(

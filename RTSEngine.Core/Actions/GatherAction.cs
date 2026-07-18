@@ -7,62 +7,88 @@ using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Diagnostics;
 
 namespace RTSEngine.Core.Actions;
 
 public static class GatherActions
 {
     public static void BeginMoveToResource(
+        GameWorld world,
+        Unit unit)
+    {
+        var resource = GetTargetResource(world, unit);
+
+        if (resource == null)
+        {
+            return;
+        }
+
+        unit.Gather.DepositPosition = null;
+
+        GridPosition? target =
+            WorldQueries.FindClosestAdjacentWalkableTile(
+                world,
+                unit.Position,
+                resource.Position);
+
+        if (target is not GridPosition destination)
+        {
+            return;
+        }
+
+        QueueMoveCommand(
+            world,
+            [unit.Id],
+            destination);
+    }
+
+    public static bool BeginMoveToDeposit(
     GameWorld world,
     Unit unit)
     {
 
-        var resource = GetTargetResource(world,unit);
-
-        if (resource == null)
+        DebugSession.Log.Info(
+        "BeginMoveToDeposit",
+        [
+            ("Unit", unit.Id),
+            ("CurrentPosition", unit.Position),
+            ("CarriedResource", unit.Gather.CarriedResource)
+        ]);
+        if (unit.Gather.CarriedResource is not ResourceType resourceType)
         {
-            return;
+            return false;
         }
 
-        GridPosition? target =
-            WorldQueries.FindClosestAdjacentWalkableTile(
-                    world,
-                    unit.Position,
-                    resource.Position);
-        if (target is not GridPosition destination)
+        var deposit = WorldQueries.FindClosestDeposit(
+            world,
+            unit.Position,
+            resourceType);
+        DebugSession.Log.Info(
+        "Deposit found",
+        [
+            ("Deposit", deposit?.Position),
+            ("UnitPosition", unit.Position)
+        ]);
+        if (deposit == null)
         {
-            return;
-        }
-        QueueMoveCommand(world,[unit.Id],destination);
-    }
-
-    public static void BeginMoveToDeposit(
-    GameWorld world,
-    Unit unit)
-    {  
-        if (unit.Gather.DepositPosition is not GridPosition deposit)
-        {
-            return;
-        }
-        var resource = GetTargetResource(world,unit);
-
-        if (resource == null)
-        {
-            return;
+            return false;
         }
 
-        GridPosition? target =
-            WorldQueries.FindClosestAdjacentWalkableTile(
-                    world,
-                    unit.Position,
-                    resource.Position);
+        unit.Gather.DepositPosition = deposit.Position;
+
+        var target = WorldQueries.FindClosestAdjacentWalkableTile(
+            world,
+            unit.Position,
+            deposit.Position);
 
         if (target is not GridPosition destination)
         {
-            return;
+            return false;
         }
-        QueueMoveCommand(world,[unit.Id],destination);
-               
+
+        QueueMoveCommand(world, [unit.Id], destination);
+        return true;
     }
 
     public static bool GatherOneTick(
@@ -77,10 +103,15 @@ public static class GatherActions
         if (resource.IsDepleted)
             return true;
 
+        //start gather
+        if (unit.Gather.IsEmpty)
+        {
+            unit.Gather.CarriedResource = resource.ResourceType;
+        }
+
         const int amount = 1;
 
-        int collected =
-            unit.Gather.AddLoad(amount);
+        int collected = unit.Gather.AddLoad(amount);
         resource.Gather(collected);
 
         return unit.Gather.IsFull;
@@ -115,13 +146,10 @@ public static class GatherActions
             && !resource.IsDepleted;
     }
 
-    public static void StopGathering(
-    Unit unit)
+   public static void StopGathering(Unit unit)
     {
         unit.Gather.TargetResourceId = null;
         unit.Gather.DepositPosition = null;
-        unit.Gather.CarriedResource = null;
-        unit.Gather.Clear();
         unit.Gather.Phase = GatherPhase.None;
 
         unit.CurrentTask = UnitTask.Idle;
@@ -131,7 +159,7 @@ public static class GatherActions
     GameWorld world,
     List<int> UnitIds,
     GridPosition destination)
-    {
+    {  
         world.AddCommand(new MoveCommand
         {
             UnitIds = UnitIds,

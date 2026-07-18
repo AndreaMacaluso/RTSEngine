@@ -141,8 +141,14 @@ public static class WorldQueries
         return dx * dx + dy * dy;
     }
 
-    public static bool HasReachedDestination(Unit unit)
+    public static bool HasReachedDestination(
+    Unit unit,
+    GridPosition destination)
     {
-        return unit.Movement.PathQueue.Count == 0;
+        return
+            unit.Movement.PathQueue.Count == 0 &&
+            WorldQueries.IsAdjacent(
+                unit.Position,
+                destination);
     }
 }

@@ -1,7 +1,7 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Helpers;
 
 namespace RTSEngine.Core.Systems;
 
@@ -49,28 +49,12 @@ public static class MovementSystem
             
         }
     }
-
-    private static bool IsAdjacent(
-        GridPosition current,
-        GridPosition target)
-    {
-        var dx = Math.Abs(current.X - target.X);
-
-        var dy = Math.Abs(current.Y - target.Y);
-
-        if (dx == 0 && dy == 0)
-        {
-            return false;
-        }
-
-        return dx <= 1 && dy <= 1;
-    }
     private static void TryMove(
     GameWorld world,
     Unit unit,
     GridPosition target)
     {
-        if (!IsAdjacent(unit.Position, target))
+        if (!WorldQueries.IsAdjacent(unit.Position,target))
         {
             return;
         }

@@ -13,15 +13,15 @@ namespace RTSEngine.Core.Actions;
 
 public static class GatherActions
 {
-    public static void BeginMoveToResource(
-        GameWorld world,
-        Unit unit)
+    public static bool BeginMoveToResource(
+    GameWorld world,
+    Unit unit)
     {
         var resource = GetTargetResource(world, unit);
 
         if (resource == null)
         {
-            return;
+            return false;
         }
 
         unit.Gather.DepositPosition = null;
@@ -34,13 +34,15 @@ public static class GatherActions
 
         if (target is not GridPosition destination)
         {
-            return;
+            return false;
         }
 
         QueueMoveCommand(
             world,
             [unit.Id],
             destination);
+
+        return true;
     }
 
     public static bool BeginMoveToDeposit(
@@ -62,6 +64,7 @@ public static class GatherActions
 
         var deposit = WorldQueries.FindClosestDeposit(
             world,
+            unit.OwnerId,
             unit.Position,
             resourceType);
         DebugSession.Log.Info(
@@ -91,18 +94,21 @@ public static class GatherActions
         return true;
     }
 
-    public static bool GatherOneTick(
+    public static GatherResult GatherOneTick(
     GameWorld world,
     Unit unit)
     {
         var resource = GetTargetResource(world,unit);
 
         if (resource == null)
-            return true;
+        {
+            return GatherResult.InvalidTarget;
+        }
 
         if (resource.IsDepleted)
-            return true;
-
+        {
+            return GatherResult.ResourceDepleted;
+        }
         //start gather
         if (unit.Gather.IsEmpty)
         {
@@ -114,7 +120,16 @@ public static class GatherActions
         int collected = unit.Gather.AddLoad(amount);
         resource.Gather(collected);
 
-        return unit.Gather.IsFull;
+        if (unit.Gather.IsFull)
+        {
+            return GatherResult.InventoryFull;
+        }
+
+        if (resource.IsDepleted)
+        {
+            return GatherResult.ResourceDepleted;
+        }
+        return GatherResult.ContinueGathering;
     }
 
     public static void DepositInventory(
@@ -140,10 +155,58 @@ public static class GatherActions
         GameWorld world,
         Unit unit)
     {
-        var resource = GetTargetResource(world,unit);
+        var resource = GetTargetResource(world, unit);
 
-        return resource != null
-            && !resource.IsDepleted;
+        if (resource != null && !resource.IsDepleted)
+        {
+            return true;
+        }
+
+        if (unit.Gather.CarriedResource is not ResourceType resourceType)
+        {
+            return false;
+        }
+
+        var deposit = WorldQueries.FindClosestDeposit(
+            world,
+            unit.OwnerId,
+            unit.Position,
+            resourceType);
+
+        if (deposit == null)
+        {
+            return false;
+        }
+
+        var nextResource = WorldQueries.FindClosestResource(
+            world,
+            unit.Position,
+            resourceType);
+
+        if (nextResource == null)
+        {
+            return false;
+        }
+
+        var target = WorldQueries.FindClosestAdjacentWalkableTile(
+                    world,
+                    unit.Position,
+                    nextResource.Position);
+        
+        if (target == null)
+        {
+            return false;
+        }
+
+
+        unit.Gather.TargetResourceId = nextResource.Id;
+
+        unit.CurrentTask = UnitTask.Gathering;
+        unit.Gather.Phase = GatherPhase.MovingToResource;
+        unit.Gather.CarriedResource = resourceType;
+        CommandSystem.AssignMoveTarget(unit, target.Value, world);
+
+        return true;
     }
 
    public static void StopGathering(Unit unit)

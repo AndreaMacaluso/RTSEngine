@@ -137,6 +137,7 @@ public class WorldQueriesTests
 
         var result = WorldQueries.FindClosestDeposit(
             world,
+            1,
             new GridPosition(8, 8),
             ResourceType.Wood);
 

@@ -94,31 +94,55 @@ public static class GatherSystem
     GameWorld world,
     Unit unit)
     {
-        // TODO:
-        // GatherOneTick currently returns true only when the inventory
-        // becomes full. In the future this should return a richer result
-        // (enum GatherResult) to distinguish:
-        // - InventoryFull
-        // - ResourceDepleted
-        // - CannotGather
-        // - ContinueGathering
-        if (!GatherActions.GatherOneTick(world, unit))
+        switch (GatherActions.GatherOneTick(world, unit))
         {
-            return;
-        }
+            case GatherResult.ContinueGathering:
+                return;
 
-        unit.Gather.Phase = GatherPhase.MovingToDeposit;
+            case GatherResult.InventoryFull:
 
-        
-        if (!GatherActions.BeginMoveToDeposit(world, unit))
-        {
-            GatherActions.StopGathering(unit);
+                unit.Gather.Phase = GatherPhase.MovingToDeposit;
+
+                if (!GatherActions.BeginMoveToDeposit(world, unit))
+                {
+                    GatherActions.StopGathering(unit);
+                }
+
+                return;
+
+            case GatherResult.ResourceDepleted:
+
+                unit.Gather.Phase = GatherPhase.MovingToDeposit;
+
+                if (!GatherActions.BeginMoveToDeposit(world, unit))
+                {
+                    GatherActions.StopGathering(unit);
+                }
+
+                return;
+
+            case GatherResult.InvalidTarget:
+
+                GatherActions.StopGathering(unit);
+
+                return;
         }
     }
     private static void HandleMovingToDeposit(
     GameWorld world,
     Unit unit)
     {   
+        if (unit.Movement.NeedsRepath)
+        {
+            unit.Movement.NeedsRepath = false;
+
+            if (!GatherActions.BeginMoveToDeposit(world, unit))
+            {
+                GatherActions.StopGathering(unit);
+            }
+
+            return;
+        }
         if (unit.Gather.DepositPosition is not GridPosition destination)
         {
             return;

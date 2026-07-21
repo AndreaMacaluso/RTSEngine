@@ -114,13 +114,11 @@ public class GatherActionsTests
 
         unit.Gather.TargetResourceId = tree.Id;
 
-        unit.Gather.CurrentLoad =
-            unit.Gather.Capacity - 1;
+        unit.Gather.CurrentLoad = unit.Gather.Capacity - 1;
 
-        bool full =
-            GatherActions.GatherOneTick(world, unit);
+        GatherResult result = GatherActions.GatherOneTick(world, unit);
 
-        Assert.True(full);
+        Assert.Equal(GatherResult.InventoryFull, result);
     }
 
     [Fact]

@@ -117,17 +117,17 @@ public static class WorldQueries
     }
 
     public static Building? FindClosestDeposit(
-        GameWorld world,
-        GridPosition center,
-        ResourceType resourceType)
+    GameWorld world,
+    int ownerId,
+    GridPosition center,
+    ResourceType resourceType)
     {
         return world.Entities
             .OfType<Building>()
             .Where(b =>
+                b.OwnerId == ownerId &&
                 b.Definition.AcceptedResources.Contains(resourceType))
-            .OrderBy(b =>
-                Math.Abs(b.Position.X - center.X)
-                + Math.Abs(b.Position.Y - center.Y))
+            .OrderBy(b => DistanceSquared(center, b.Position))
             .FirstOrDefault();
     }
 

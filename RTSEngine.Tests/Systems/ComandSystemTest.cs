@@ -32,7 +32,7 @@ public class CommandSystemTests
 
         Assert.Equal(
             new GridPosition(5, 5),
-            unit.Movement.TargetPosition);
+            unit.Movement.Destination);
     }
 
     [Fact]

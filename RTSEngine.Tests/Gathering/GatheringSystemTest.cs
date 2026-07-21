@@ -313,7 +313,7 @@ public class GatheringSystemTests
         //SimulationTestHelper.RunTicks(world, 1);
         // Assert.Equal(
         //     new GridPosition(5, 5),
-        //     villager.Movement.TargetPosition);
+        //     villager.Movement.Destination);
         Assert.Equal(UnitTask.Gathering,villager.CurrentTask);        
         Assert.Equal(tree.Id,villager.Gather.TargetResourceId);
         Assert.Equal(GatherPhase.MovingToResource,villager.Gather.Phase);
@@ -357,7 +357,7 @@ public class GatheringSystemTests
         // Assert.True(tree.Amount < initialAmount);
         // Assert.Equal(
         //     new GridPosition(5, 5),
-        //     villager.Movement.TargetPosition);
+        //     villager.Movement.Destination);
         //Assert.NotEmpty(villager.Movement.PathQueue);
     }
 }

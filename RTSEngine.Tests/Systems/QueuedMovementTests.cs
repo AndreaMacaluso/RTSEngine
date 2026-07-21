@@ -82,7 +82,7 @@ public class MovementSystemTests
 
         Assert.Empty(villager.Movement.PathQueue);
 
-        Assert.Null(villager.Movement.TargetPosition);
+        Assert.Null(villager.Movement.Destination);
     }
     [Fact]
     [Trait("Category", "Movement")]

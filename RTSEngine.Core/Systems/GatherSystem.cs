@@ -5,6 +5,7 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Actions;
 
 namespace RTSEngine.Core.Systems;
 
@@ -64,6 +65,7 @@ public static class GatherSystem
     GameWorld world,
     Unit unit)
     {   
+
         if (!GatherActions.CanContinueGathering(world, unit))
         {
             GatherActions.StopGathering(unit);

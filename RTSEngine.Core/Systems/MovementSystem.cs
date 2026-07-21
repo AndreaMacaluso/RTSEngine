@@ -18,11 +18,10 @@ public static class MovementSystem
                 continue;
             } 
 
-             if (unit.Movement.TargetPosition is null)
+            if (unit.Movement.CurrentStep is null)
             {
                 if (unit.Movement.PathQueue.Count > 0)
                 {
-                    unit.Movement.TargetPosition =
                         unit.Movement.PathQueue.Dequeue();
                 }
                 else
@@ -44,8 +43,8 @@ public static class MovementSystem
             TryMove(
                 world,
                 unit,
-                unit.Movement.TargetPosition.Value);
-            unit.Movement.TargetPosition = null;
+                unit.Movement.CurrentStep.Value);
+            unit.Movement.CurrentStep = null;
             
         }
     }
@@ -61,41 +60,39 @@ public static class MovementSystem
 
         if (world.IsTileBlocked(target.X, target.Y))
         {
-            RecalculatePath(
-                world,
-                unit);
+
+            unit.Movement.BlockedTicks++;
+
+            if (unit.Movement.BlockedTicks >= RepathThreshold)
+            {
+
+                unit.Movement.BlockedTicks = 0;
+                unit.Movement.NeedsRepath = true;
+            }
 
             return;
         }
 
         unit.Position = target;
         unit.Movement.TargetPosition = null;
+        unit.Movement.CurrentStep = null;
+        unit.Movement.BlockedTicks = 0;
+        unit.Movement.NeedsRepath = false;
     }
 
-    private static void RecalculatePath(
+    public static void BeginMove(
     GameWorld world,
-    Unit unit)
+    Unit unit,
+    GridPosition destination)
     {
-       
-        if (unit.Movement.TargetPosition is null)
-        {
-            return;
-        }
+        unit.Movement.Destination = destination;
+        unit.Movement.CurrentStep = null;
+        unit.Movement.BlockedTicks = 0;
+        unit.Movement.NeedsRepath = false;
 
-        unit.Movement.PathQueue =
-            PathSystem.GeneratePath(
-                world,
-                unit.Position,
-                unit.Movement.TargetPosition.Value);
-
-        // if( unit.PathQueue == [])
-        // {
-        //     unit.BlockedTicks++;
-        // }
-        // else
-        // {
-        //     unit.BlockedTicks = 0;
-        // }
-        
+        CommandSystem.AssignMoveTarget(
+            unit,
+            destination,
+            world);
     }
 }

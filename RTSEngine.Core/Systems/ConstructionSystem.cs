@@ -41,6 +41,16 @@ public class ConstructionSystem
     GameWorld world,
     Unit unit)
     {   
+        if (unit.Movement.NeedsRepath)
+        {
+            unit.Movement.NeedsRepath = false;
+
+            ConstructionActions.BeginMoveToConstruction(
+                world,
+                unit);
+
+            return;
+        }
         if (unit.Build.BuildPosition is not GridPosition destination)
             {
                 return;

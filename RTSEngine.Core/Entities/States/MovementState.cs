@@ -8,13 +8,15 @@ public class MovementState
 
     public float Progress { get; set; }
 
-    public GridPosition? TargetPosition { get; set; }
+    public GridPosition? Destination { get; set; }
 
-   // public GridPosition? FinalDestination { get; set; }
+    public GridPosition? CurrentStep { get; set; }
 
     public Queue<GridPosition> PathQueue { get; set; } = [];
 
     public int BlockedTicks { get; set; }
+
+    public bool NeedsRepath { get; set; }
 
     public MovementState(UnitDefinition definition)
     {

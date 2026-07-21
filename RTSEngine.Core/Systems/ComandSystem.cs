@@ -127,7 +127,7 @@ public static class CommandSystem
         }
     }
 
-    private static void AssignMoveTarget(
+    public static void AssignMoveTarget(
         Unit unit,
         GridPosition target,
         GameWorld world)
@@ -140,11 +140,12 @@ public static class CommandSystem
             target);
 
         foreach (var step in path)
-            {
-                unit.Movement.PathQueue.Enqueue(step);
-            }
+        {
+            unit.Movement.PathQueue.Enqueue(step);
+        }
 
-        unit.Movement.TargetPosition = target;
+        unit.Movement.Destination = target;
+        unit.Movement.CurrentStep = null;
 
     }
 }

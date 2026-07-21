@@ -146,6 +146,7 @@ public static class WorldQueries
     GridPosition destination)
     {
         return
+            unit.Movement.CurrentStep == null &&
             unit.Movement.PathQueue.Count == 0 &&
             WorldQueries.IsAdjacent(
                 unit.Position,

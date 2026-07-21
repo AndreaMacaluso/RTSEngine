@@ -148,4 +148,13 @@ public class GameWorld
         return Entities.OfType<Building>();
     }
 
+    public void RemoveEntity(Entity entity)
+    {
+        Entities.Remove(entity);
+    }
+    public void RemoveResources(ResourceNode resourceNode)
+    {
+        Resources.Remove(resourceNode);
+    }
+
 }

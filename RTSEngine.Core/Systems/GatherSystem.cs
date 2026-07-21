@@ -66,6 +66,17 @@ public static class GatherSystem
     Unit unit)
     {   
 
+        if (unit.Movement.NeedsRepath)
+        {
+            unit.Movement.NeedsRepath = false;
+
+            if (!GatherActions.BeginMoveToResource(world, unit))
+            {
+                GatherActions.StopGathering(unit);
+            }
+
+            return;
+        }
         if (!GatherActions.CanContinueGathering(world, unit))
         {
             GatherActions.StopGathering(unit);

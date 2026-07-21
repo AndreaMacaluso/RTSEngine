@@ -10,13 +10,13 @@ namespace RTSEngine.Core.Actions;
 
 public static class ConstructionActions
 {
-    public static void BeginMoveToConstruction(
-        GameWorld world,
-        Unit unit)
+    public static bool BeginMoveToConstruction(
+    GameWorld world,
+    Unit unit)
     {
         if (unit.Build.BuildingId is not int buildingId)
         {
-            return;
+            return false;
         }
 
         Building? building =
@@ -24,7 +24,7 @@ public static class ConstructionActions
 
         if (building == null)
         {
-            return;
+            return false;
         }
 
         GridPosition? target =
@@ -35,7 +35,7 @@ public static class ConstructionActions
 
         if (target is not GridPosition destination)
         {
-            return;
+            return false;
         }
 
         world.AddCommand(new MoveCommand
@@ -43,6 +43,8 @@ public static class ConstructionActions
             UnitIds = [unit.Id],
             Target = destination
         });
+
+        return true;
     }
 
     public static bool BuildOneTick(

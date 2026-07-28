@@ -242,4 +242,29 @@ public static class GatherActions
         return world.GetResourceById(resourceId);
     }
 
+    public static bool TryRetargetResource(
+    GameWorld world,
+    Unit unit)
+    {
+        if (unit.Gather.CarriedResource is not ResourceType resourceType)
+        {
+            return false;
+        }
+
+        ResourceNode? nextResource = WorldQueries.FindClosestResource(
+                    world,
+                    unit.Position,
+                    resourceType);
+        
+
+        if (nextResource == null)
+        {
+            return false;
+        }
+
+        unit.Gather.TargetResourceId = nextResource.Id;
+
+        return true;
+    }
+
 }

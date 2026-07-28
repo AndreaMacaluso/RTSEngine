@@ -172,23 +172,23 @@ public static class GatherSystem
     GameWorld world,
     Unit unit)
     {
-        GatherActions.DepositInventory(
-            world,
-            unit);
+        GatherActions.DepositInventory(world, unit);
 
-        if (GatherActions.CanContinueGathering(world, unit))
+       if (GatherActions.CanContinueGathering(world, unit))
         {
-            unit.Gather.Phase =
-                GatherPhase.MovingToResource;
+            unit.Gather.Phase = GatherPhase.MovingToResource;
+            GatherActions.BeginMoveToResource(world, unit);
+            return;
+        }
 
-            GatherActions.BeginMoveToResource(
-                world,
-                unit);
-        }
-        else
+        if (GatherActions.TryRetargetResource(world, unit))
         {
-            GatherActions.StopGathering(unit);
-            unit.Gather.Clear();
+            unit.Gather.Phase = GatherPhase.MovingToResource;
+            GatherActions.BeginMoveToResource(world, unit);
+            return;
         }
+
+        GatherActions.StopGathering(unit);
+        unit.Gather.Clear();
     }
 }

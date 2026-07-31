@@ -160,8 +160,10 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Gather execution system
 - [x] Carry capacity loop
 - [x] Deposit / drop-off loop
+- [x] Resource retargeting
+- [x] Continuous gathering
+- [x] Resource cleanup
 - [x] Gather state machine
-- [ ] Resource depletion loop
 - [ ] End-to-end villager gather cycle
 - [ ] Gather interruption handling
 - [ ] Dynamic deposit selection
@@ -174,13 +176,30 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Unit spawn from building
 - [ ] End-to-end production cycle
 
+### Construction Loop
+
+- [x] Build command
+- [x] Foundation
+- [x] Move to construction
+- [x] Construction state machine
+- [x] Construction progress
+- [x] Completion
+- [x] Rendering
+
+- [ ] Multiple builders
+- [ ] Repair
+- [ ] Cancel construction
+
 ## Runtime Gameplay Loop
 
-- [x] Runtime building entities
-- [x] Town Center initialization
+- [x] Initial economy
+- [x] Initial town center
 - [x] Villager spawn
-- [x] Initial economy setup
-- [ ] Full gather loop demonstration
+- [x] Gather loop
+- [x] Construction loop
+
+- [ ] Production loop
+- [ ] Combat loop
 
 ## World Queries
 
@@ -225,6 +244,13 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Gather command tests
 - [x] Gather actions tests
 - [x] Gather system tests
+- [x] Construction actions tests
+- [x] Construction system tests
+- [x] Building placement tests
+- [x] Economy actions tests
+- [x] Resource cleanup tests
+- [x] End-to-end gather tests
+- [x] End-to-end construction tests
 
 ## Debug Client
 
@@ -241,12 +267,18 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 ## Economy
 
-- [x] Resource economy
-- [ ] Resource stockpile rules
-- [ ] Resource gathering rates
-- [ ] Resource depletion rules
-- [ ] Deposit validation rules
-- [ ] Multi-resource support balancing
+- [x] Resource stockpile
+- [x] Resource payment
+- [x] Gathering
+- [x] Deposit
+- [x] Automatic retargeting
+- [x] Multiple resource gathering
+
+- [x] Resource depletion cleanup
+- [ ] Search radius
+- [ ] Gather interruption
+- [x] Dynamic deposit selection
+- [ ] Resource balancing
 
 ---
 
@@ -255,12 +287,22 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Runtime building entities
 - [x] Town Center
 - [x] Building factory
-- [ ] Building placement
-- [ ] Construction system
+- [x] Foundation placement
+- [x] Building placement validation
+- [x] Resource payment
+- [x] Tile occupation
+- [x] Build command
+- [x] Construction state machine
+- [x] Construction progress
+- [x] Building completion
+
 - [ ] Multi-tile structures
+- [ ] Building cancellation
+- [ ] Building refund
+- [ ] Repair system
+- [ ] Building destruction
 - [ ] Production buildings
-- [ ] Resource drop-off buildings
-- [ ] Spawn/placement validation for produced units
+- [ ] Drop-off buildings
 
 ---
 

@@ -4,9 +4,12 @@
     "name": "Villager",
     "maxHealth": 50,
     "movementSpeed": 1.0,
-    "costs":{
-      "food": 50
-    },
+    "costs":[
+    {
+      "Type": "Food",
+      "Amount": 50
+    }
+    ],
     "gatherCapacity": 20,
     "buildableBuildings":[
       "towncenter",
@@ -18,9 +21,11 @@
     "name": "Militia",
     "maxHealth": 60,
     "movementSpeed": 1.0,
-    "costs":{
-      "food": 60,
-      "gold": 40
+    "costs":[
+    {
+      "Type": "Food",
+      "Amount": 50
     }
+  ]
   }
 ]

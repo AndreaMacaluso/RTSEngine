@@ -5,9 +5,12 @@
     "maxHealth": 1000,
     "width": 3,
     "height": 3,
-    "costs":{
-      "wood": 150
-    },
+    "costs":[
+      {
+        "Type": "Wood",
+        "Amount": 50
+      }
+    ],
     "buildTimeTicks": 100,
     "produces":
     [
@@ -28,9 +31,12 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
-    "costs":{
-      "wood": 50
-    },
+    "costs":[
+      {
+        "Type": "Wood",
+        "Amount": 50
+      }
+    ],
     "buildTimeTicks": 10
   },
   {
@@ -39,9 +45,12 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
-    "costs":{
-      "wood": 100
-    },
+    "costs":[
+      {
+        "Type": "Wood",
+        "Amount": 50
+      }
+    ],
     "acceptedResources":
     [
         "Wood"
@@ -54,9 +63,12 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
-    "costs":{
-      "wood": 100
-    },
+    "costs":[
+      {
+        "Type": "Wood",
+        "Amount": 50
+      }
+    ],
     "acceptedResources":
     [
         "Gold",
@@ -70,9 +82,12 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
-    "costs":{
-      "wood": 100
-    },
+    "costs":[
+      {
+        "Type": "Wood",
+        "Amount": 50
+      }
+    ],
     "acceptedResources":
     [
         "Food"
@@ -85,9 +100,12 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
-    "costs":{
-      "wood": 50
-    },
+    "costs":[
+      {
+        "Type": "Wood",
+        "Amount": 50
+      }
+    ],
     "produces":
     [
         "militia"

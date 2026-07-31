@@ -1,3 +1,4 @@
+using  RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Entities.Definitions;
 public class UnitDefinition
 {
@@ -9,7 +10,7 @@ public class UnitDefinition
 
     public float MovementSpeed { get; set; }
 
-    public Dictionary<string, int> Costs { get; set; } = [];
+    public List<ResourceCost> Costs { get; init; } = [];
 
     public int GatherCapacity { get; set; }
 

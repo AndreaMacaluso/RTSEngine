@@ -14,9 +14,7 @@ public class BuildingDefinition
     public int Height { get; init; }
 
     public int BuildTimeTicks { get; init; }
-
-    public Dictionary<ResourceType, int> Costs { get; init; } = [];
-
+    public List<ResourceCost> Costs { get; init; } = [];
     public List<string> Produces { get; init; } = [];
 
     public List<ResourceType> AcceptedResources { get; init; } = [];

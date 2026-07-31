@@ -20,14 +20,13 @@ public static class MovementSystem
 
             if (unit.Movement.CurrentStep is null)
             {
-                if (unit.Movement.PathQueue.Count > 0)
-                {
-                        unit.Movement.PathQueue.Dequeue();
-                }
-                else
+                if (unit.Movement.PathQueue.Count == 0)
                 {
                     continue;
                 }
+
+                unit.Movement.CurrentStep =
+                    unit.Movement.PathQueue.Dequeue();
             }
 
             unit.Movement.Progress += unit.Movement.Speed;
@@ -38,13 +37,21 @@ public static class MovementSystem
             }
 
             unit.Movement.Progress = 0f;
-
+            if (unit.Movement.CurrentStep is not GridPosition currentStep)
+            {
+                continue;
+            }
             
             TryMove(
                 world,
                 unit,
-                unit.Movement.CurrentStep.Value);
+                currentStep);
             unit.Movement.CurrentStep = null;
+
+            // if (unit.Movement.CurrentStep is null &&  unit.Movement.PathQueue.Count == 0)
+            // {
+            //     unit.Movement.Destination = null;
+            // }
             
         }
     }
@@ -74,7 +81,7 @@ public static class MovementSystem
         }
 
         unit.Position = target;
-        unit.Movement.TargetPosition = null;
+        //unit.Movement.Destination = null;
         unit.Movement.CurrentStep = null;
         unit.Movement.BlockedTicks = 0;
         unit.Movement.NeedsRepath = false;

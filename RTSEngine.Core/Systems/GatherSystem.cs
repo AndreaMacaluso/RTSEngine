@@ -5,7 +5,6 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.Actions;
 
 namespace RTSEngine.Core.Systems;
 
@@ -57,7 +56,7 @@ public static class GatherSystem
                 ("Deposit", unit.Gather.DepositPosition),
                 ("PathNodes", unit.Movement.PathQueue.Count),
                 ("Position", unit.Position),
-                ("Destination", unit.Movement.TargetPosition)
+                ("Destination", unit.Movement.Destination)
             ]);
         }
     }

@@ -56,8 +56,7 @@ public static class ConstructionActions
             return true;
         }
 
-        Building? building =
-            world.GetBuildingById(buildingId);
+        Building? building = world.GetBuildingById(buildingId);
 
         if (building == null)
         {
@@ -66,9 +65,7 @@ public static class ConstructionActions
 
         building.ConstructionProgress++;
 
-        return
-            building.ConstructionProgress >=
-            building.Definition.BuildTimeTicks;
+        return building.ConstructionProgress >= building.Definition.BuildTimeTicks;
     }
 
     public static void CompleteConstruction(

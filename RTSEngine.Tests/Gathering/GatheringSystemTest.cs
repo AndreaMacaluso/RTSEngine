@@ -283,6 +283,8 @@ public class GatheringSystemTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
 
         Player? player = world.GetPlayerById(1);
+
+        Assert.NotNull(player);
         var villager = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
@@ -322,7 +324,7 @@ public class GatheringSystemTests
         Assert.Equal(ResourceType.Wood,villager.Gather.CarriedResource);
         
         //2 STEP GATHER
-        SimulationTestHelper.RunTicks(world, 4);
+        SimulationTestHelper.RunTicks(world, 3);
         Assert.Equal(UnitTask.Gathering,villager.CurrentTask);
         Assert.Equal(GatherPhase.Gathering,villager.Gather.Phase);
         Assert.Equal(tree.Id,villager.Gather.TargetResourceId);
@@ -337,7 +339,7 @@ public class GatheringSystemTests
 
       
         //4 STEP DEPOSIT
-        SimulationTestHelper.RunTicks(world, 4);
+        SimulationTestHelper.RunTicks(world, 3);
         Assert.Equal(20, villager.Gather.CurrentLoad);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Depositing, villager.Gather.Phase);

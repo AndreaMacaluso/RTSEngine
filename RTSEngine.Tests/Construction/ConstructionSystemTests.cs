@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Simulation;
 
 namespace RTSEngine.Tests.Construction;
 
@@ -20,15 +21,15 @@ public class ConstructionSystemTests
                 TestDefinitionFactory.CreateVillager(),
                 1,
                 new GridPosition(1, 1));
-
+        unit.Movement.NeedsRepath = true;
         world.AddEntity(unit);
         var building  = BuildingFactory.Create(
         TestDefinitionFactory.CreateHouse(),
         ownerId: 1,
         position: new GridPosition(1, 2));
-
+      
         world.AddEntity(building);
-
+        unit.Build.BuildPosition = building.Position;  
         unit.Build.BuildingId = building.Id;
 
         unit.Build.Phase =
@@ -36,7 +37,7 @@ public class ConstructionSystemTests
 
         unit.Movement.PathQueue.Clear();
 
-        ConstructionSystem.Update(world);
+        SimulationTestHelper.RunTicks(world,10);
 
         Assert.Equal(
             BuildPhase.Constructing,
@@ -69,7 +70,7 @@ public class ConstructionSystemTests
         building.ConstructionProgress =
             building.Definition.BuildTimeTicks - 1;
 
-        ConstructionSystem.Update(world);
+        SimulationTestHelper.RunTicks(world,10);
 
         Assert.True(building.IsCompleted);
         Assert.Equal(UnitTask.Idle, unit.CurrentTask);

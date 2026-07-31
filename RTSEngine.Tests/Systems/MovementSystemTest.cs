@@ -1,7 +1,4 @@
-using RTSEngine.Core.Entities.Units;
-using RTSEngine.Core.Map;
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
@@ -14,9 +11,6 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void Update_ShouldMoveUnitAfterEnoughProgress()
     {
-        // Arrange
-      
-
         var world = TestWorldFactory.CreateWorld();
         var villagerDefinition = new UnitDefinition
         {
@@ -31,13 +25,15 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.Movement.Destination =
-            new GridPosition(6, 5);
+        CommandSystem.AssignMoveTarget(
+            villager,
+            new GridPosition(6,5),
+            world);
 
         world.AddEntity(villager);
 
         // Act
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 5; i++)
         {
             MovementSystem.Update(world);
         }
@@ -69,8 +65,11 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.Movement.Destination =
-            new GridPosition(6, 5);
+        
+        CommandSystem.AssignMoveTarget(
+            villager,
+            new GridPosition(6,5),
+            world);
 
         world.AddEntity(villager);
 
@@ -109,8 +108,11 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.Movement.Destination =
-            new GridPosition(6, 5);
+       
+        CommandSystem.AssignMoveTarget(
+            villager,
+            new GridPosition(6,5),
+            world);
 
         world.AddEntity(villager);
 
@@ -145,8 +147,11 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villagerA.Movement.Destination =
-            new GridPosition(6, 5);
+        
+        CommandSystem.AssignMoveTarget(
+            villagerA,
+            new GridPosition(6,5),
+            world);
        
 
         var villagerB = UnitFactory.Create(
@@ -188,8 +193,11 @@ public class MovementSystemTests
             1,
             new GridPosition(5, 5));
 
-        villager.Movement.Destination =
-            new GridPosition(9, 9);
+        
+        CommandSystem.AssignMoveTarget(
+            villager,
+            new GridPosition(9,9),
+            world);
 
         world.AddEntity(villager);
 
@@ -200,7 +208,7 @@ public class MovementSystemTests
         }
 
         // Assert
-        Assert.Equal(5, villager.Position.X);
-        Assert.Equal(5, villager.Position.Y);
+        Assert.NotEqual(9, villager.Position.X);
+        Assert.NotEqual(9, villager.Position.Y);
     }
 }

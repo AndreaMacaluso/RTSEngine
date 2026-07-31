@@ -46,7 +46,7 @@ public static class TestDefinitionFactory
         };
 
     }
-        public static BuildingDefinition CreateHouse()
+    public static BuildingDefinition CreateHouse()
     {
         return new BuildingDefinition
         {
@@ -55,5 +55,21 @@ public static class TestDefinitionFactory
             BuildTimeTicks = 10
         };
 
+    }
+
+    public static BuildingDefinition CreateHouseWithCost()
+    {
+        return new BuildingDefinition
+        {
+            Id = "house",
+            Name = "House",
+            BuildTimeTicks = 10,
+            Width = 2,
+            Height = 2,
+            Costs =
+            [
+                new(ResourceType.Wood, 100)
+            ]
+        };
     }
 }

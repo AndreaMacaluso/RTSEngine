@@ -78,45 +78,52 @@ public class ConstructionSystemTests
     }
 
     [Fact]
-    [Trait("Category", "Building")]
-    [Trait("Category", "BuildingLoop")]
-    public void Builder_Should_ConstructBuilding_FromStartToFinish()
+[Trait("Category", "Building")]
+[Trait("Category", "BuildingLoop")]
+public void Builder_Should_ConstructBuilding_FromStartToFinish()
+{
+    var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+    var villager = UnitFactory.Create(
+        TestDefinitionFactory.CreateVillager(),
+        ownerId: 1,
+        position: new GridPosition(1, 1));
+
+    world.AddEntity(villager);
+
+    var building = BuildingFactory.Create(
+        TestDefinitionFactory.CreateHouse(),
+        ownerId: 1,
+        position: new GridPosition(5, 5));
+
+    world.AddEntity(building);
+
+    villager.Movement.NeedsRepath = true;
+    villager.Build.BuildPosition = building.Position;  
+    villager.Build.BuildingId = building.Id;
+
+    world.AddCommand(new BuildCommand
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        UnitIds = [villager.Id],
+        BuildingId = building.Id
+    });
 
-        var villager = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            ownerId: 1,
-            position: new GridPosition(1, 1));
+    SimulationTestHelper.RunTicks(world, 50);
 
-        world.AddEntity(villager);
+    Assert.Equal(
+        UnitTask.Idle,
+        villager.CurrentTask);
 
-        var building = BuildingFactory.Create(
-            TestDefinitionFactory.CreateHouse(),
-            ownerId: 1,
-            position: new GridPosition(5, 5));
+    Assert.Equal(
+        BuildPhase.None,
+        villager.Build.Phase);
 
-        world.AddEntity(building);
+    Assert.Null(villager.Build.BuildingId);
 
-        world.AddCommand(new BuildCommand
-        {
-            UnitIds = [villager.Id],
-            BuildingId = building.Id
-        });
+    Assert.True(building.IsCompleted);
 
-        SimulationTestHelper.RunTicks(world, 50);
-        Assert.Equal(
-            UnitTask.Idle,
-            villager.CurrentTask);
-        
-        Assert.Equal(
-            BuildPhase.None,
-            villager.Build.Phase);
-        Assert.Null(villager.Build.BuildingId);
-        Assert.True(building.IsCompleted);
-
-        Assert.Equal(
-            building.Definition.MaxHealth,
-            building.CurrentHealth);
-    }
+    Assert.Equal(
+        building.Definition.MaxHealth,
+        building.CurrentHealth);
+}
 }

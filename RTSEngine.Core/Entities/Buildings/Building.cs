@@ -24,5 +24,7 @@ public sealed class Building : Entity
         OwnerId = ownerId;
         Position = position;
         Definition = definition;
+        ConstructionProgress = 0;
+        IsCompleted = false;
     }
 }

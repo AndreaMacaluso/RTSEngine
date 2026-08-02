@@ -5,6 +5,7 @@
     "maxHealth": 1000,
     "width": 3,
     "height": 3,
+    "populationBonus": 5,
     "costs":[
       {
         "Type": "Wood",
@@ -31,6 +32,7 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
+    "populationBonus": 5,
     "costs":[
       {
         "Type": "Wood",

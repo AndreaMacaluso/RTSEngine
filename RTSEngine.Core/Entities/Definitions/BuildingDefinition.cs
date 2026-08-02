@@ -22,4 +22,6 @@ public class BuildingDefinition
     {
             return AcceptedResources.Contains(resource);
     }
+
+    public int PopulationBonus { get; init; }
 }

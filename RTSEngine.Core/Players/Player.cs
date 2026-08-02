@@ -5,14 +5,14 @@ public class Player
     public int Id { get; set; }
 
     public string Name { get; set; } = "";
-
     public ConsoleColor Color { get; set; }
-
     public int Wood { get; private set; }
     public int Food { get; private set; }
     public int Gold { get; private set; }
     public int Stone { get; private set; }
 
+    public int Population { get; set; }
+    public int PopulationCap { get; set; }
     public void AddResource(
     ResourceType type,
     int amount)

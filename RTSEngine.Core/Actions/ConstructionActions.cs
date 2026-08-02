@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Players;
 
 namespace RTSEngine.Core.Actions;
 
@@ -88,6 +89,16 @@ public static class ConstructionActions
         building.IsCompleted = true;
         building.CurrentHealth =
             building.Definition.MaxHealth;
+        var owner = world.GetPlayerById(building.OwnerId);
+        
+        if (owner is not Player player)
+        {
+            return;
+        }
+        
+        PopulationActions.IncreaseCap(
+            player,
+            building.Definition.PopulationBonus);
     }
 
     public static bool CanContinueBuilding(

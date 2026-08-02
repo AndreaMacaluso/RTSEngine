@@ -13,10 +13,11 @@ public sealed class Building : Entity
     public int ConstructionProgress { get; set; }
 
     public bool IsCompleted { get; set; }
+    public int PopulationBonus { get; set; }
 
     public override bool IsBlocking => true;
 
-        public Building(
+    public Building(
         int ownerId,
         GridPosition position,
         BuildingDefinition definition)

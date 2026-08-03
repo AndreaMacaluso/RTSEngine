@@ -40,4 +40,34 @@ public static class BuildingPlacementRules
 
         return true;
     }
+
+    public static GridPosition? FindFreePosition(
+        GameWorld world,
+        BuildingDefinition definition,
+        GridPosition center)
+    {
+        for (int radius = 0; radius < 20; radius++)
+        {
+            for (int x = -radius; x <= radius; x++)
+            {
+                for (int y = -radius; y <= radius; y++)
+                {
+                    var position = new GridPosition(
+                        center.X + x,
+                        center.Y + y);
+
+                    if (CanPlace(
+                        world,
+                        definition,
+                        position))
+                    {
+                        return position;
+                    }
+                }
+            }
+        }
+
+        return null;
+    }
+
 }

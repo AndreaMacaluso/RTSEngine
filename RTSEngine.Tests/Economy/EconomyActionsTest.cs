@@ -12,8 +12,8 @@ public class EconomyActionsTests
     {
         var player = new Player();
 
-        player.AddResource(ResourceType.Wood, 100);
-        player.AddResource(ResourceType.Gold, 50);
+        player.Economy.Add(ResourceType.Wood, 100);
+        player.Economy.Add(ResourceType.Gold, 50);
 
         var costs = new List<ResourceCost>
         {
@@ -28,7 +28,7 @@ public class EconomyActionsTests
     {
         var player = new Player();
 
-        player.AddResource(ResourceType.Wood, 20);
+        player.Economy.Add(ResourceType.Wood, 20);
 
         var costs = new List<ResourceCost>
         {
@@ -43,7 +43,7 @@ public class EconomyActionsTests
     {
         var player = new Player();
 
-        player.AddResource(ResourceType.Wood, 100);
+        player.Economy.Add(ResourceType.Wood, 100);
 
         var costs = new List<ResourceCost>
         {
@@ -53,7 +53,7 @@ public class EconomyActionsTests
         var result = EconomyActions.TryPay(player, costs);
 
         Assert.True(result);
-        Assert.Equal(60, player.Wood);
+        Assert.Equal(60, player.Economy.Wood);
     }
 
     [Fact]
@@ -61,7 +61,7 @@ public class EconomyActionsTests
     {
         var player = new Player();
 
-        player.AddResource(ResourceType.Wood, 20);
+        player.Economy.Add(ResourceType.Wood, 20);
 
         var costs = new List<ResourceCost>
         {
@@ -71,7 +71,7 @@ public class EconomyActionsTests
         var result = EconomyActions.TryPay(player, costs);
 
         Assert.False(result);
-        Assert.Equal(20, player.Wood);
+        Assert.Equal(20, player.Economy.Wood);
     }
 
     [Fact]
@@ -87,7 +87,7 @@ public class EconomyActionsTests
 
         EconomyActions.Refund(player, costs);
 
-        Assert.Equal(40, player.Wood);
-        Assert.Equal(10, player.Gold);
+        Assert.Equal(40, player.Economy.Wood);
+        Assert.Equal(10, player.Economy.Gold);
     }
 }

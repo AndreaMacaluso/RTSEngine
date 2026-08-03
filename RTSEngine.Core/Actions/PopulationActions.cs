@@ -11,31 +11,31 @@ public static class PopulationActions
         int amount)
     {
         return
-            player.Population + amount <= player.PopulationCap &&
-            player.Population + amount <= MaxPopulation;
+            player.Population.Current + amount <= player.Population.Capacity &&
+            player.Population.Current + amount <= MaxPopulation;
     }
 
     public static void AddPopulation(
         Player player,
         int amount)
     {
-        player.Population += amount;
+        player.Population.Current += amount;
     }
 
     public static void RemovePopulation(
         Player player,
         int amount)
     {
-        player.Population -= amount;
+        player.Population.Current -= amount;
     }
 
     public static void IncreaseCap(
         Player player,
         int amount)
     {
-        player.PopulationCap =
+        player.Population.Capacity =
             Math.Min(
-                player.PopulationCap + amount,
+                player.Population.Capacity + amount,
                 MaxPopulation);
     }
 
@@ -43,9 +43,9 @@ public static class PopulationActions
         Player player,
         int amount)
     {
-        player.PopulationCap =
+        player.Population.Capacity =
             Math.Max(
                 0,
-                player.PopulationCap - amount);
+                player.Population.Capacity - amount);
     }
 }

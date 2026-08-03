@@ -147,7 +147,7 @@ public static class GatherActions
         {
             return;
         }
-        player.AddResource(gatheredResource,unit.Gather.CurrentLoad);
+        player.Economy.Add(gatheredResource,unit.Gather.CurrentLoad);
         unit.Gather.Clear();
     }
 

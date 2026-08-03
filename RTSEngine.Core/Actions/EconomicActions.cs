@@ -11,7 +11,7 @@ public static class EconomyActions
     {
         foreach (var cost in costs)
         {
-            if (!player.HasResource(cost.Type, cost.Amount))
+            if (!player.Economy.Has(cost.Type, cost.Amount))
             {
                 return false;
             }
@@ -31,7 +31,7 @@ public static class EconomyActions
 
         foreach (var cost in costs)
         {
-            player.SpendResource(cost.Type, cost.Amount);
+            player.Economy.Spend(cost.Type, cost.Amount);
         }
 
         return true;
@@ -43,7 +43,7 @@ public static class EconomyActions
     {
         foreach (var cost in costs)
         {
-            player.AddResource(cost.Type, cost.Amount);
+            player.Economy.Add(cost.Type, cost.Amount);
         }
     }
 }

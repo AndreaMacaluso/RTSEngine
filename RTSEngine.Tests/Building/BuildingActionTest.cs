@@ -14,7 +14,7 @@ public class BuildingPlacementActionsTests
 
         var player = world.GetPlayerById(1);
         Assert.NotNull(player);
-        player.AddResource(ResourceType.Wood, 500);
+        player.Economy.Add(ResourceType.Wood, 500);
 
         var definition = TestDefinitionFactory.CreateHouseWithCost();
 
@@ -35,11 +35,11 @@ public class BuildingPlacementActionsTests
 
         var player = world.GetPlayerById(1);
         Assert.NotNull(player);
-        player.AddResource(ResourceType.Wood, 500);
+        player.Economy.Add(ResourceType.Wood, 500);
 
         var definition = TestDefinitionFactory.CreateHouseWithCost();
 
-        var woodBefore = player.Wood;
+        var woodBefore = player.Economy.Wood;
 
         var result = BuildingPlacementActions.PlaceFoundation(
             world,
@@ -49,7 +49,7 @@ public class BuildingPlacementActionsTests
         Assert.NotNull(result);
         Assert.Equal(
             woodBefore - 100,
-            player.Wood);
+            player.Economy.Wood);
     }
 
     [Fact]
@@ -93,7 +93,7 @@ public class BuildingPlacementActionsTests
 
         var player = world.GetPlayerById(1);
         Assert.NotNull(player);
-        player.AddResource(ResourceType.Wood, 500);
+        player.Economy.Add(ResourceType.Wood, 500);
 
         var definition = TestDefinitionFactory.CreateHouseWithCost();
 

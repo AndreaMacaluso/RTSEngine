@@ -13,7 +13,7 @@ public class PopulationActionsTests
 
         PopulationActions.AddPopulation(player, 3);
 
-        Assert.Equal(3, player.Population);
+        Assert.Equal(3, player.Population.Current );
     }
 
     [Fact]
@@ -22,11 +22,11 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population = 5;
+        player.Population.Current  = 5;
 
         PopulationActions.RemovePopulation(player, 2);
 
-        Assert.Equal(3, player.Population);
+        Assert.Equal(3, player.Population.Current );
     }
 
     [Fact]
@@ -35,11 +35,11 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.PopulationCap = 5;
+        player.Population.Capacity = 5;
 
         PopulationActions.IncreaseCap(player, 5);
 
-        Assert.Equal(10, player.PopulationCap);
+        Assert.Equal(10, player.Population.Capacity);
     }
 
     [Fact]
@@ -48,13 +48,13 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.PopulationCap = 74;
+        player.Population.Capacity = 74;
 
         PopulationActions.IncreaseCap(player, 10);
 
         Assert.Equal(
             PopulationActions.MaxPopulation,
-            player.PopulationCap);
+            player.Population.Capacity);
     }
 
     [Fact]
@@ -63,11 +63,11 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.PopulationCap = 10;
+        player.Population.Capacity = 10;
 
         PopulationActions.DecreaseCap(player, 4);
 
-        Assert.Equal(6, player.PopulationCap);
+        Assert.Equal(6, player.Population.Capacity);
     }
 
     [Fact]
@@ -76,11 +76,11 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.PopulationCap = 2;
+        player.Population.Capacity = 2;
 
         PopulationActions.DecreaseCap(player, 10);
 
-        Assert.Equal(0, player.PopulationCap);
+        Assert.Equal(0, player.Population.Capacity);
     }
 
     [Fact]
@@ -89,8 +89,8 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population = 4;
-        player.PopulationCap = 5;
+        player.Population.Current  = 4;
+        player.Population.Capacity = 5;
 
         Assert.True(
             PopulationActions.CanAddPopulation(player, 1));
@@ -102,8 +102,8 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population = 5;
-        player.PopulationCap = 5;
+        player.Population.Current  = 5;
+        player.Population.Capacity = 5;
 
         Assert.False(
             PopulationActions.CanAddPopulation(player, 1));
@@ -115,8 +115,8 @@ public class PopulationActionsTests
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population = PopulationActions.MaxPopulation;
-        player.PopulationCap = PopulationActions.MaxPopulation;
+        player.Population.Current  = PopulationActions.MaxPopulation;
+        player.Population.Capacity = PopulationActions.MaxPopulation;
 
         Assert.False(
             PopulationActions.CanAddPopulation(player, 1));

@@ -143,7 +143,7 @@ public class GatherActionsTests
 
         GatherActions.DepositInventory(world, unit);
 
-        Assert.Equal(15, player.Wood);
+        Assert.Equal(15, player.Economy.Wood);
     }
 
     [Fact]

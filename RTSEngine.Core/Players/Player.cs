@@ -1,88 +1,39 @@
-using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.AI;
+using RTSEngine.Core.Players.States;
 namespace RTSEngine.Core.Players;
-public class Player
+
+public sealed class Player
 {
     public int Id { get; set; }
-
     public string Name { get; set; } = "";
     public ConsoleColor Color { get; set; }
     public PlayerControllerType Controller { get; set; }
-    public string? AIProfile { get; set; }
-    public int LastDecisionTick { get; set; }
-    public int Wood { get; private set; }
-    public int Food { get; private set; }
-    public int Gold { get; private set; }
-    public int Stone { get; private set; }
-
-    public int Population { get; set; }
-    public int PopulationCap { get; set; }
-    public void AddResource(
-    ResourceType type,
-    int amount)
+    public EconomyState Economy { get; }
+    public PopulationState Population { get; }
+    //public PlayerAIState AI { get; }
+    public Player(
+        int id,
+        string name,
+        ConsoleColor color,
+        PlayerControllerType controller)
     {
-        switch(type)
-        {
-            case ResourceType.Wood:
-                Wood += amount;
-                break;
+        Id = id;
+        Name = name;
+        Color = color;
+        Controller = controller;
 
-            case ResourceType.Food:
-                Food += amount;
-                break;
+        Economy = new EconomyState();
 
-            case ResourceType.Gold:
-                Gold += amount;
-                break;
+        Population = new PopulationState();
 
-            case ResourceType.Stone:
-                Stone += amount;
-                break;
-        }
+        //AI = new PlayerAIState();
     }
 
-    public bool SpendResource(
-    ResourceType type,
-    int amount)
+    public Player()
     {
-        if (!HasResource(type, amount))
-        {
-            return false;
-        }
+        Economy = new EconomyState();
 
-        switch(type)
-        {
-            case ResourceType.Wood:
-                Wood -= amount;
-                break;
+        Population = new PopulationState();
 
-            case ResourceType.Food:
-                Food -= amount;
-                break;
-
-            case ResourceType.Gold:
-                Gold -= amount;
-                break;
-
-            case ResourceType.Stone:
-                Stone -= amount;
-                break;
-        }
-
-        return true;
-    }
-
-    public bool HasResource(
-    ResourceType type,
-    int amount)
-    {
-        return type switch
-        {
-            ResourceType.Wood => Wood >= amount,
-            ResourceType.Food => Food >= amount,
-            ResourceType.Gold => Gold >= amount,
-            ResourceType.Stone => Stone >= amount,
-            _ => false
-        };
+        //AI = new PlayerAIState();
     }
 }

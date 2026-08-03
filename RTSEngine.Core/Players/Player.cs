@@ -1,4 +1,5 @@
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.AI;
 namespace RTSEngine.Core.Players;
 public class Player
 {
@@ -6,6 +7,9 @@ public class Player
 
     public string Name { get; set; } = "";
     public ConsoleColor Color { get; set; }
+    public PlayerControllerType Controller { get; set; }
+    public string? AIProfile { get; set; }
+    public int LastDecisionTick { get; set; }
     public int Wood { get; private set; }
     public int Food { get; private set; }
     public int Gold { get; private set; }

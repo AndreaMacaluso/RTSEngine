@@ -1,9 +1,9 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Definitions;
 
-namespace RTSEngine.DebugClient.Bootstrap;
+namespace RTSEngine.Core.Entities.Runtime;
 
-public sealed class SimulationContext
+public sealed class RuntimeContext
 {
     public required GameWorld World { get; init; }
 

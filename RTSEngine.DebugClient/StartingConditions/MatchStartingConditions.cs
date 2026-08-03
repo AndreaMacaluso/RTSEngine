@@ -1,13 +1,13 @@
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
-using RTSEngine.DebugClient.Bootstrap;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.DebugClient.StartingConditions;
 
 public static class MatchStartingConditions
 {
     public static void CreateStandard(
-        SimulationContext context)
+        RuntimeContext context)
     {
         foreach (Player player in context.World.Players)
         {
@@ -22,7 +22,7 @@ public static class MatchStartingConditions
     }
 
     private static void CreateStartingBase(
-        SimulationContext context,
+        RuntimeContext context,
         int ownerId,
         GridPosition center)
     {

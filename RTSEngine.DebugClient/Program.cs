@@ -35,7 +35,7 @@ class Program
         // ScenarioBuilder.CreateMovementScenario(context);
         ScenarioBuilder.CreeateGatheringScenario(context);
         DebugSession.Log.Info("Create Simulation Runners");
-        var simulation = new SimulationRunner(context.World);
+        var simulation = new SimulationRunner(context);
 
         SimulationHost.Run(
             context.World,

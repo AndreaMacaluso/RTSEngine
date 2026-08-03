@@ -1,34 +1,42 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
-
+using RTSEngine.Core.Entities.Runtime;
 namespace RTSEngine.Core.Simulation;
 
 public class SimulationRunner
 {
-    private readonly GameWorld _world;
-    public SimulationRunner(GameWorld world)
+    private readonly RuntimeContext _context;
+
+    public SimulationRunner(
+        RuntimeContext context)
     {
-        _world = world;
+        _context = context;
     }
 
     public void Tick()
     {
-        if (_world.State != WorldState.Running)
+        if (_context.World.State != WorldState.Running)
         {
             return;
         }
-        
+
         Step();
     }
 
     public void Step()
     {
-        CommandSystem.Update(_world);
-        MovementSystem.Update(_world);
-        GatherSystem.Update(_world);
-        ResourceCleanupSystem.Update(_world);
-        ConstructionSystem.Update(_world);
+        CommandSystem.Update(_context.World);
 
-        _world.AdvanceTick();
+        AISystem.Update(_context);
+
+        MovementSystem.Update(_context.World);
+
+        GatherSystem.Update(_context.World);
+
+        ResourceCleanupSystem.Update(_context.World);
+
+        ConstructionSystem.Update(_context.World);
+
+        _context.World.AdvanceTick();
     }
 }

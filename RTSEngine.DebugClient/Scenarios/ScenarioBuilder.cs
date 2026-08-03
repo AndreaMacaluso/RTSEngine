@@ -1,7 +1,6 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.DebugClient.Bootstrap;
 using RTSEngine.Core.Players;
 using RTSEngine.DebugClient.StartingConditions;
 
@@ -13,7 +12,7 @@ public static class ScenarioBuilder
     // for the time being this will help with testing but the concept of scenario 
     // will be separete  form the spawn + command
     public static void CreateMovementScenario(
-        SimulationContext context)
+        RuntimeContext context)
     {
         var world = context.World;
         var villagerDefinition =
@@ -30,7 +29,7 @@ public static class ScenarioBuilder
     }
 
     public static void CreeateGatheringScenario(
-        SimulationContext context)
+        RuntimeContext context)
     {
         MatchStartingConditions.CreateStandard(context);
         var world = context.World;
@@ -53,7 +52,7 @@ public static class ScenarioBuilder
         }        
     }
     private static void SpawnUnitWithMoveCommand(
-        SimulationContext context,
+        RuntimeContext context,
         string unitDefinitionId,
         int ownerId,
         GridPosition spawnPosition,
@@ -76,7 +75,7 @@ public static class ScenarioBuilder
         });
     }
     private static void SpawnUnitWithGatherCommand(
-    SimulationContext context,
+    RuntimeContext context,
     string unitDefinitionId,
     int ownerId,
     GridPosition spawnPosition,

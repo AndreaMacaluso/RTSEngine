@@ -3,12 +3,13 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Loader;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.DebugClient.Bootstrap;
 
 public static class SimulationBootstrap
 {
-    public static SimulationContext Create()
+    public static RuntimeContext Create()
     {
         var baseDirectory = AppContext.BaseDirectory;
 
@@ -41,7 +42,7 @@ public static class SimulationBootstrap
         var unitRepository = LoadUnitRepository(unitsPath);
         var buildingRepository = LoadBuildingRepository(buildingsPath);
 
-        return new SimulationContext
+        return new RuntimeContext
         {
             World = world,
             UnitRepository = unitRepository,

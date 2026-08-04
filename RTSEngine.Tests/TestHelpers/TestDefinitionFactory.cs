@@ -38,7 +38,7 @@ public static class TestDefinitionFactory
     {
         return new BuildingDefinition
         {
-            Id = "towncenter",
+            Id = "town_center",
             Name = "towncenter",
             AcceptedResources = [
                 ResourceType.Wood,

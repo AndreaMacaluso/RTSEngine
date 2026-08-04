@@ -251,6 +251,13 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Resource cleanup tests
 - [x] End-to-end gather tests
 - [x] End-to-end construction tests
+- [x] Gather decision tests
+- [x] Gather AI actions tests
+- [x] Construction decision tests
+- [x] Construction AI actions tests
+- [x] Building planner tests
+- [ ] AI system tests
+- [ ] Builder selector tests
 
 ## Debug Client
 
@@ -321,10 +328,34 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Vision memory
 - [ ] Visibility updates
 
+
+## Gameplay
+
+- [x] Player economy
+- [x] Population
+- [x] Population cap
+- [x] AI players
+
+- [ ] Unit production
+- [ ] Tech tree
+
 ---
 
 # Phase 3 — AI Systems
 
+- [x] AI player controller
+- [x] AI update system
+- [x] AI decision interval
+- [x] Runtime AI state
+- [x] Gather decision
+- [x] Construction decision
+- [x] Gather AI actions
+- [x] Construction AI actions
+- [ ] Production decision
+- [ ] Combat decision
+- [ ] Exploration decision
+- [ ] Production AI actions
+- [ ] Combat AI actions
 - [ ] AI command system
 - [ ] Build order execution
 - [ ] Reactive AI behaviors

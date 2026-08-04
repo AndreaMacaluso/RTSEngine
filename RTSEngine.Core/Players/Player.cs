@@ -9,7 +9,7 @@ public sealed class Player
     public PlayerControllerType Controller { get; set; }
     public EconomyState Economy { get; }
     public PopulationState Population { get; }
-    //public PlayerAIState AI { get; }
+    public PlayerAIState AI { get; }
     public Player(
         int id,
         string name,

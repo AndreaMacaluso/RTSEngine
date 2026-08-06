@@ -14,7 +14,7 @@ public class MovementState
 
     public Queue<GridPosition> PathQueue { get; set; } = [];
 
-    public int BlockedTicks { get; set; }
+    public int BlockedTicks { get; set; } = 0;
 
     public bool NeedsRepath { get; set; }
 

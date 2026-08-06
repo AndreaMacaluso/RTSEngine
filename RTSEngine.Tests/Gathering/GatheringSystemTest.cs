@@ -8,6 +8,7 @@ using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Players;
+using System.Diagnostics;
 namespace RTSEngine.Tests.Gathering;
 
 public class GatheringSystemTests
@@ -361,5 +362,205 @@ public class GatheringSystemTests
         //     new GridPosition(5, 5),
         //     villager.Movement.Destination);
         //Assert.NotEmpty(villager.Movement.PathQueue);
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.Loop")]
+    public void GatherLoop_ShouldRetarget_WhenResourceIsDepleted()
+    {
+        // Arrange
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var player = world.GetPlayerById(1)!;
+
+        var villager = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            player.Id,
+            new GridPosition(1, 1));
+
+        world.AddEntity(villager);
+
+        var tree1 = new Tree(new GridPosition(5, 1));
+        var tree2 = new Tree(new GridPosition(8, 1));
+
+        world.AddResource(tree1);
+        world.AddResource(tree2);
+
+        var townCenter = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            player.Id,
+            new GridPosition(1, 5));
+
+        world.AddEntity(townCenter);
+
+        world.AddCommand(new GatherCommand
+        {
+            UnitIds = [villager.Id],
+            ResourceId = tree1.Id
+        });
+
+        // Start gathering
+        SimulationTestHelper.RunTicks(world, 5);
+
+        Assert.Equal(tree1.Id, villager.Gather.TargetResourceId);
+
+        // Force depletion
+        tree1.Amount = 0;
+
+        // Cleanup + retarget
+        SimulationTestHelper.RunTicks(world, 2);
+        Assert.Equal(
+            GatherPhase.MovingToDeposit,
+            villager.Gather.Phase);
+        SimulationTestHelper.RunTicks(world, 5);
+
+       // Assert.True(GatherActions.CanContinueGathering(world, villager));
+        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(tree2.Id, villager.Gather.TargetResourceId);
+        Assert.Equal(
+            GatherPhase.MovingToResource,
+            villager.Gather.Phase);
+    }
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.Loop")]
+    public void GatherLoop_ShouldAllowMultipleVillagersToGatherSameResource()
+    {
+        // Arrange
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var villager1 = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(1, 1));
+
+        var villager2 = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(2, 1));
+
+        world.AddEntity(villager1);
+        world.AddEntity(villager2);
+
+        var townCenter = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            1,
+            new GridPosition(1, 5));
+
+        townCenter.IsCompleted = true;
+
+        world.AddEntity(townCenter);
+
+        var tree = new Tree(new GridPosition(5, 1));
+        world.AddResource(tree);
+
+        world.AddCommand(new GatherCommand
+        {
+            UnitIds = [villager1.Id],
+            ResourceId = tree.Id
+        });
+
+        world.AddCommand(new GatherCommand
+        {
+            UnitIds = [villager2.Id],
+            ResourceId = tree.Id
+        });
+
+        // Act
+        SimulationTestHelper.RunTicks(world, 20);
+            
+        // Assert
+        Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
+        Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
+
+        Assert.Equal(tree.Id, villager1.Gather.TargetResourceId);
+        Assert.Equal(tree.Id, villager2.Gather.TargetResourceId);
+
+        Assert.Equal(GatherPhase.Gathering, villager2.Gather.Phase);
+        Assert.Equal(GatherPhase.Gathering, villager1.Gather.Phase);
+       
+
+        Assert.True(villager1.Gather.CurrentLoad > 0);
+        Assert.True(villager2.Gather.CurrentLoad > 0);
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.Loop")]
+    public void GatherLoop_ShouldAllowDifferentPlayersToGatherSameResource()
+    {
+        // Arrange
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var villager1 = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(1, 1));
+
+        var villager2 = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            2,
+            new GridPosition(2, 1));
+
+        world.AddEntity(villager1);
+        world.AddEntity(villager2);
+
+        var townCenter1 = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            1,
+            new GridPosition(1, 5));
+
+        townCenter1.IsCompleted = true;
+
+        var townCenter2 = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            2,
+            new GridPosition(10, 5));
+
+        townCenter2.IsCompleted = true;
+
+        world.AddEntity(townCenter1);
+        world.AddEntity(townCenter2);
+
+        var tree = new Tree(new GridPosition(5, 1));
+        world.AddResource(tree);
+
+        world.AddCommand(new GatherCommand
+        {
+            UnitIds = [villager1.Id],
+            ResourceId = tree.Id
+        });
+
+        world.AddCommand(new GatherCommand
+        {
+            UnitIds = [villager2.Id],
+            ResourceId = tree.Id
+        });
+
+        // Act
+        SimulationTestHelper.RunTicks(world, 20);
+
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
+
+        // Assert
+        Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
+        Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
+
+        Assert.Equal(tree.Id, villager1.Gather.TargetResourceId);
+        Assert.Equal(tree.Id, villager2.Gather.TargetResourceId);
+
+        Assert.Equal(GatherPhase.Gathering, villager1.Gather.Phase);
+        Assert.Equal(GatherPhase.Gathering, villager2.Gather.Phase);
+
+        Assert.True(villager1.Gather.CurrentLoad > 0);
+        Assert.True(villager2.Gather.CurrentLoad > 0);
+
+        Assert.Equal(0, player1.Economy.Wood);
+        Assert.Equal(0, player2.Economy.Wood);
     }
 }

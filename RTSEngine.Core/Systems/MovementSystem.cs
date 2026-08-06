@@ -7,7 +7,7 @@ namespace RTSEngine.Core.Systems;
 
 public static class MovementSystem
 {
-    private const int RepathThreshold = 5;
+    private const int RepathThreshold = 1;
     public static void Update(GameWorld world)
     {
         

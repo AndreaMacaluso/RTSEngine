@@ -40,6 +40,5 @@ public class GatherState
     public void Clear()
     {
         CurrentLoad = 0;
-        CarriedResource = null;
     }
 }

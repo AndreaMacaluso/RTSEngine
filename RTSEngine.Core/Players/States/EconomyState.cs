@@ -3,37 +3,25 @@ namespace RTSEngine.Core.Players.States;
 
 public sealed class EconomyState
 {
-    public int Wood {get; private set;}
+    private readonly Dictionary<ResourceType,int> _resources = new();
 
-    public int Food {get; private set;}
 
-    public int Gold {get; private set;}
-
-    public int Stone {get; private set;}
+    public int Get(ResourceType type)
+    {
+        return _resources.GetValueOrDefault(type);
+    }
 
 
     public void Add(
         ResourceType type,
         int amount)
     {
-        switch(type)
+        if(!_resources.ContainsKey(type))
         {
-            case ResourceType.Wood:
-                Wood += amount;
-                break;
-
-            case ResourceType.Food:
-                Food += amount;
-                break;
-
-            case ResourceType.Gold:
-                Gold += amount;
-                break;
-
-            case ResourceType.Stone:
-                Stone += amount;
-                break;
+            _resources[type] = 0;
         }
+
+        _resources[type] += amount;
     }
 
 
@@ -41,27 +29,19 @@ public sealed class EconomyState
         ResourceType type,
         int amount)
     {
-        return type switch
-        {
-            ResourceType.Wood => Wood >= amount,
-            ResourceType.Food => Food >= amount,
-            ResourceType.Gold => Gold >= amount,
-            ResourceType.Stone => Stone >= amount,
-            _ => false
-        };
+        return Get(type) >= amount;
     }
 
 
-    public bool Spend(
+    public void Spend(
         ResourceType type,
         int amount)
     {
         if(!Has(type, amount))
-            return false;
+        {
+            return;
+        }
 
-
-        Add(type,-amount);
-
-        return true;
+        _resources[type] -= amount;
     }
 }

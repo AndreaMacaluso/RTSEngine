@@ -25,7 +25,7 @@ public class SimulationRunner
 
     public void Step()
     {
-        CommandSystem.Update(_context.World);
+        CommandSystem.Update(_context);
 
        // AISystem.Update(_context);
 
@@ -36,6 +36,8 @@ public class SimulationRunner
         ResourceCleanupSystem.Update(_context.World);
 
         ConstructionSystem.Update(_context.World);
+
+        ProductionSystem.Update(_context);
 
         _context.World.AdvanceTick();
     }

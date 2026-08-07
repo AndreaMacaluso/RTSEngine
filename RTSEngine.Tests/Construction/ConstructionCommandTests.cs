@@ -5,133 +5,81 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Players;
 
 namespace RTSEngine.Tests.Construction;
 
 public class ConstructionCommandTests
 {
-    [Fact]
-    [Trait("Category", "Building")]
-    public void BuildCommand_ShouldAssignBuildingTask()
+    private readonly RuntimeContext _context;
+    private readonly GameWorld _world;
+    private readonly Player _player;
+
+
+    public ConstructionCommandTests()
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
-
-        world.AddEntity(unit);
-
-        var building  = BuildingFactory.Create(
-        TestDefinitionFactory.CreateHouse(),
-        ownerId: 1,
-        position: new GridPosition(1, 5));
-
-        world.AddEntity(building);
-
-        world.AddCommand(new BuildCommand
+        _context = new RuntimeContext
         {
-            UnitIds = [unit.Id],
-            BuildingId = building.Id
-        });
+            World = TestWorldFactory.CreateWorldWithTwoPlayers(),
 
-        CommandSystem.Update(world);
+            UnitRepository =
+            new UnitDefinitionRepository([]),
 
-        Assert.Equal(UnitTask.Building, unit.CurrentTask);
+            BuildingRepository =
+            new BuildingDefinitionRepository(
+            [
+                TestDefinitionFactory.CreateHouseWithCost(),
+                TestDefinitionFactory.CreateTownCenter()
+            ])
+        };
+
+
+        _world = _context.World;
+        _player = _world.GetPlayerById(1)!;
     }
 
     [Fact]
     [Trait("Category", "Building")]
-    public void BuildCommand_ShouldAssignBuildingId()
+    public void BuildCommand_ShouldAssignConstructionTaskAndMovement()
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
-            new GridPosition(1, 1));
+            new GridPosition(1,1));
 
-        world.AddEntity(unit);
+        _world.AddEntity(unit);
 
-        var building  = BuildingFactory.Create(
-        TestDefinitionFactory.CreateHouse(),
-        ownerId: 1,
-        position: new GridPosition(1, 5));
+        var building = BuildingFactory.Create(
+            TestDefinitionFactory.CreateHouse(),
+            ownerId:1,
+            position:new GridPosition(1,5));
 
-        world.AddEntity(building);
-        world.AddCommand(new BuildCommand
-        {
-            UnitIds = [unit.Id],
-            BuildingId = building.Id
-        });
+        _world.AddEntity(building);
 
-        CommandSystem.Update(world);
 
-        Assert.Equal(building.Id, unit.Build.BuildingId);
-    }
+        _world.AddCommand(
+            new BuildCommand
+            {
+                UnitIds = [unit.Id],
+                BuildingId = building.Id
+            });
 
-    [Fact]
-    [Trait("Category", "Building")]
-    public void BuildCommand_ShouldAssignMovingPhase()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        CommandSystem.Update(_context);
 
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
+        Assert.Equal(
+            UnitTask.Building,
+            unit.CurrentTask);
 
-        world.AddEntity(unit);
-
-        var building  = BuildingFactory.Create(
-        TestDefinitionFactory.CreateHouse(),
-        ownerId: 1,
-        position: new GridPosition(1, 5));
-
-        world.AddEntity(building);
-
-        world.AddCommand(new BuildCommand
-        {
-            UnitIds = [unit.Id],
-            BuildingId = building.Id
-        });
-
-        CommandSystem.Update(world);
+        Assert.Equal(
+            building.Id,
+            unit.Build.BuildingId);
 
         Assert.Equal(
             BuildPhase.MovingToConstruction,
             unit.Build.Phase);
-    }
 
-    [Fact]
-    [Trait("Category", "Building")]
-    public void BuildCommand_ShouldGenerateMovementPath()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
-
-        world.AddEntity(unit);
-
-        var building  = BuildingFactory.Create(
-        TestDefinitionFactory.CreateHouse(),
-        ownerId: 1,
-        position: new GridPosition(1, 5));
-
-        world.AddEntity(building);
-
-        world.AddCommand(new BuildCommand
-        {
-            UnitIds = [unit.Id],
-            BuildingId = building.Id
-        });
-
-        CommandSystem.Update(world);
-
-        Assert.NotEmpty(unit.Movement.PathQueue);
+        Assert.NotEmpty(
+            unit.Movement.PathQueue);
     }
 }

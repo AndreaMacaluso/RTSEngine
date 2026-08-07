@@ -39,7 +39,7 @@ public class BuildingPlacementActionsTests
 
         var definition = TestDefinitionFactory.CreateHouseWithCost();
 
-        var woodBefore = player.Economy.Wood;
+        var woodBefore = player.Economy.Get(ResourceType.Wood);
 
         var result = BuildingPlacementActions.PlaceFoundation(
             world,
@@ -49,7 +49,7 @@ public class BuildingPlacementActionsTests
         Assert.NotNull(result);
         Assert.Equal(
             woodBefore - 100,
-            player.Economy.Wood);
+            player.Economy.Get(ResourceType.Wood));
     }
 
     [Fact]

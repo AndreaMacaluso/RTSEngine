@@ -4,35 +4,39 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
 public static class CommandSystem
 {
-    public static void Update(GameWorld world)
+    public static void Update(RuntimeContext context)
     {
-        while (world.PendingCommands.Count > 0)
+        while (context.World.PendingCommands.Count > 0)
         {
-            var command = world.PendingCommands.Dequeue();
+            var command = context.World.PendingCommands.Dequeue();
 
-            ProcessCommand(world, command);
+            ProcessCommand(context, command);
         }
     }
 
     private static void ProcessCommand(
-        GameWorld world,
+        RuntimeContext context,
         ICommand command)
     {
         switch (command)
         {
             case MoveCommand moveCommand:
-                ProcessMoveCommand(world, moveCommand);
+                ProcessMoveCommand(context.World, moveCommand);
                 break;
             case GatherCommand gatherCommand:
-                HandleGather(world, gatherCommand);
+                HandleGather(context.World, gatherCommand);
                 break;
             case BuildCommand buildCommand:
-                HandleBuild(world, buildCommand);
+                HandleBuild(context.World, buildCommand);
+                break;
+            case QueueProductionCommand productionCommand:
+                HandleProduction(context, productionCommand);
                 break;
         }
     }
@@ -147,5 +151,39 @@ public static class CommandSystem
         unit.Movement.Destination = target;
         unit.Movement.CurrentStep = null;
 
+    }
+
+    private static void HandleProduction(
+    RuntimeContext context,
+    QueueProductionCommand command)
+    {
+
+        GameWorld world = context.World;
+
+        var building = world.GetBuildingById(command.BuildingId);
+
+        if (building == null)
+        {
+            return;
+        }
+
+        var player =world.GetPlayerById(command.PlayerId);
+
+        if (player == null)
+        {
+            return;
+        }
+
+        var productionDefinition = context.UnitRepository.Get(command.ProductId);
+
+        if (!building.Definition.Produces.Contains(productionDefinition.Id))
+        {
+            return;
+        }
+
+    
+        building.Production.Add(
+            new ProductionTask(productionDefinition.Id,productionDefinition.ProductionTimeTicks)
+        );
     }
 }

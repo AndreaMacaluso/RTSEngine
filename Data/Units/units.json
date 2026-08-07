@@ -10,6 +10,7 @@
       "Amount": 50
     }
     ],
+    "productionTimeTicks": 15,
     "gatherCapacity": 20,
     "buildableBuildings":[
       "towncenter",
@@ -25,7 +26,8 @@
     {
       "Type": "Food",
       "Amount": 50
-    }
-  ]
+    }  
+  ],
+  "productionTimeTicks": 30
   }
 ]

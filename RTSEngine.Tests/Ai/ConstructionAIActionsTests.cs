@@ -84,7 +84,7 @@ public class ConstructionAIActionsTests
             _player,
             "house");
 
-        CommandSystem.Update(_world);
+        CommandSystem.Update(_context);
 
         // Assert
         Assert.Equal(

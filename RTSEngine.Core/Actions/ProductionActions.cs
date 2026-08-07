@@ -1,0 +1,86 @@
+using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Commands;
+using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Entities.Runtime;
+namespace RTSEngine.Core.Actions;
+
+public static class ProductionActions
+{
+    public static void ProduceOneTick(
+        RuntimeContext context,
+        Building building)
+    {
+        var task = building.Production.Current;
+
+        if (task == null)
+        {
+            return;
+        }
+
+        task.Tick();
+
+        if (!task.Completed)
+        {
+            return;
+        }
+        //@ToDo if spawn point does not exist the produced unit is lost
+        SpawnUnit(
+            context,
+            building,
+            task);
+
+        building.Production.RemoveCurrent();
+    }
+
+    private static void SpawnUnit(
+        RuntimeContext context,
+        Building building,
+        ProductionTask task)
+    {
+        var definition =
+            context.UnitRepository.Get(task.ProductId);
+
+        var spawnPosition = building.Production.SpawnPoint;
+
+        if (spawnPosition is null)
+        {
+            return;
+        }
+        
+        Unit unit = UnitFactory.Create(
+            definition,
+            building.OwnerId,
+            spawnPosition.Value);
+
+        context.World.AddEntity(unit);
+    }
+
+    public static bool TrainUnit(
+    RuntimeContext context,
+    Building building,
+    string unitId)
+    {
+        if (!context.UnitRepository.Exists(unitId))
+        {
+            return false;
+        }
+
+        if (!building.Definition.Produces.Contains(unitId))
+        {
+            return false;
+        }
+
+        context.World.AddCommand(
+            new QueueProductionCommand
+            (
+                building.Id,
+                building.OwnerId,
+                unitId
+        ));
+
+        return true;
+    }
+}

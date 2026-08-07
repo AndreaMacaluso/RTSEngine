@@ -350,11 +350,11 @@ public class GatheringSystemTests
         Assert.Equal(0, villager.Gather.CurrentLoad);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
-        Assert.Equal(20, player.Economy.Wood);
+        Assert.Equal(20, player.Economy.Get(ResourceType.Wood));
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
         Assert.True(tree.Amount < initialAmount);
                 // Assert
-        // Assert.True(player.Economy.Wood > 0);
+        // Assert.True(player.Economy.Get(ResourceType.Wood) > 0);
 
         // Assert.True(tree.Amount < initialAmount);
         // Assert.Equal(

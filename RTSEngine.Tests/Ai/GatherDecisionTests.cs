@@ -46,7 +46,7 @@ public class GatherDecisionTests
         // Act
         GatherDecision.Execute(_world, _player);
 
-        CommandSystem.Update(_world);
+        CommandSystem.Update(_context);
 
         // Assert
         Assert.Equal(
@@ -76,7 +76,7 @@ public class GatherDecisionTests
         // Act
         GatherDecision.Execute(_world, _player);
 
-        CommandSystem.Update(_world);
+        CommandSystem.Update(_context);
 
         // Assert
         Assert.Equal(
@@ -101,7 +101,7 @@ public class GatherDecisionTests
         // Act
         GatherDecision.Execute(_world, _player);
 
-        CommandSystem.Update(_world);
+        CommandSystem.Update(_context);
 
         // Assert
         Assert.Equal(

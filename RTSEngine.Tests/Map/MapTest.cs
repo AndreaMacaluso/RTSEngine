@@ -1,9 +1,7 @@
-using RTSEngine.Core.Map;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.Map.Definitions;
 
-using Xunit;
 
 namespace RTSEngine.Tests.Map;
 public class MapTest

@@ -19,7 +19,8 @@ public static class TestDefinitionFactory
             BuildableBuildings = [
                 "towncenter",
                 "house"
-                ]
+                ],
+            Costs = [new(ResourceType.Food,50)]
         };
     }
      public static UnitDefinition CreateMilitia(
@@ -42,7 +43,8 @@ public static class TestDefinitionFactory
             Name = "towncenter",
             AcceptedResources = [
                 ResourceType.Wood,
-            ]  
+            ],
+            Produces = ["villager"]
         };
 
     }

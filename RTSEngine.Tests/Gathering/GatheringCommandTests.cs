@@ -6,126 +6,67 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Entities.Definitions;
 
 namespace RTSEngine.Tests.Gathering;
 
 public class GatherCommandTests
 {
-    [Fact]
-    [Trait("Category", "GatheringCommand")]
-    [Trait("Category", "Gathering")]
-    public void GatherCommand_ShouldAssignGatherTask()
+    private readonly RuntimeContext _context;
+    private readonly GameWorld _world;
+
+    public GatherCommandTests()
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
-
-        world.AddEntity(unit);
-
-        var tree = new Tree(new GridPosition(5, 5));
-        world.AddResource(tree);
-
-        var command = new GatherCommand
+        _context = new RuntimeContext
         {
-            UnitIds = [unit.Id],
-            ResourceId = tree.Id
+            World = TestWorldFactory.CreateWorldWithTwoPlayers(),
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([])
         };
 
-        world.AddCommand(command);
-        SimulationTestHelper.RunTicks(world,1);
-        //CommandSystem.Update(world);
-
-        Assert.Equal(UnitTask.Gathering, unit.CurrentTask);
+        _world = _context.World;
     }
+
 
     [Fact]
     [Trait("Category", "GatheringCommand")]
     [Trait("Category", "Gathering")]
-    public void GatherCommand_ShouldAssignTargetResource()
+    public void GatherCommand_ShouldAssignGatherTaskAndMovement()
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
-            new GridPosition(1, 1));
+            new GridPosition(1,1));
 
-        world.AddEntity(unit);
+        _world.AddEntity(unit);
 
-        var tree = new Tree(new GridPosition(5, 5));
-        world.AddResource(tree);
+        var tree = new Tree(
+            new GridPosition(5,5));
 
-        var command = new GatherCommand
-        {
-            UnitIds = [unit.Id],
-            ResourceId = tree.Id
-        };
+        _world.AddResource(tree);
 
-        world.AddCommand(command);
+        _world.AddCommand(
+            new GatherCommand
+            {
+                UnitIds = [unit.Id],
+                ResourceId = tree.Id
+            });
 
-        CommandSystem.Update(world);
+        CommandSystem.Update(_context);
 
-        Assert.Equal(tree.Id, unit.Gather.TargetResourceId);
-    }
+        Assert.Equal(
+            UnitTask.Gathering,
+            unit.CurrentTask);
 
-    [Fact]
-    [Trait("Category", "GatheringCommand")]
-    [Trait("Category", "Gathering")]
-    public void GatherCommand_ShouldAssignMovingToResourcePhase()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
-
-        world.AddEntity(unit);
-
-        var tree = new Tree(new GridPosition(5, 5));
-        world.AddResource(tree);
-
-        world.AddCommand(new GatherCommand
-        {
-            UnitIds = [unit.Id],
-            ResourceId = tree.Id
-        });
-
-        CommandSystem.Update(world);
+        Assert.Equal(
+            tree.Id,
+            unit.Gather.TargetResourceId);
 
         Assert.Equal(
             GatherPhase.MovingToResource,
             unit.Gather.Phase);
-    }
 
-    [Fact]
-    [Trait("Category", "GatheringCommand")]
-    [Trait("Category", "Gathering")]
-    public void GatherCommand_ShouldAssignMovementPath()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-
-        var unit = UnitFactory.Create(
-            TestDefinitionFactory.CreateVillager(),
-            1,
-            new GridPosition(1, 1));
-
-        world.AddEntity(unit);
-
-        var tree = new Tree(new GridPosition(5, 5));
-        world.AddResource(tree);
-
-        world.AddCommand(new GatherCommand
-        {
-            UnitIds = [unit.Id],
-            ResourceId = tree.Id
-        });
-
-        CommandSystem.Update(world);
-
-        Assert.NotEmpty(unit.Movement.PathQueue);
+        Assert.NotEmpty(
+            unit.Movement.PathQueue);
     }
 }

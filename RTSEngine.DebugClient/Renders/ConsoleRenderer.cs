@@ -224,10 +224,10 @@ public static class ConsoleRenderer
 
             Console.WriteLine(
                 $"P{player.Id} {player.Name} | " +
-                $"Wood {player.Economy.Wood} | " +
-                $"Food {player.Economy.Food} | " +
-                $"Gold {player.Economy.Gold} | " +
-                $"Stone {player.Economy.Stone}");
+                $"Wood {player.Economy.Get(ResourceType.Wood)} | " +
+                $"Food {player.Economy.Get(ResourceType.Food)} | " +
+                $"Gold {player.Economy.Get(ResourceType.Gold)} | " +
+                $"Stone {player.Economy.Get(ResourceType.Stone)}");
         }
 
         Console.ResetColor();

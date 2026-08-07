@@ -169,12 +169,15 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Dynamic deposit selection
 
 ### Production Loop
-- [ ] Building production queue
-- [ ] Unit training command
-- [ ] Training progress system
-- [ ] Resource payment on production
-- [ ] Unit spawn from building
-- [ ] End-to-end production cycle
+
++ [x] Building production queue
++ [x] Unit training command
++ [x] Training progress system
++ [x] Unit spawn from building
++ [x] End-to-end production cycle
++ [ ] Resource payment validation
++ [ ] Resource payment on production command
++ [ ] Production cancellation / refund
 
 ### Construction Loop
 
@@ -197,8 +200,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Villager spawn
 - [x] Gather loop
 - [x] Construction loop
-
-- [ ] Production loop
+- [x] Production loop
 - [ ] Combat loop
 
 ## World Queries
@@ -219,9 +221,10 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Unit definition repository
 - [x] Unit factory
 - [x] Building definitions from JSON
-- [ ] Building definition loader
+- [x] Building definition loader
 - [ ] Runtime unit state model
 - [ ] Runtime building state model
+
 ---
 
 ## Testing
@@ -258,6 +261,11 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Building planner tests
 - [ ] AI system tests
 - [ ] Builder selector tests
+- [x] Production state tests
+- [x] Production action tests
+- [x] Production system tests
+- [x] Production command tests
+- [x] End-to-end unit production tests
 
 ## Debug Client
 
@@ -308,7 +316,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Building refund
 - [ ] Repair system
 - [ ] Building destruction
-- [ ] Production buildings
+- [x] Production buildings
 - [ ] Drop-off buildings
 
 ---

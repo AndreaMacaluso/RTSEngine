@@ -54,6 +54,8 @@ public static class ProductionActions
             spawnPosition.Value);
 
         context.World.AddEntity(unit);
+
+        CompleteUnitSpawned(context, building);
     }
 
     public static bool TrainUnit(
@@ -80,5 +82,35 @@ public static class ProductionActions
         ));
 
         return true;
+    }
+
+    public static bool TryTrainUnit(
+    RuntimeContext context,
+    Building building,
+    string unitId)
+    {
+        if (!context.UnitRepository.Exists(unitId)) { return false; }
+        if (!building.Definition.Produces.Contains(unitId)) { return false; }
+
+        var unitDefinition = context.UnitRepository.Get(unitId);
+        var player = context.World.GetPlayerById(building.OwnerId)!;
+
+        foreach (var cost in unitDefinition.Costs)
+            if (!player.Economy.Has(cost.Type, cost.Amount)) { return false; }
+
+        if (!PopulationActions.TryReservePopulation(player, 1)) { return false; }
+
+        foreach (var cost in unitDefinition.Costs)
+            player.Economy.Spend(cost.Type, cost.Amount);
+
+        return TrainUnit(context, building, unitId);
+    }
+
+    private static void CompleteUnitSpawned(
+        RuntimeContext context,
+        Building building)
+    {
+        var player = context.World.GetPlayerById(building.OwnerId)!;
+        PopulationActions.CompleteReservedPopulation(player, 1);
     }
 }

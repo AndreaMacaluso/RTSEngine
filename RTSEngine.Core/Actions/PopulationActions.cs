@@ -1,8 +1,4 @@
-using RTSEngine.Core.Commands;
-using RTSEngine.Core.Entities.Buildings;
-using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Players;
-using RTSEngine.Core.State;
 
 namespace RTSEngine.Core.Actions;
 
@@ -83,42 +79,13 @@ public static class PopulationActions
                 MaxPopulation);
     }
 
-     public static void DecreaseCap(
-         Player player,
-         int amount)
+    public static void DecreaseCap(
+        Player player,
+        int amount)
     {
         player.Population.Capacity =
             Math.Max(
                 0,
                 player.Population.Capacity - amount);
-    }
-
-    public static bool TryTrainUnit(
-        RuntimeContext context,
-        Building building,
-        string unitId)
-    {
-        if (!context.UnitRepository.Exists(unitId)) { return false; }
-        if (!building.Definition.Produces.Contains(unitId)) { return false; }
-
-        var unitDefinition = context.UnitRepository.Get(unitId);
-        var player = context.World.GetPlayerById(building.OwnerId)!;
-
-        foreach (var cost in unitDefinition.Costs)
-        {
-            if (!player.Economy.Has(cost.Type, cost.Amount)) { return false; }
-        }
-        if (!TryReservePopulation(player, 1)) { return false; }
-
-        foreach (var cost in unitDefinition.Costs)
-        {
-            player.Economy.Spend(cost.Type, cost.Amount);
-        }
-        context.World.AddCommand(new TrainUnitCommand
-        {
-            BuildingId = building.Id,
-            UnitDefinitionId = unitId
-        });
-        return true;
     }
 }

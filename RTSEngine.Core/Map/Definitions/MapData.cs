@@ -9,7 +9,9 @@ public class MapData
 
     public List<string> Rows { get; set; } = new();
 
-    public required List<ResourceDefinition> Resources { get; init; }
+    public List<ResourceDefinition> Resources { get; init; } = [];
 
-    public required List<SpawnPointDefinition> Spawns { get; init; }
+    public List<SpawnPointDefinition> Spawns { get; init; } = [];
+
+    public MapGenerationDefinition? Generation { get; init; }
 }

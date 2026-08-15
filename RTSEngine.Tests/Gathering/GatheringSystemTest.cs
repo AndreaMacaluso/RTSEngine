@@ -560,7 +560,7 @@ public class GatheringSystemTests
         Assert.True(villager1.Gather.CurrentLoad > 0);
         Assert.True(villager2.Gather.CurrentLoad > 0);
 
-        Assert.Equal(0, player1.Economy.Wood);
-        Assert.Equal(0, player2.Economy.Wood);
+        Assert.Equal(0, player1.Economy.Get(ResourceType.Wood));
+        Assert.Equal(0, player2.Economy.Get(ResourceType.Wood));
     }
 }

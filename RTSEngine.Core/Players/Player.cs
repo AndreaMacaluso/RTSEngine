@@ -7,6 +7,7 @@ public sealed class Player
     public string Name { get; set; } = "";
     public ConsoleColor Color { get; set; }
     public PlayerControllerType Controller { get; set; }
+    public int Score { get; set; }
     public EconomyState Economy { get; }
     public PopulationState Population { get; }
     public PlayerAIState AI { get; }

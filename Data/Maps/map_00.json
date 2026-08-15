@@ -4,24 +4,24 @@
     "seed": 48291,
     "width": 40,
     "height": 40,
-    "spawnInset": 7,
-    "baseClearRadius": 5,
-    "resourceSeparation": 3,
+    "spawnInset": 5,
+    "baseClearRadius": 3,
+    "resourceSeparation": 1,
     "resourceClusters": [
       {
         "type": "tree",
         "clustersPerPlayer": 2,
         "nodesPerCluster": 5,
-        "minDistanceFromSpawn": 6,
-        "maxDistanceFromSpawn": 10,
+        "minDistanceFromSpawn": 5,
+        "maxDistanceFromSpawn": 12,
         "clusterRadius": 2
       },
       {
         "type": "berry_bush",
         "clustersPerPlayer": 2,
-        "nodesPerCluster": 7,
-        "minDistanceFromSpawn": 6,
-        "maxDistanceFromSpawn": 10,
+        "nodesPerCluster": 5,
+        "minDistanceFromSpawn": 4,
+        "maxDistanceFromSpawn": 12,
         "clusterRadius": 2
       },
       {

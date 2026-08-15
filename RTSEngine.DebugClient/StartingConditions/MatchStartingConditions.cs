@@ -18,6 +18,8 @@ public static class MatchStartingConditions
                 context,
                 player.Id,
                 new GridPosition(spawn.X, spawn.Y));
+
+            GrantStartingResources(player);
         }
     }
 
@@ -52,5 +54,13 @@ public static class MatchStartingConditions
             context,
             ownerId,
             new GridPosition(center.X, center.Y + 4));
+    }
+
+    private static void GrantStartingResources(Player player)
+    {
+        player.Economy.Add(ResourceType.Wood, 200);
+        player.Economy.Add(ResourceType.Food, 200);
+        player.Economy.Add(ResourceType.Gold, 100);
+        player.Economy.Add(ResourceType.Stone, 100);
     }
 }

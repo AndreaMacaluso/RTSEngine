@@ -36,6 +36,7 @@ public static class SimulationBootstrap
         foreach (var spawn in world.Spawns)
         {
             var player = PlayerFactory.Create(spawn.PlayerId);
+            player.Controller = PlayerControllerType.AI;
             world.AddPlayer(player);
         }
         

@@ -1,6 +1,7 @@
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Actions;
 namespace RTSEngine.DebugClient.StartingConditions;
@@ -46,6 +47,14 @@ public static class EntitySpawner
 
         building.IsCompleted = true;
         building.CurrentHealth = definition.MaxHealth;
+
+        var center = new GridPosition(
+            position.X + definition.Width / 2,
+            position.Y + definition.Height / 2);
+        var spawnPoint =
+            WorldQueries.FindAdjacentWalkableTile(context.World, center)
+            ?? new GridPosition(position.X + definition.Width, position.Y);
+        building.Production.SpawnPoint = spawnPoint;
 
         context.World.AddEntity(building);
 

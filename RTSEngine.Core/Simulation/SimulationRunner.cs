@@ -27,7 +27,7 @@ public class SimulationRunner
     {
         CommandSystem.Update(_context);
 
-       // AISystem.Update(_context);
+        AISystem.Update(_context);
 
         MovementSystem.Update(_context.World);
 

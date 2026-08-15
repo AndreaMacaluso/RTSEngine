@@ -26,7 +26,7 @@ public sealed class Player
 
         Population = new PopulationState();
 
-        //AI = new PlayerAIState();
+        AI = new PlayerAIState();
     }
 
     public Player()
@@ -35,6 +35,6 @@ public sealed class Player
 
         Population = new PopulationState();
 
-        //AI = new PlayerAIState();
+        AI = new PlayerAIState();
     }
 }

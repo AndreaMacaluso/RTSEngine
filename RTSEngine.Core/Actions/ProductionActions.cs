@@ -76,8 +76,8 @@ public static class ProductionActions
         context.World.AddCommand(
             new QueueProductionCommand
             (
-                building.Id,
                 building.OwnerId,
+                building.Id,
                 unitId
         ));
 

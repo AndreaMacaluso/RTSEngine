@@ -98,10 +98,6 @@ public void Builder_Should_ConstructBuilding_FromStartToFinish()
 
     world.AddEntity(building);
 
-    villager.Movement.NeedsRepath = true;
-    villager.Build.BuildPosition = building.Position;  
-    villager.Build.BuildingId = building.Id;
-
     world.AddCommand(new BuildCommand
     {
         UnitIds = [villager.Id],

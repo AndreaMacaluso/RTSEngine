@@ -110,4 +110,91 @@ public class GatherDecisionTests
 
         Assert.Null(villager.Gather.TargetResourceId);
     }
+
+    [Fact]
+    [Trait("Category", "AI")]
+    public void Execute_ShouldAssignTwoVillagersToSameResource()
+    {
+        // Arrange - 2 idle villagers, 1 tree
+        var villager1 = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            _player.Id,
+            new GridPosition(5, 5));
+
+        var villager2 = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            _player.Id,
+            new GridPosition(6, 5));
+
+        _world.AddEntity(villager1);
+        _world.AddEntity(villager2);
+
+        _world.AddResource(
+            new Tree(new GridPosition(10, 5)));
+
+        // Act
+        GatherDecision.Execute(_world, _player);
+
+        CommandSystem.Update(_context);
+
+        // Assert - both should gather (min 2 per resource)
+        Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
+        Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
+        Assert.NotNull(villager1.Gather.TargetResourceId);
+        Assert.NotNull(villager2.Gather.TargetResourceId);
+    }
+
+    [Fact]
+    [Trait("Category", "AI")]
+    public void Execute_ShouldPrioritizeFoodOverWood()
+    {
+        // Arrange - 1 idle villager, 1 berry bush (food), 1 tree (wood)
+        var villager = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            _player.Id,
+            new GridPosition(5, 5));
+
+        _world.AddEntity(villager);
+
+        _world.AddResource(
+            new BerryBush(new GridPosition(10, 5)));
+
+        _world.AddResource(
+            new Tree(new GridPosition(5, 10)));
+
+        // Act
+        GatherDecision.Execute(_world, _player);
+
+        CommandSystem.Update(_context);
+
+        // Assert - should gather food first (higher priority)
+        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(ResourceType.Food, villager.Gather.CarriedResource);
+    }
+
+    [Fact]
+    [Trait("Category", "AI")]
+    public void Execute_ShouldSkipResource_WhenTargetReached()
+    {
+        // Arrange - 1 idle villager, 1 tree, but wood >= 500
+        var villager = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            _player.Id,
+            new GridPosition(5, 5));
+
+        _world.AddEntity(villager);
+
+        _world.AddResource(
+            new Tree(new GridPosition(10, 5)));
+
+        _player.Economy.Add(ResourceType.Wood, 500);
+
+        // Act
+        GatherDecision.Execute(_world, _player);
+
+        CommandSystem.Update(_context);
+
+        // Assert - should not gather wood (target reached)
+        Assert.Equal(UnitTask.Idle, villager.CurrentTask);
+    }
 }

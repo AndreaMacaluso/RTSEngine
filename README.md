@@ -99,9 +99,9 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Berry bush resource node
 - [x] Spawn point definitions
 - [x] 40x40 debug map support
-- [ ] Resource placement validation
-- [ ] Spawn validation rules
-- [ ] Procedural map generation
+- [x] Resource placement validation
+- [x] Spawn validation rules
+- [x] Procedural map generation
 
 ---
 
@@ -117,7 +117,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Runtime unit rendering
 - [x] Runtime debug controls
 - [x] Tick pause system
-- [ ] Debug overlays
+- [x] Debug overlays
 
 ---
 ## Command System
@@ -166,7 +166,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Gather state machine
 - [ ] End-to-end villager gather cycle
 - [ ] Gather interruption handling
-- [ ] Dynamic deposit selection
+- [x] Dynamic deposit selection
 
 ### Production Loop
 
@@ -175,8 +175,8 @@ Build a deterministic, renderer-independent RTS simulation core.
 + [x] Training progress system
 + [x] Unit spawn from building
 + [x] End-to-end production cycle
-+ [ ] Resource payment validation
-+ [ ] Resource payment on production command
++ [x] Resource payment validation
++ [x] Resource payment on production command
 + [ ] Production cancellation / refund
 
 ### Construction Loop
@@ -259,7 +259,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Construction decision tests
 - [x] Construction AI actions tests
 - [x] Building planner tests
-- [ ] AI system tests
+- [x] AI system tests
 - [ ] Builder selector tests
 - [x] Production state tests
 - [x] Production action tests
@@ -273,6 +273,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Runtime simulation host
 - [x] World initialization pipeline
 - [x] Movement demonstration scenario
+- [x] AI player integration
 - [ ] Interactive unit selection
 - [ ] Runtime command issuing
 - [ ] Scenario selection
@@ -344,7 +345,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Population cap
 - [x] AI players
 
-- [ ] Unit production
+- [x] Unit production
 - [ ] Tech tree
 
 ---
@@ -359,10 +360,10 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Construction decision
 - [x] Gather AI actions
 - [x] Construction AI actions
-- [ ] Production decision
+- [x] Production decision
 - [ ] Combat decision
 - [ ] Exploration decision
-- [ ] Production AI actions
+- [x] Production AI actions
 - [ ] Combat AI actions
 - [ ] AI command system
 - [ ] Build order execution

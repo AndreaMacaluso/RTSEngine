@@ -9,7 +9,7 @@ public static class MatchStartingConditions
     public static void CreateStandard(
         RuntimeContext context)
     {
-        foreach (Player player in context.World.Players)
+        foreach (var player in context.World.Players)
         {
             var spawn = context.World.Spawns
                 .First(s => s.PlayerId == player.Id);
@@ -24,8 +24,15 @@ public static class MatchStartingConditions
     private static void CreateStartingBase(
         RuntimeContext context,
         int ownerId,
-        GridPosition center)
+        GridPosition spawnCorner)
     {
+        var definition = context.BuildingRepository.Get("town_center");
+        var halfW = definition.Width / 2;
+        var halfH = definition.Height / 2;
+        var center = new GridPosition(
+            spawnCorner.X + halfW,
+            spawnCorner.Y + halfH);
+
         EntitySpawner.SpawnTownCenter(
             context,
             ownerId,
@@ -34,16 +41,16 @@ public static class MatchStartingConditions
         EntitySpawner.SpawnVillager(
             context,
             ownerId,
-            new GridPosition(center.X - 2, center.Y));
+            new GridPosition(center.X + 4, center.Y));
 
         EntitySpawner.SpawnVillager(
             context,
             ownerId,
-            new GridPosition(center.X, center.Y - 2));
+            new GridPosition(center.X - 4, center.Y));
 
         EntitySpawner.SpawnVillager(
             context,
             ownerId,
-            new GridPosition(center.X + 2, center.Y));
+            new GridPosition(center.X, center.Y + 4));
     }
 }

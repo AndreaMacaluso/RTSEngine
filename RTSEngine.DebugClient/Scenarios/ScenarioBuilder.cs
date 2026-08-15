@@ -9,6 +9,12 @@ namespace RTSEngine.DebugClient.Scenarios;
 
 public static class ScenarioBuilder
 {
+    public static void CreateStartingBaseScenario(
+        RuntimeContext context)
+    {
+        MatchStartingConditions.CreateStandard(context);
+    }
+
     // for the time being this will help with testing but the concept of scenario 
     // will be separete  form the spawn + command
     public static void CreateMovementScenario(
@@ -31,7 +37,6 @@ public static class ScenarioBuilder
     public static void CreeateGatheringScenario(
         RuntimeContext context)
     {
-        MatchStartingConditions.CreateStandard(context);
         var world = context.World;
         var villagerDefinition =
             context.UnitRepository.Get("villager");

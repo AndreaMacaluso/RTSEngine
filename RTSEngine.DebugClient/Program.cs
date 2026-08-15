@@ -26,19 +26,26 @@ class Program
         DebugSession.Initialize(logger);
 
         DebugSession.Log.Info("Simulation Starting");
-      
 
-        //DebugSession.Dump(...);
-        var context = SimulationBootstrap.Create();
-        DebugSession.Log.Info("context Created");
-        DebugSession.Log.Info("CreeateGatheringScenario");
-        // ScenarioBuilder.CreateMovementScenario(context);
-        ScenarioBuilder.CreeateGatheringScenario(context);
-        DebugSession.Log.Info("Create Simulation Runners");
-        var simulation = new SimulationRunner(context);
+        try
+        {
+            var context = SimulationBootstrap.Create();
+            DebugSession.Log.Info("context Created");
+            DebugSession.Log.Info("CreateStartingBaseScenario");
+            ScenarioBuilder.CreateStartingBaseScenario(context);
+            DebugSession.Log.Info("Create Simulation Runners");
+            var simulation = new SimulationRunner(context);
 
-        SimulationHost.Run(
-            context.World,
-            simulation);
+            SimulationHost.Run(
+                context.World,
+                simulation);
+        }
+        catch (Exception ex)
+        {
+            DebugSession.Log.Error(
+                "Simulation failed",
+                exception: ex);
+            throw;
+        }
     }
 }

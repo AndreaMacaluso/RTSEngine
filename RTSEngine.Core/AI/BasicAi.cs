@@ -10,7 +10,8 @@ public static class BasicAI
         RuntimeContext context,
         Player player)
     {
-        GatherDecision.Execute(context.World ,player);
-        //ConstructionDecision.Execute(world,player);
+        ProductionDecision.Execute(context, player);
+        ConstructionDecision.Execute(context, player);
+        GatherDecision.Execute(context.World, player);
     }
 }

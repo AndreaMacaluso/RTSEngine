@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Actions;
 using RTSEngine.Tests.TestHelpers;
 namespace RTSEngine.Tests.Production;
 
@@ -81,6 +82,10 @@ public class ProductionSystemTests
                 new GridPosition(5,5));
         building.Production.SpawnPoint = new GridPosition(7,7);
         _world.AddEntity(building);
+
+        var player = _world.GetPlayerById(1)!;
+        PopulationActions.IncreaseCap(player, 5);
+        PopulationActions.TryReservePopulation(player, 1);
 
         var spawnPoint = new GridPosition(6,5);
         building.Production.SpawnPoint = spawnPoint;

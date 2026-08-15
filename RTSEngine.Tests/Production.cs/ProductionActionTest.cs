@@ -91,6 +91,10 @@ public class ProductionActionTests
     [Trait("Category", "Production")]
     public void ProduceOneTick_ShouldSpawnUnit_WhenCompleted()
     {
+        var player = _world.GetPlayerById(1)!;
+        PopulationActions.IncreaseCap(player, 5);
+        PopulationActions.TryReservePopulation(player, 1);
+
         _townCenter.Production.Add(
             new ProductionTask(
                 "villager",
@@ -116,6 +120,10 @@ public class ProductionActionTests
     [Trait("Category", "Production")]
     public void ProduceOneTick_ShouldRemoveCompletedTask()
     {
+        var player = _world.GetPlayerById(1)!;
+        PopulationActions.IncreaseCap(player, 5);
+        PopulationActions.TryReservePopulation(player, 1);
+
         _townCenter.Production.Add(
             new ProductionTask(
                 "villager",

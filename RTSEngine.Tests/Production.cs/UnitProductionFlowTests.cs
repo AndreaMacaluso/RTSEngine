@@ -7,6 +7,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Actions;
 
 namespace RTSEngine.Tests.Production;
 
@@ -86,39 +87,54 @@ public class UnitProductionFlowTests
 
     [Fact]
     [Trait("Category", "Production")]
-    public void Villager_ShouldSpawnAfterProductionTime()
+    public void TryTrainUnit_SucceedsWhenResourcesAndPopulationAllow()
     {
         var building =
             BuildingFactory.Create(
                 TestDefinitionFactory.CreateTownCenter(),
                 1,
-                new GridPosition(3,3));
-        building.Production.SpawnPoint = new GridPosition(7,7);
+                new GridPosition(3, 3));
         _world.AddEntity(building);
 
-        _world.AddCommand(
-            new QueueProductionCommand
-            (
-                building.Id,
+        var player = _world.GetPlayerById(1)!;
+        player.Economy.Add(ResourceType.Food, 50);
+        player.Population.Capacity = 10;
+
+        var result = ProductionActions.TryTrainUnit(
+            _context,
+            building,
+            "villager");
+
+        Assert.True(result);
+        var pending = _world.PendingCommands.ToArray();
+        Assert.Single(pending);
+        Assert.IsType<QueueProductionCommand>(pending[0]);
+        Assert.Equal(0, player.Economy.Get(ResourceType.Food));
+        Assert.Equal(1, player.Population.Reserved);
+    }
+
+    [Fact]
+    [Trait("Category", "Production")]
+    public void TryTrainUnit_FailsWhenInsufficientResources()
+    {
+        var building =
+            BuildingFactory.Create(
+                TestDefinitionFactory.CreateTownCenter(),
                 1,
-               "villager"
-            ));
+                new GridPosition(3, 3));
+        _world.AddEntity(building);
 
-        var simulation =
-            new SimulationRunner(_context);
+        var player = _world.GetPlayerById(1)!;
+        player.Population.Capacity = 10;
 
-        for(int i=0;i<2;i++)
-        {
-            simulation.Step();
-        }
+        var result = ProductionActions.TryTrainUnit(
+            _context,
+            building,
+            "villager");
 
-        var unit =
-            _world.Entities
-            .OfType<Unit>()
-            .FirstOrDefault();
-
-
-        Assert.NotNull(unit);
-        Assert.Equal(1, unit.OwnerId);
+        Assert.False(result);
+        Assert.Null(building.Production.Current);
+        Assert.Empty(_world.PendingCommands);
+        Assert.Equal(0, player.Population.Reserved);
     }
 }

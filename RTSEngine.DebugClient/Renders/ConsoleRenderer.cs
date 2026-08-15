@@ -4,7 +4,8 @@ using RTSEngine.Core.Map;
 using RTSEngine.Core.Map.Definitions;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.Entities;
+using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Helpers;
 
 namespace RTSEngine.DebugClient.Renders;
 
@@ -37,12 +38,25 @@ public static class ConsoleRenderer
     {
         var tile = world.Map.GetTile(x, y);
 
-        var spawn = world.Spawns
-            .FirstOrDefault(s => s.X == x && s.Y == y);
+        var position = new GridPosition(x, y);
 
-        if (spawn != null)
+        var unit = world.Entities
+            .OfType<Unit>()
+            .FirstOrDefault(entity => entity.Position == position);
+
+        if (unit != null)
         {
-            RenderSpawn(spawn);
+            RenderUnit(unit);
+
+            return;
+        }
+
+        var building = world.GetBuildings()
+            .FirstOrDefault(entity => BuildingQueries.OccupiesTile(entity, position));
+
+        if (building != null)
+        {
+            RenderBuilding(building, position);
 
             return;
         }
@@ -59,21 +73,12 @@ public static class ConsoleRenderer
             return;
         }
 
-        var entity = world.Entities
-            .FirstOrDefault(e =>
-                e.Position.X == x &&
-                e.Position.Y == y);
+        var spawn = world.Spawns
+            .FirstOrDefault(s => s.X == x && s.Y == y);
 
-        if (entity != null)
+        if (spawn != null)
         {
-
-            if (entity is Unit unit)
-            {
-                RenderUnit(unit);
-
-                return;
-            }
-            RenderEntity(entity);
+            RenderSpawn(spawn);
 
             return;
         }
@@ -106,27 +111,9 @@ public static class ConsoleRenderer
         Console.Write(symbol);
     }
 
-    private static void RenderEntity(Entity entity)
-    {
-
-        // string symbol = entity switch
-        // {
-        //     Villager => "● ",
-        //     _ => "● "
-        // };
-
-        // Console.Write(symbol);
-    }
-
     private static void RenderUnit(Unit unit)
     {
-        Console.ForegroundColor =
-            unit.OwnerId switch
-            {
-                1 => ConsoleColor.Blue,
-                2 => ConsoleColor.Red,
-                _ => ConsoleColor.White
-            };
+        Console.ForegroundColor = GetOwnerColor(unit.OwnerId);
 
         string symbol = unit.Definition.Id switch
         {
@@ -135,6 +122,40 @@ public static class ConsoleRenderer
         };
 
         Console.Write(symbol);
+    }
+
+    private static void RenderBuilding(
+        Building building,
+        GridPosition position)
+    {
+        Console.ForegroundColor = GetOwnerColor(building.OwnerId);
+
+        var symbol = building.IsCompleted
+            ? GetBuildingSymbol(building, position)
+            : "░░";
+
+        Console.Write(symbol);
+    }
+
+    private static string GetBuildingSymbol(
+        Building building,
+        GridPosition position)
+    {
+        if (position != building.Position)
+        {
+            return "▓▓";
+        }
+
+        return building.Definition.Id switch
+        {
+            "town_center" => "TC",
+            "house" => "H ",
+            "lumbercamp" => "LC",
+            "minecamp" => "MC",
+            "mill" => "ML",
+            "barracks" => "BR",
+            _ => "B "
+        };
     }
 
     private static void RenderResource(
@@ -158,6 +179,16 @@ public static class ConsoleRenderer
             };
 
         Console.Write("⌂ ");
+    }
+
+    private static ConsoleColor GetOwnerColor(int ownerId)
+    {
+        return ownerId switch
+        {
+            1 => ConsoleColor.Blue,
+            2 => ConsoleColor.Red,
+            _ => ConsoleColor.White
+        };
     }
 
     private static ConsoleColor GetTileColor(
@@ -220,7 +251,7 @@ public static class ConsoleRenderer
 
         foreach (var player in world.Players)
         {
-            //Console.ForegroundColor = player.Color;
+            Console.ForegroundColor = GetOwnerColor(player.Id);
 
             Console.WriteLine(
                 $"P{player.Id} {player.Name} | " +

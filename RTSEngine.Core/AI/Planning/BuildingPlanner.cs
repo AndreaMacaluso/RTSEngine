@@ -9,39 +9,6 @@ namespace RTSEngine.Core.AI.Planning;
 
 public static class BuildingPlanner
 {
-    // public static GridPosition? FindHousePosition(
-    //     GameWorld world,
-    //     Player player,
-    //     BuildingDefinition definition)
-    // {
-    //     return FindBuildPosition(
-    //         world,
-    //         player,
-    //         definition);
-    // }
-
-    // public static GridPosition? FindTownCenterPosition(
-    //     GameWorld world,
-    //     Player player,
-    //     BuildingDefinition definition)
-    // {
-    //     return FindBuildPosition(
-    //         world,
-    //         player,
-    //         definition);
-    // }
-
-    // public static GridPosition? FindBarracksPosition(
-    //     GameWorld world,
-    //     Player player,
-    //     BuildingDefinition definition)
-    // {
-    //     return FindBuildPosition(
-    //         world,
-    //         player,
-    //         definition);
-    // }
-
     public static GridPosition? FindBuildPosition(
         GameWorld world,
         Player player,

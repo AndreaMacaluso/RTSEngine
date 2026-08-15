@@ -6,7 +6,7 @@
     "height": 40,
     "spawnInset": 5,
     "baseClearRadius": 3,
-    "resourceSeparation": 1,
+    "resourceSeparation": 0,
     "resourceClusters": [
       {
         "type": "tree",

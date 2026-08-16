@@ -247,32 +247,31 @@ public static class ConsoleRenderer
     public static void RenderPlayerStats(GameWorld world)
     {
         Console.WriteLine();
-        Console.WriteLine("=== PLAYERS ===");
+        Console.WriteLine("=== PLAYERS ===                                                                                           ");
 
         foreach (var player in world.Players)
         {
             Console.ForegroundColor = GetOwnerColor(player.Id);
 
+            var units = world.Entities
+                .OfType<RTSEngine.Core.Entities.Units.Unit>()
+                .Where(u => u.OwnerId == player.Id && !u.IsDead)
+                .ToList();
+
+            int economic = units.Count(u => !u.Definition.CanAttack);
+            int military = units.Count(u => u.Definition.CanAttack);
+            int idle = units.Count(u => u.CurrentTask == UnitTask.Idle);
+
             Console.WriteLine(
                 $"P{player.Id} {player.Name} | " +
                 $"Pop {player.Population.Current}/{player.Population.Capacity} | " +
-                $"Reserved {player.Population.Reserved} | " +
-                $"Wood {player.Economy.Get(ResourceType.Wood)} | " +
-                $"Food {player.Economy.Get(ResourceType.Food)} | " +
-                $"Gold {player.Economy.Get(ResourceType.Gold)} | " +
-                $"Stone {player.Economy.Get(ResourceType.Stone)}");
-
-            // var tc = world.GetBuildings()
-            //     .FirstOrDefault(b =>
-            //         b.OwnerId == player.Id &&
-            //         b.Definition.Id == "town_center");
-
-            // if (tc != null && tc.Production.IsProducing)
-            // {
-            //     var task = tc.Production.Current;
-            //     Console.WriteLine(
-            //         $"  TC Producing: {task!.ProductId} ({task.RemainingTicks} ticks left)");
-            // }
+                $"E {economic} | " +
+                $"M {military} | " +
+                $"I {idle} | " +
+                $"Wood {player.Economy.Get(ResourceType.Wood),-4} | " +
+                $"Food {player.Economy.Get(ResourceType.Food),-4} | " +
+                $"Gold {player.Economy.Get(ResourceType.Gold),-4} | " +
+                $"Stone {player.Economy.Get(ResourceType.Stone),-4}                                                                                           ");
         }
 
         Console.ResetColor();

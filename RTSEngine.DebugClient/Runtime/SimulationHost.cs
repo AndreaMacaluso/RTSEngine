@@ -20,8 +20,6 @@ public static class SimulationHost
                 return;
             }
 
-            Console.SetCursorPosition(0, 0);
-
             simulation.Tick();
 
             RenderFrame(world);
@@ -78,10 +76,11 @@ public static class SimulationHost
 
     private static void RenderFrame(GameWorld world)
     {
-        Console.WriteLine($"Tick: {world.CurrentTick}");
+        Console.SetCursorPosition(0, 0);
+        Console.WriteLine($"Tick: {world.CurrentTick}    ");
         Console.WriteLine(
             world.State == WorldState.Paused
-                ? "PAUSED"
+                ? "PAUSED "
                 : "RUNNING");
 
         ConsoleRenderer.Render(

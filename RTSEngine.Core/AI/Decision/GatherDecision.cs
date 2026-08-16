@@ -4,6 +4,8 @@ using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Systems;
 
 namespace RTSEngine.Core.AI.Decisions;
 
@@ -28,6 +30,8 @@ public static class GatherDecision
             .FindIdleVillagers(world, player)
             .ToList();
 
+        AssignDepositsForResourceCarriers(world, player, idleVillagers);
+
         int idleIndex = 0;
 
         foreach (var resourceType in PriorityOrder)
@@ -43,6 +47,13 @@ public static class GatherDecision
                    && idleIndex < idleVillagers.Count)
             {
                 var villager = idleVillagers[idleIndex];
+
+                if (villager.Gather.CurrentLoad > 0
+                    && villager.Gather.CarriedResource.HasValue)
+                {
+                    idleIndex++;
+                    continue;
+                }
 
                 var resource = WorldQueries.FindClosestResource(
                     world,
@@ -62,6 +73,47 @@ public static class GatherDecision
                 currentCount++;
                 idleIndex++;
             }
+        }
+    }
+
+    private static void AssignDepositsForResourceCarriers(
+        GameWorld world,
+        Player player,
+        List<Unit> idleVillagers)
+    {
+        foreach (var villager in idleVillagers)
+        {
+            if (villager.Gather.CurrentLoad <= 0
+                || !villager.Gather.CarriedResource.HasValue)
+            {
+                continue;
+            }
+
+            var deposit = WorldQueries.FindClosestDeposit(
+                world,
+                player.Id,
+                villager.Position,
+                villager.Gather.CarriedResource.Value);
+
+            if (deposit == null)
+            {
+                continue;
+            }
+
+            var target = WorldQueries.FindClosestAdjacentWalkableTile(
+                world,
+                villager.Position,
+                deposit.Position);
+
+            if (target is not GridPosition destination)
+            {
+                continue;
+            }
+
+            villager.CurrentTask = UnitTask.Gathering;
+            villager.Gather.Phase = GatherPhase.MovingToDeposit;
+            villager.Gather.DepositPosition = deposit.Position;
+            CommandSystem.AssignMoveTarget(villager, destination, world);
         }
     }
 

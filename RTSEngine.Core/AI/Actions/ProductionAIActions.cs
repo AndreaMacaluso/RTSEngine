@@ -50,4 +50,34 @@ public static class ProductionAIActions
 
         return result;
     }
+
+    public static bool TrainMilitia(
+        RuntimeContext context,
+        Building barracks)
+    {
+        var player = context.World.GetPlayerById(barracks.OwnerId);
+
+        if (player == null)
+        {
+            DebugSession.Log.Info(
+                "ProductionAIActions.TrainMilitia: player not found",
+                [("OwnerId", barracks.OwnerId)]);
+            return false;
+        }
+
+        var result = ProductionActions.TryTrainUnit(
+            context,
+            barracks,
+            "militia");
+
+        DebugSession.Log.Info(
+            "ProductionAIActions.TrainMilitia: TryTrainUnit result",
+            [
+                ("PlayerId", player.Id),
+                ("Success", result),
+                ("BuildingId", barracks.Id)
+            ]);
+
+        return result;
+    }
 }

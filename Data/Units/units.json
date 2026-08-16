@@ -21,13 +21,20 @@
     "id": "militia",
     "name": "Militia",
     "maxHealth": 60,
-    "movementSpeed": 1.0,
+    "movementSpeed": 1.1,
+    "attackDamage": 6,
+    "attackRange": 1,
+    "attackCooldownTicks": 4,
     "costs":[
     {
       "Type": "Food",
       "Amount": 50
+    },
+    {
+      "Type": "Gold",
+      "Amount": 30
     }  
-  ],
-  "productionTimeTicks": 30
+    ],
+    "productionTimeTicks": 20
   }
 ]

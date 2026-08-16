@@ -30,8 +30,8 @@
     "id": "house",
     "name": "House",
     "maxHealth": 200,
-    "width": 2,
-    "height": 2,
+    "width": 1,
+    "height": 1,
     "populationBonus": 5,
     "costs":[
       {

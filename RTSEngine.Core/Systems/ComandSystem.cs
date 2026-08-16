@@ -38,6 +38,9 @@ public static class CommandSystem
             case QueueProductionCommand productionCommand:
                 HandleProduction(context, productionCommand);
                 break;
+            case AttackCommand attackCommand:
+                HandleAttack(context.World, attackCommand);
+                break;
         }
     }
     private static void HandleBuild(
@@ -186,5 +189,32 @@ public static class CommandSystem
         building.Production.Add(
             new ProductionTask(productionDefinition.Id,productionDefinition.ProductionTimeTicks)
         );
+    }
+
+    private static void HandleAttack(
+    GameWorld world,
+    AttackCommand command)
+    {
+        foreach (var unitId in command.UnitIds)
+        {
+            var unit = world.GetUnitById(unitId);
+
+            if (unit == null || unit.IsDead)
+            {
+                continue;
+            }
+
+            var target = world.GetEntityById(command.TargetEntityId);
+
+            if (target == null)
+            {
+                continue;
+            }
+
+            CombatSystem.BeginAttack(
+                world,
+                unit,
+                command.TargetEntityId);
+        }
     }
 }

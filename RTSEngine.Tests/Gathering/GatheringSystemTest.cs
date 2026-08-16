@@ -108,7 +108,7 @@ public class GatheringSystemTests
     [Fact]
     [Trait("Category", "GatheringSystem")]
     [Trait("Category", "Gathering")]
-    public void Update_ShouldSwitchToIdleIfDepositIsNotFound()
+    public void Update_ShouldSwitchToWaitingForDeposit_WhenDepositIsNotFound()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
 
@@ -128,11 +128,10 @@ public class GatheringSystemTests
         GatherSystem.Update(world);
 
         Assert.Equal(
-            GatherPhase.None,
+            GatherPhase.WaitingForDeposit,
             unit.Gather.Phase);
-         Assert.Equal(
-            UnitTask.Idle,
-            unit.CurrentTask);
+        Assert.Equal(20, unit.Gather.CurrentLoad);
+        Assert.Equal(ResourceType.Wood, unit.Gather.CarriedResource);
     }
 
     [Fact]
@@ -562,5 +561,173 @@ public class GatheringSystemTests
 
         Assert.Equal(0, player1.Economy.Get(ResourceType.Wood));
         Assert.Equal(0, player2.Economy.Get(ResourceType.Wood));
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.WaitingForDeposit")]
+    public void WaitingForDeposit_ShouldPreserveResources_WhenBeginMoveToDepositFails()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(5, 5));
+        var tree = new Tree(new GridPosition(6, 5));
+
+        world.AddResource(tree);
+
+        unit.CurrentTask = UnitTask.Gathering;
+        unit.Gather.TargetResourceId = tree.Id;
+        unit.Gather.Phase = GatherPhase.Gathering;
+        unit.Gather.CurrentLoad = 20;
+        unit.Gather.CarriedResource = ResourceType.Wood;
+        world.AddEntity(unit);
+
+        GatherSystem.Update(world);
+
+        Assert.Equal(GatherPhase.WaitingForDeposit, unit.Gather.Phase);
+        Assert.Equal(20, unit.Gather.CurrentLoad);
+        Assert.Equal(ResourceType.Wood, unit.Gather.CarriedResource);
+        Assert.Equal(UnitTask.Gathering, unit.CurrentTask);
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.WaitingForDeposit")]
+    public void WaitingForDeposit_ShouldRetryPeriodically()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(5, 5));
+        var tree = new Tree(new GridPosition(6, 5));
+
+        world.AddResource(tree);
+
+        unit.Gather.TargetResourceId = tree.Id;
+        unit.Gather.Phase = GatherPhase.Gathering;
+        unit.Gather.CurrentLoad = 20;
+        unit.Gather.CarriedResource = ResourceType.Wood;
+        world.AddEntity(unit);
+
+        GatherSystem.Update(world);
+        Assert.Equal(GatherPhase.WaitingForDeposit, unit.Gather.Phase);
+
+        for (int i = 0; i < 3; i++)
+        {
+            GatherSystem.Update(world);
+            Assert.Equal(GatherPhase.WaitingForDeposit, unit.Gather.Phase);
+        }
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.WaitingForDeposit")]
+    public void WaitingForDeposit_ShouldStopAfterMaxWaitTicks_WhenNoDepositAvailable()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(5, 5));
+        var tree = new Tree(new GridPosition(6, 5));
+
+        world.AddResource(tree);
+
+        unit.Gather.TargetResourceId = tree.Id;
+        unit.Gather.Phase = GatherPhase.Gathering;
+        unit.Gather.CurrentLoad = 20;
+        unit.Gather.CarriedResource = ResourceType.Wood;
+        world.AddEntity(unit);
+
+        GatherSystem.Update(world);
+        Assert.Equal(GatherPhase.WaitingForDeposit, unit.Gather.Phase);
+
+        for (int i = 0; i < 4; i++)
+        {
+            GatherSystem.Update(world);
+        }
+
+        Assert.Equal(GatherPhase.None, unit.Gather.Phase);
+        Assert.Equal(UnitTask.Idle, unit.CurrentTask);
+        Assert.Equal(20, unit.Gather.CurrentLoad);
+        Assert.Equal(ResourceType.Wood, unit.Gather.CarriedResource);
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.WaitingForDeposit")]
+    public void WaitingForDeposit_ShouldTransitionToMovingToDeposit_WhenDepositBecomesAvailable()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(5, 5));
+        var tree = new Tree(new GridPosition(6, 5));
+
+        world.AddResource(tree);
+
+        unit.CurrentTask = UnitTask.Gathering;
+        unit.Gather.TargetResourceId = tree.Id;
+        unit.Gather.Phase = GatherPhase.Gathering;
+        unit.Gather.CurrentLoad = 20;
+        unit.Gather.CarriedResource = ResourceType.Wood;
+        world.AddEntity(unit);
+
+        GatherSystem.Update(world);
+        Assert.Equal(GatherPhase.WaitingForDeposit, unit.Gather.Phase);
+
+        var townCenter = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            ownerId: 1,
+            position: new GridPosition(1, 1));
+        world.AddEntity(townCenter);
+
+        unit.Gather.WaitingForDepositTicks = 3;
+        GatherSystem.Update(world);
+
+        Assert.Equal(GatherPhase.MovingToDeposit, unit.Gather.Phase);
+        Assert.NotNull(unit.Gather.DepositPosition);
+    }
+
+    [Fact]
+    [Trait("Category", "GatheringSystem")]
+    [Trait("Category", "Gathering")]
+    [Trait("Category", "Gathering.WaitingForDeposit")]
+    public void MovingToDeposit_ShouldTransitionToWaitingForDeposit_WhenStuck()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+            TestDefinitionFactory.CreateVillager(),
+            1,
+            new GridPosition(5, 5));
+
+        world.AddEntity(unit);
+
+        unit.CurrentTask = UnitTask.Gathering;
+        unit.Gather.Phase = GatherPhase.MovingToDeposit;
+        unit.Gather.DepositPosition = new GridPosition(8, 8);
+        unit.Gather.CurrentLoad = 20;
+        unit.Gather.CarriedResource = ResourceType.Wood;
+        unit.Gather.WaitingForDepositTicks = 1;
+        unit.Movement.Destination = new GridPosition(8, 8);
+
+        GatherSystem.Update(world);
+
+        Assert.Equal(GatherPhase.WaitingForDeposit, unit.Gather.Phase);
+        Assert.Equal(20, unit.Gather.CurrentLoad);
+        Assert.Equal(ResourceType.Wood, unit.Gather.CarriedResource);
     }
 }

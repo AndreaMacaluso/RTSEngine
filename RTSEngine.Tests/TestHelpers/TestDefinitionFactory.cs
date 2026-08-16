@@ -60,6 +60,7 @@ public static class TestDefinitionFactory
         {
             Id = "town_center",
             Name = "towncenter",
+            MaxHealth = 1000,
             AcceptedResources = [
                 ResourceType.Wood,
             ],
@@ -74,6 +75,7 @@ public static class TestDefinitionFactory
         {
             Id = "barracks",
             Name = "Barracks",
+            MaxHealth = 800,
             Width = 2,
             Height = 2,
             Produces = ["militia"],
@@ -87,6 +89,7 @@ public static class TestDefinitionFactory
         {
             Id = "house",
             Name = "House",
+            MaxHealth = 200,
             BuildTimeTicks = 10
         };
 
@@ -98,6 +101,7 @@ public static class TestDefinitionFactory
         {
             Id = "house",
             Name = "House",
+            MaxHealth = 200,
             BuildTimeTicks = 10,
             Width = 2,
             Height = 2,

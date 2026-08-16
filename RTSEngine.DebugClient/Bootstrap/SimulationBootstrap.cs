@@ -4,6 +4,7 @@ using RTSEngine.Core.Entities.Loader;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Systems;
 
 namespace RTSEngine.DebugClient.Bootstrap;
 
@@ -31,6 +32,11 @@ public static class SimulationBootstrap
             "Buildings",
             "buildings.json");
 
+        var scriptsPath = Path.Combine(
+            baseDirectory,
+            "Data",
+            "AI");
+
         var world = LoadWorld(mapPath);
 
         foreach (var spawn in world.Spawns)
@@ -43,12 +49,24 @@ public static class SimulationBootstrap
         var unitRepository = LoadUnitRepository(unitsPath);
         var buildingRepository = LoadBuildingRepository(buildingsPath);
 
-        return new RuntimeContext
+        var context = new RuntimeContext
         {
             World = world,
             UnitRepository = unitRepository,
             BuildingRepository = buildingRepository
         };
+
+        AISystem.Initialize(scriptsPath);
+
+        foreach (var player in world.Players)
+        {
+            if (player.Controller == PlayerControllerType.AI)
+            {
+                AISystem.LoadLuaScript(context, player, "base_ai");
+            }
+        }
+
+        return context;
     }
 
     private static GameWorld LoadWorld(string mapPath)

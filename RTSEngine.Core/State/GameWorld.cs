@@ -8,6 +8,7 @@ using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Helpers;
 namespace RTSEngine.Core.State;
 
 public class GameWorld
@@ -49,6 +50,27 @@ public class GameWorld
             e => e.Position.X == x
             && e.Position.Y == y);
     }
+
+    public bool IsResourceAt(int x, int y)
+    {
+        return Resources.Any(
+            r => r.Position.X == x
+            && r.Position.Y == y
+            && !r.IsDepleted);
+    }
+
+    public bool IsBuildingAt(int x, int y)
+    {
+        var pos = new GridPosition(x, y);
+
+        return Entities
+            .OfType<Building>()
+            .Any(b => BuildingQueries.OccupiesTile(
+                b.Definition,
+                b.Position,
+                pos));
+    }
+
     public bool IsTileOccupied(int x, int y)
     {
         return GetEntityAt(x, y) != null;
@@ -71,6 +93,16 @@ public class GameWorld
         var tile = Map.GetTile(x, y);
 
         if (!TileRules.IsWalkable(tile))
+        {
+            return true;
+        }
+
+        if (IsResourceAt(x, y))
+        {
+            return true;
+        }
+
+        if (IsBuildingAt(x, y))
         {
             return true;
         }

@@ -7,7 +7,11 @@ namespace RTSEngine.Core.Systems;
 
 public static class MovementSystem
 {
+    // TODO: adaptive threshold (wait for moving units, immediate for static)
+    // causes gather test failures. Revisit with proper unit-avoidance system.
     private const int RepathThreshold = 1;
+    private const int DeadlockThreshold = 10;
+
     public static void Update(GameWorld world)
     {
         
@@ -18,10 +22,31 @@ public static class MovementSystem
                 continue;
             } 
 
+            if (unit.Movement.NeedsRepath
+                && unit.CurrentTask == UnitTask.Moving)
+            {
+                unit.Movement.NeedsRepath = false;
+
+                if (unit.Movement.Destination is GridPosition destination)
+                {
+                    CommandSystem.AssignMoveTarget(
+                        unit,
+                        destination,
+                        world);
+                }
+
+                continue;
+            }
+
             if (unit.Movement.CurrentStep is null)
             {
                 if (unit.Movement.PathQueue.Count == 0)
                 {
+                    if (unit.CurrentTask == UnitTask.Moving)
+                    {
+                        unit.CurrentTask = UnitTask.Idle;
+                    }
+
                     continue;
                 }
 
@@ -47,11 +72,6 @@ public static class MovementSystem
                 unit,
                 currentStep);
             unit.Movement.CurrentStep = null;
-
-            // if (unit.Movement.CurrentStep is null &&  unit.Movement.PathQueue.Count == 0)
-            // {
-            //     unit.Movement.Destination = null;
-            // }
             
         }
     }
@@ -70,9 +90,18 @@ public static class MovementSystem
 
             unit.Movement.BlockedTicks++;
 
+            if (unit.Movement.BlockedTicks >= DeadlockThreshold)
+            {
+                unit.Movement.BlockedTicks = 0;
+                unit.Movement.NeedsRepath = false;
+                unit.Movement.PathQueue.Clear();
+                unit.Movement.CurrentStep = null;
+                unit.CurrentTask = UnitTask.Idle;
+                return;
+            }
+
             if (unit.Movement.BlockedTicks >= RepathThreshold)
             {
-
                 unit.Movement.BlockedTicks = 0;
                 unit.Movement.NeedsRepath = true;
             }
@@ -81,7 +110,6 @@ public static class MovementSystem
         }
 
         unit.Position = target;
-        //unit.Movement.Destination = null;
         unit.Movement.CurrentStep = null;
         unit.Movement.BlockedTicks = 0;
         unit.Movement.NeedsRepath = false;

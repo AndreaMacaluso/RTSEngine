@@ -9,4 +9,8 @@ public abstract class Entity
     public GridPosition Position { get; set; }
 
     public abstract bool IsBlocking { get; }
+
+    public abstract bool IsDead { get; }
+
+    public abstract void TakeDamage(int amount);
 }

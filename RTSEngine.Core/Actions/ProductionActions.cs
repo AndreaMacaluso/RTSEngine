@@ -3,6 +3,9 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Actions;
 
 public static class ProductionActions
@@ -47,13 +50,41 @@ public static class ProductionActions
         {
             return;
         }
+
+        var world = context.World;
+        var position = spawnPosition.Value;
+
+        if (world.IsTileBlocked(position.X, position.Y))
+        {
+            var fallback = WorldQueries.FindAdjacentWalkableTile(
+                world,
+                position);
+
+            if (fallback is GridPosition freeTile)
+            {
+                position = freeTile;
+            }
+            else
+            {
+                return;
+            }
+        }
         
         Unit unit = UnitFactory.Create(
             definition,
             building.OwnerId,
-            spawnPosition.Value);
+            position);
 
-        context.World.AddEntity(unit);
+        world.AddEntity(unit);
+
+        DebugSession.Log.Info(
+            "UnitSpawned",
+            [
+                ("UnitId", unit.Id),
+                ("UnitType", definition.Id),
+                ("PlayerId", building.OwnerId),
+                ("Position", position)
+            ]);
 
         CompleteUnitSpawned(context, building);
     }

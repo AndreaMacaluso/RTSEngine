@@ -99,6 +99,19 @@ public static class ConstructionActions
         PopulationActions.IncreaseCap(
             player,
             building.Definition.PopulationBonus);
+
+        if (building.Definition.Produces.Count > 0
+            && building.Production.SpawnPoint is null)
+        {
+            var center = new GridPosition(
+                building.Position.X + building.Definition.Width / 2,
+                building.Position.Y + building.Definition.Height / 2);
+            building.Production.SpawnPoint =
+                WorldQueries.FindAdjacentWalkableTile(world, center)
+                ?? new GridPosition(
+                    building.Position.X + building.Definition.Width,
+                    building.Position.Y);
+        }
     }
 
     public static bool CanContinueBuilding(

@@ -1,4 +1,5 @@
 using RTSEngine.Core.AI.Actions;
+using RTSEngine.Core.AI.Planning;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Diagnostics;
@@ -56,6 +57,15 @@ public static class ConstructionDecision
         RuntimeContext context,
         Player player)
     {
+        if (player.Population.Current >= ProductionPlanner.GetTargetPopulation()
+            && !ProductionPlanner.HasBarracks(context.World, player))
+        {
+            DebugSession.Log.Info(
+                "ConstructionDecision.ChooseBuilding: barracks needed",
+                [("PlayerId", player.Id)]);
+            return "barracks";
+        }
+
         if (NeedMorePopulation(player))
         {
             return "house";

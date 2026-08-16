@@ -5,5 +5,6 @@ public enum GatherPhase
     MovingToResource,
     Gathering,
     MovingToDeposit,
+    WaitingForDeposit,
     Depositing
 }

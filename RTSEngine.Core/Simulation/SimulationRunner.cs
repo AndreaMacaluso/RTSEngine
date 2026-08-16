@@ -1,6 +1,7 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Entities.Units;
 namespace RTSEngine.Core.Simulation;
 
 public class SimulationRunner
@@ -31,6 +32,8 @@ public class SimulationRunner
 
         MovementSystem.Update(_context.World);
 
+        CombatSystem.Update(_context.World);
+
         GatherSystem.Update(_context.World);
 
         ResourceCleanupSystem.Update(_context.World);
@@ -39,6 +42,21 @@ public class SimulationRunner
 
         ProductionSystem.Update(_context);
 
+        RemoveDeadEntities(_context.World);
+
         _context.World.AdvanceTick();
+    }
+
+    private static void RemoveDeadEntities(GameWorld world)
+    {
+        var deadUnits = world.Entities
+            .OfType<Unit>()
+            .Where(u => u.IsDead)
+            .ToList();
+
+        foreach (var unit in deadUnits)
+        {
+            world.RemoveEntity(unit);
+        }
     }
 }

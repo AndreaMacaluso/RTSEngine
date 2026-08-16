@@ -13,5 +13,6 @@ public static class BasicAI
         ProductionDecision.Execute(context, player);
         ConstructionDecision.Execute(context, player);
         GatherDecision.Execute(context.World, player);
+        CombatDecision.Execute(context.World, player);
     }
 }

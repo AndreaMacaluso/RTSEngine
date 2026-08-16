@@ -11,8 +11,21 @@ public class Unit : Entity
     public MovementState Movement { get; }
     public GatherState Gather { get; }
     public BuildState Build { get; }
+    public CombatState Combat { get; }
     public UnitTask CurrentTask { get; set; } = UnitTask.Idle;
-    public override bool IsBlocking => true; 
+    public int CurrentHealth { get; set; }
+    public override bool IsDead => CurrentHealth <= 0;
+    public override bool IsBlocking => !IsDead;
+
+    public override void TakeDamage(int amount)
+    {
+        CurrentHealth -= amount;
+
+        if (CurrentHealth < 0)
+        {
+            CurrentHealth = 0;
+        }
+    }
 
     public Unit(
         int ownerId,
@@ -23,9 +36,11 @@ public class Unit : Entity
             Definition = definition;
             OwnerId = ownerId;
             Position = position;
+            CurrentHealth = definition.MaxHealth;
             Movement = new MovementState(definition);
             Gather = new GatherState(definition);
             Build = new BuildState();
+            Combat = new CombatState(definition);
         }
 }
 

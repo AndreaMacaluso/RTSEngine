@@ -11,6 +11,8 @@ public class UnitDefinition
     public int GatherCapacity { get; set; }
     public List<string> BuildableBuildings { get; set; } = [];
     public int AttackDamage { get; set; }
+    public int AttackRange { get; set; } = 1;
+    public int AttackCooldownTicks { get; set; } = 4;
     public bool CanGather => GatherCapacity > 0;
     public bool CanBuild => BuildableBuildings.Count > 0;
     public bool CanAttack => AttackDamage > 0;

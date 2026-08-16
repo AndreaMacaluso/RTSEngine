@@ -1,5 +1,8 @@
 using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Resources;
+using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Tests.TestHelpers;
@@ -177,6 +180,150 @@ public class GameWorldTest
 
         // Assert
         Assert.True(result);
+    }
+
+    [Fact]
+    public void IsTileBlocked_ShouldReturnTrue_ForResourceNode()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var tree = new Tree(new GridPosition(4, 4));
+        world.AddResource(tree);
+
+        Assert.True(world.IsTileBlocked(4, 4));
+    }
+
+    [Fact]
+    public void IsTileBlocked_ShouldReturnFalse_ForDepletedResource()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var tree = new Tree(new GridPosition(4, 4));
+        tree.Amount = 0;
+        world.AddResource(tree);
+
+        Assert.False(world.IsTileBlocked(4, 4));
+    }
+
+    [Fact]
+    public void IsTileBlocked_ShouldReturnFalse_ForAdjacentTileOfResource()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var tree = new Tree(new GridPosition(4, 4));
+        world.AddResource(tree);
+
+        Assert.False(world.IsTileBlocked(3, 4));
+        Assert.False(world.IsTileBlocked(5, 4));
+        Assert.False(world.IsTileBlocked(4, 3));
+        Assert.False(world.IsTileBlocked(4, 5));
+    }
+
+    [Fact]
+    public void IsTileBlocked_ShouldReturnTrue_ForAllBuildingFootprintTiles()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var definition = new BuildingDefinition
+        {
+            Id = "barracks",
+            Name = "Barracks",
+            Width = 3,
+            Height = 2
+        };
+
+        var building = BuildingFactory.Create(
+            definition,
+            ownerId: 1,
+            position: new GridPosition(2, 2));
+
+        world.AddEntity(building);
+
+        Assert.True(world.IsTileBlocked(2, 2));
+        Assert.True(world.IsTileBlocked(3, 2));
+        Assert.True(world.IsTileBlocked(4, 2));
+        Assert.True(world.IsTileBlocked(2, 3));
+        Assert.True(world.IsTileBlocked(3, 3));
+        Assert.True(world.IsTileBlocked(4, 3));
+    }
+
+    [Fact]
+    public void IsTileBlocked_ShouldReturnFalse_OutsideBuildingFootprint()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var definition = new BuildingDefinition
+        {
+            Id = "barracks",
+            Name = "Barracks",
+            Width = 3,
+            Height = 2
+        };
+
+        var building = BuildingFactory.Create(
+            definition,
+            ownerId: 1,
+            position: new GridPosition(2, 2));
+
+        world.AddEntity(building);
+
+        Assert.False(world.IsTileBlocked(1, 2));
+        Assert.False(world.IsTileBlocked(2, 1));
+        Assert.False(world.IsTileBlocked(5, 2));
+        Assert.False(world.IsTileBlocked(2, 4));
+    }
+
+    [Fact]
+    public void IsResourceAt_ShouldReturnTrue_WhenResourceExists()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var tree = new Tree(new GridPosition(3, 3));
+        world.AddResource(tree);
+
+        Assert.True(world.IsResourceAt(3, 3));
+    }
+
+    [Fact]
+    public void IsResourceAt_ShouldReturnFalse_WhenNoResource()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        Assert.False(world.IsResourceAt(3, 3));
+    }
+
+    [Fact]
+    public void IsBuildingAt_ShouldReturnTrue_ForAnyFootprintTile()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        var definition = new BuildingDefinition
+        {
+            Id = "house",
+            Name = "House",
+            Width = 2,
+            Height = 2
+        };
+
+        var building = BuildingFactory.Create(
+            definition,
+            ownerId: 1,
+            position: new GridPosition(5, 5));
+
+        world.AddEntity(building);
+
+        Assert.True(world.IsBuildingAt(5, 5));
+        Assert.True(world.IsBuildingAt(6, 5));
+        Assert.True(world.IsBuildingAt(5, 6));
+        Assert.True(world.IsBuildingAt(6, 6));
+    }
+
+    [Fact]
+    public void IsBuildingAt_ShouldReturnFalse_WhenNoBuilding()
+    {
+        var world = TestWorldFactory.CreateWorld();
+
+        Assert.False(world.IsBuildingAt(5, 5));
     }
 
     private static GameWorld CreateWorld()

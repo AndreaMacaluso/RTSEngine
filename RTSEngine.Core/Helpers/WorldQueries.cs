@@ -141,6 +141,15 @@ public static class WorldQueries
         return dx * dx + dy * dy;
     }
 
+    public static int ChebyshevDistance(
+        GridPosition a,
+        GridPosition b)
+    {
+        return Math.Max(
+            Math.Abs(a.X - b.X),
+            Math.Abs(a.Y - b.Y));
+    }
+
     public static bool HasReachedDestination(
     Unit unit,
     GridPosition destination)

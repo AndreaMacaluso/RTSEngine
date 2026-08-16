@@ -118,6 +118,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Runtime debug controls
 - [x] Tick pause system
 - [x] Debug overlays
+- [x] Unit creation logging (id + type)
 
 ---
 ## Command System
@@ -138,16 +139,16 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Multi-step path movement
 - [x] Path queue execution
 - [x] Basic pathfinding foundations
-- [ ] Dynamic collision handling
+- [x] Dynamic collision handling
 
 ### Pathfinding
 - [x] Basic path generation pipeline
 - [x] Command-to-path integration
-- [ ] True BFS pathfinding
-- [ ] Path reconstruction from BFS search
-- [ ] Unreachable target handling
-- [ ] Dynamic collision handling
-- [ ] Path replanning / blocked path recovery
+- [x] True BFS pathfinding
+- [x] Path reconstruction from BFS search
+- [x] Unreachable target handling
+- [x] Dynamic collision handling
+- [x] Path replanning / blocked path recovery
 
 ---
 ## Gameplay Loops
@@ -201,7 +202,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Gather loop
 - [x] Construction loop
 - [x] Production loop
-- [ ] Combat loop
+- [x] Combat loop
 
 ## World Queries
 
@@ -261,6 +262,9 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Building planner tests
 - [x] AI system tests
 - [ ] Builder selector tests
+- [x] Combat AI tests
+- [x] Militia combat AI tests
+- [x] Barracks AI tests
 - [x] Production state tests
 - [x] Production action tests
 - [x] Production system tests
@@ -277,6 +281,13 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [ ] Interactive unit selection
 - [ ] Runtime command issuing
 - [ ] Scenario selection
+
+---
+
+## Documentation
+
+- [x] Architecture documentation (`Docs/Architecture.md`)
+- [x] Loop architecture docs (`Docs/Loops/`)
 ---
 
 # Phase 2 — Gameplay Systems
@@ -311,6 +322,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Construction state machine
 - [x] Construction progress
 - [x] Building completion
+- [x] Barracks
 
 - [ ] Multi-tile structures
 - [ ] Building cancellation
@@ -324,10 +336,17 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 ## Combat
 
-- [ ] Combat system
-- [ ] Health and damage
-- [ ] Attack cooldown system
-- [ ] Target selection system
+- [x] Combat system
+- [x] Health and damage
+- [x] Attack cooldown system
+- [x] Target selection system
+- [x] Melee combat
+- [x] Combat chase behavior
+- [x] Combat stop on target death
+- [x] Combat decision (AI auto-attack)
+- [x] Enemy building targeting
+- [x] Militia base-attack AI (move toward enemy TC)
+- [x] All idle military units act
 
 ---
 
@@ -346,6 +365,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] AI players
 
 - [x] Unit production
+- [x] Militia production
 - [ ] Tech tree
 
 ---
@@ -361,15 +381,16 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Gather AI actions
 - [x] Construction AI actions
 - [x] Production decision
-- [ ] Combat decision
 - [ ] Exploration decision
 - [x] Production AI actions
-- [ ] Combat AI actions
+- [x] Combat AI actions
+- [x] Combat decision (auto-attack idle military)
+- [x] Barracks construction decision (pop >= 15)
+- [x] Militia training from barracks
 - [ ] AI command system
 - [ ] Build order execution
 - [ ] Reactive AI behaviors
 - [ ] Scout system
-- [ ] Combat decision making
 - [ ] Economy management AI
 
 ---

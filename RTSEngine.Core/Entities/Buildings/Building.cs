@@ -18,6 +18,17 @@ public sealed class Building : Entity
     public ProductionState Production { get; } = new();
 
     public override bool IsBlocking => true;
+    public override bool IsDead => CurrentHealth <= 0;
+
+    public override void TakeDamage(int amount)
+    {
+        CurrentHealth -= amount;
+
+        if (CurrentHealth < 0)
+        {
+            CurrentHealth = 0;
+        }
+    }
 
     public Building(
         int ownerId,
@@ -27,6 +38,7 @@ public sealed class Building : Entity
         OwnerId = ownerId;
         Position = position;
         Definition = definition;
+        CurrentHealth = definition.MaxHealth;
         ConstructionProgress = 0;
         IsCompleted = false;
     }

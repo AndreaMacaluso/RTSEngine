@@ -10,6 +10,10 @@ namespace RTSEngine.Core.Systems;
 
 public static class GatherSystem
 {
+    private const int StuckThreshold = 2;
+    private const int RetryInterval = 2;
+    private const int MaxWaitTicks = 4;
+
     public static void Update(GameWorld world)
     { 
         foreach (var entity in world.Entities)
@@ -35,6 +39,10 @@ public static class GatherSystem
 
                 case GatherPhase.MovingToDeposit:
                     HandleMovingToDeposit(world, unit);
+                    break;
+
+                case GatherPhase.WaitingForDeposit:
+                    HandleWaitingForDeposit(world, unit);
                     break;
 
                 case GatherPhase.Depositing:
@@ -117,7 +125,8 @@ public static class GatherSystem
 
                 if (!GatherActions.BeginMoveToDeposit(world, unit))
                 {
-                    GatherActions.StopGathering(unit);
+                    unit.Gather.Phase = GatherPhase.WaitingForDeposit;
+                    unit.Gather.WaitingForDepositTicks = 0;
                 }
 
                 return;
@@ -128,7 +137,8 @@ public static class GatherSystem
 
                 if (!GatherActions.BeginMoveToDeposit(world, unit))
                 {
-                    GatherActions.StopGathering(unit);
+                    unit.Gather.Phase = GatherPhase.WaitingForDeposit;
+                    unit.Gather.WaitingForDepositTicks = 0;
                 }
 
                 return;
@@ -150,22 +160,58 @@ public static class GatherSystem
 
             if (!GatherActions.BeginMoveToDeposit(world, unit))
             {
-                GatherActions.StopGathering(unit);
+                unit.Gather.Phase = GatherPhase.WaitingForDeposit;
+                unit.Gather.WaitingForDepositTicks = 0;
             }
 
             return;
         }
+
         if (unit.Gather.DepositPosition is not GridPosition destination)
         {
+            unit.Gather.Phase = GatherPhase.WaitingForDeposit;
+            unit.Gather.WaitingForDepositTicks = 0;
             return;
         }
 
         if (!WorldQueries.HasReachedDestination(unit, destination))
         {
+            if (unit.Movement.PathQueue.Count == 0
+                && unit.Movement.CurrentStep == null)
+            {
+                unit.Gather.WaitingForDepositTicks++;
+
+                if (unit.Gather.WaitingForDepositTicks >= StuckThreshold)
+                {
+                    unit.Gather.Phase = GatherPhase.WaitingForDeposit;
+                    unit.Gather.WaitingForDepositTicks = 0;
+                }
+            }
             return;
         }
 
         unit.Gather.Phase = GatherPhase.Depositing;
+    }
+    private static void HandleWaitingForDeposit(
+    GameWorld world,
+    Unit unit)
+    {
+        unit.Gather.WaitingForDepositTicks++;
+
+        if (unit.Gather.WaitingForDepositTicks % RetryInterval == 0)
+        {
+            if (GatherActions.BeginMoveToDeposit(world, unit))
+            {
+                unit.Gather.Phase = GatherPhase.MovingToDeposit;
+                unit.Gather.WaitingForDepositTicks = 0;
+                return;
+            }
+        }
+
+        if (unit.Gather.WaitingForDepositTicks >= MaxWaitTicks)
+        {
+            GatherActions.StopGathering(unit);
+        }
     }
     private static void HandleDepositing(
     GameWorld world,

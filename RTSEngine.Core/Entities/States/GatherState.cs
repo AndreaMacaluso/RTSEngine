@@ -13,6 +13,7 @@ public class GatherState
     public ResourceType? CarriedResource { get; set; }
     public GatherPhase Phase { get; set; }
     public GridPosition? DepositPosition { get; set; }
+    public int WaitingForDepositTicks { get; set; }
     public bool IsFull => CurrentLoad >= Capacity;
 
     public bool IsEmpty => CurrentLoad == 0;
@@ -40,5 +41,6 @@ public class GatherState
     public void Clear()
     {
         CurrentLoad = 0;
+        WaitingForDepositTicks = 0;
     }
 }

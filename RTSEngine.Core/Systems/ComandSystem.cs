@@ -131,6 +131,11 @@ public static class CommandSystem
                 continue;
             }
 
+            if (unit.CurrentTask == UnitTask.Idle)
+            {
+                unit.CurrentTask = UnitTask.Moving;
+            }
+
             AssignMoveTarget(unit, command.Target,world);
         }
     }

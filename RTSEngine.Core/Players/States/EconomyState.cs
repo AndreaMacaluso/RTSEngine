@@ -16,12 +16,7 @@ public sealed class EconomyState
         ResourceType type,
         int amount)
     {
-        if(!_resources.ContainsKey(type))
-        {
-            _resources[type] = 0;
-        }
-
-        _resources[type] += amount;
+        _resources[type] = _resources.GetValueOrDefault(type) + amount;
     }
 
 

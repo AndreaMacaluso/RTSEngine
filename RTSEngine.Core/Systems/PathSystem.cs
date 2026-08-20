@@ -1,4 +1,5 @@
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.State;
 
 namespace RTSEngine.Core.Systems;
@@ -52,14 +53,14 @@ public static class PathSystem
                     current.X + direction.X,
                     current.Y + direction.Y);
 
-                if (!world.IsInsideBounds(
+                if (!WorldQueries.IsInsideBounds(world,
                         neighbor.X,
                         neighbor.Y))
                 {
                     continue;
                 }
 
-                if (world.IsTileBlocked(
+                if (WorldQueries.IsTileBlocked(world,
                         neighbor.X,
                         neighbor.Y))
                 {
@@ -79,6 +80,8 @@ public static class PathSystem
             }
         }
 
+        // Unreachable target: no path found.
+        // The caller (AssignMoveTarget) will set the unit to Idle.
         return [];
     }
 

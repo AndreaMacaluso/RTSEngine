@@ -147,6 +147,6 @@ public static class CombatSystem
 
     private static bool IsTargetDead(Entities.Entity target)
     {
-        return target is Unit u && u.IsDead;
+        return target.IsDead;
     }
 }

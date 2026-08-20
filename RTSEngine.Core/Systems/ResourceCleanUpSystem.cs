@@ -1,14 +1,13 @@
-using  RTSEngine.Core.State;
+using RTSEngine.Core.Helpers;
+using RTSEngine.Core.State;
 namespace RTSEngine.Core.Systems;
 public static class ResourceCleanupSystem
 {
     public static void Update(GameWorld world)
     {
-        foreach (var resource in world.Resources
-                     .Where(r => r.IsDepleted)
-                     .ToList())
+        foreach (var resource in WorldQueries.FindDepletedResources(world))
         {
-            world.RemoveResources(resource);
+            world.RemoveResource(resource);
         }
     }
 }

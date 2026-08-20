@@ -8,7 +8,7 @@ public static class ProductionSystem
     public static void Update(
         RuntimeContext context)
     {
-        var buildings = context.World.GetBuildings().ToList();
+        var buildings = context.World.Buildings.ToList();
 
         foreach(var building in buildings)
         {

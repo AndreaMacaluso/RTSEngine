@@ -14,7 +14,9 @@ public static class CommandSystem
     {
         while (context.World.PendingCommands.Count > 0)
         {
-            var command = context.World.PendingCommands.Dequeue();
+            var command = context.World.DequeueCommand();
+
+            if (command is null) break;
 
             ProcessCommand(context, command);
         }
@@ -190,7 +192,11 @@ public static class CommandSystem
             return;
         }
 
-    
+        if (building.Definition.Produces.Count > 0)
+        {
+            WorldQueries.EnsureSpawnPoint(world, building);
+        }
+
         building.Production.Add(
             new ProductionTask(productionDefinition.Id,productionDefinition.ProductionTimeTicks)
         );

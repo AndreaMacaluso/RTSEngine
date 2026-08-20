@@ -85,7 +85,7 @@ public static class MovementSystem
             return;
         }
 
-        if (world.IsTileBlocked(target.X, target.Y))
+        if (WorldQueries.IsTileBlocked(world, target.X, target.Y))
         {
 
             unit.Movement.BlockedTicks++;

@@ -58,14 +58,4 @@ public static class EconomyActions
                 cost.Amount);
         }
     }
-
-
-    public static bool CanPayUnit(
-        Player player,
-        UnitDefinition definition)
-    {
-        return CanAfford(
-            player,
-            definition.Costs);
-    }
 }

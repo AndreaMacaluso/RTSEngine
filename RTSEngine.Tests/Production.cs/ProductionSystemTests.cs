@@ -80,14 +80,14 @@ public class ProductionSystemTests
                 TestDefinitionFactory.CreateTownCenter(),
                 1,
                 new GridPosition(5,5));
-        building.Production.SpawnPoint = new GridPosition(7,7);
+        building.Production.SpawnPoint = new GridPosition(9,9);
         _world.AddEntity(building);
 
         var player = _world.GetPlayerById(1)!;
         PopulationActions.IncreaseCap(player, 5);
         PopulationActions.TryReservePopulation(player, 1);
 
-        var spawnPoint = new GridPosition(6,5);
+        var spawnPoint = new GridPosition(9,5);
         building.Production.SpawnPoint = spawnPoint;
         building.Production.Add(
             new ProductionTask(

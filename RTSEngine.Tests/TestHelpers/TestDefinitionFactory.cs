@@ -17,7 +17,7 @@ public static class TestDefinitionFactory
             MovementSpeed = movementSpeed,
             GatherCapacity = gatherCapacity,
             BuildableBuildings = [
-                "towncenter",
+                "town_center",
                 "house"
                 ],
             Costs = [new(ResourceType.Food,50)]
@@ -60,6 +60,10 @@ public static class TestDefinitionFactory
         {
             Id = "town_center",
             Name = "towncenter",
+            Width = 3,
+            Height = 3,
+            MaxHealth = 1000,
+            PopulationBonus = 5,
             AcceptedResources = [
                 ResourceType.Wood,
             ],
@@ -87,6 +91,9 @@ public static class TestDefinitionFactory
         {
             Id = "house",
             Name = "House",
+            Width = 2,
+            Height = 2,
+            PopulationBonus = 5,
             BuildTimeTicks = 10
         };
 
@@ -101,6 +108,7 @@ public static class TestDefinitionFactory
             BuildTimeTicks = 10,
             Width = 2,
             Height = 2,
+            PopulationBonus = 5,
             Costs =
             [
                 new(ResourceType.Wood, 100)

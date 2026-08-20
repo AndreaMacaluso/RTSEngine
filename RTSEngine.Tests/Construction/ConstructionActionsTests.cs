@@ -85,4 +85,22 @@ public class ConstructionActionsTests
         Assert.Equal(BuildPhase.None, unit.Build.Phase);
         Assert.Equal(UnitTask.Idle, unit.CurrentTask);
     }
+
+    [Fact]
+    [Trait("Category", "Building")]
+    public void BuildOneTick_ShouldReturnFalse_WhenBuildingIsNull()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+
+        var unit = UnitFactory.Create(
+                TestDefinitionFactory.CreateVillager(),
+                1,
+                new GridPosition(1, 1));
+
+        unit.Build.BuildingId = 999;
+
+        var result = ConstructionActions.BuildOneTick(world, unit);
+
+        Assert.False(result);
+    }
 }

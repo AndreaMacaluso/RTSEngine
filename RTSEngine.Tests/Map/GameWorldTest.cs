@@ -3,6 +3,7 @@ using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Tests.TestHelpers;
@@ -18,7 +19,7 @@ public class GameWorldTest
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
-        var result = world.IsInsideBounds(5, 5);
+        var result = WorldQueries.IsInsideBounds(world, 5, 5);
 
         // Assert
         Assert.True(result);
@@ -31,7 +32,7 @@ public class GameWorldTest
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
-        var result = world.IsInsideBounds(-1, 0);
+        var result = WorldQueries.IsInsideBounds(world, -1, 0);
 
         // Assert
         Assert.False(result);
@@ -44,7 +45,7 @@ public class GameWorldTest
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
-        var result = world.IsInsideBounds(10, 10);
+        var result = WorldQueries.IsInsideBounds(world, 10, 10);
 
         // Assert
         Assert.False(result);
@@ -58,7 +59,7 @@ public class GameWorldTest
 
         var tree = new Tree(new GridPosition(2, 2));
 
-        world.Entities.Add(tree);
+        world.AddEntity(tree);
 
         // Act
         var entity = world.GetEntityAt(2, 2);
@@ -87,11 +88,11 @@ public class GameWorldTest
         // Arrange
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
-        world.Entities.Add(
+        world.AddEntity(
             new Tree(new GridPosition(1, 1)));
 
         // Act
-        var result = world.IsTileOccupied(1, 1);
+        var result = WorldQueries.IsTileOccupied(world, 1, 1);
 
         // Assert
         Assert.True(result);
@@ -104,7 +105,7 @@ public class GameWorldTest
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
-        var result = world.IsTileOccupied(1, 1);
+        var result = WorldQueries.IsTileOccupied(world, 1, 1);
 
         // Assert
         Assert.False(result);
@@ -126,7 +127,7 @@ public class GameWorldTest
         var world = new GameWorld(map);
 
         // Act
-        var result = world.IsTileBlocked(0, 0);
+        var result = WorldQueries.IsTileBlocked(world, 0, 0);
 
         // Assert
         Assert.True(result);
@@ -147,7 +148,7 @@ public class GameWorldTest
         var world = new GameWorld(map);
 
         // Act
-        var result = world.IsTileBlocked(0, 0);
+        var result = WorldQueries.IsTileBlocked(world, 0, 0);
 
         // Assert
         Assert.True(result);
@@ -159,11 +160,11 @@ public class GameWorldTest
         // Arrange
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
-        world.Entities.Add(
+        world.AddEntity(
             new Tree(new GridPosition(3, 3)));
 
         // Act
-        var result = world.IsTileBlocked(3, 3);
+        var result = WorldQueries.IsTileBlocked(world, 3, 3);
 
         // Assert
         Assert.True(result);
@@ -176,7 +177,7 @@ public class GameWorldTest
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act
-        var result = world.IsTileBlocked(-1, 0);
+        var result = WorldQueries.IsTileBlocked(world, -1, 0);
 
         // Assert
         Assert.True(result);
@@ -190,7 +191,7 @@ public class GameWorldTest
         var tree = new Tree(new GridPosition(4, 4));
         world.AddResource(tree);
 
-        Assert.True(world.IsTileBlocked(4, 4));
+        Assert.True(WorldQueries.IsTileBlocked(world, 4, 4));
     }
 
     [Fact]
@@ -202,7 +203,7 @@ public class GameWorldTest
         tree.Amount = 0;
         world.AddResource(tree);
 
-        Assert.False(world.IsTileBlocked(4, 4));
+        Assert.False(WorldQueries.IsTileBlocked(world, 4, 4));
     }
 
     [Fact]
@@ -213,10 +214,10 @@ public class GameWorldTest
         var tree = new Tree(new GridPosition(4, 4));
         world.AddResource(tree);
 
-        Assert.False(world.IsTileBlocked(3, 4));
-        Assert.False(world.IsTileBlocked(5, 4));
-        Assert.False(world.IsTileBlocked(4, 3));
-        Assert.False(world.IsTileBlocked(4, 5));
+        Assert.False(WorldQueries.IsTileBlocked(world, 3, 4));
+        Assert.False(WorldQueries.IsTileBlocked(world, 5, 4));
+        Assert.False(WorldQueries.IsTileBlocked(world, 4, 3));
+        Assert.False(WorldQueries.IsTileBlocked(world, 4, 5));
     }
 
     [Fact]
@@ -239,12 +240,12 @@ public class GameWorldTest
 
         world.AddEntity(building);
 
-        Assert.True(world.IsTileBlocked(2, 2));
-        Assert.True(world.IsTileBlocked(3, 2));
-        Assert.True(world.IsTileBlocked(4, 2));
-        Assert.True(world.IsTileBlocked(2, 3));
-        Assert.True(world.IsTileBlocked(3, 3));
-        Assert.True(world.IsTileBlocked(4, 3));
+        Assert.True(WorldQueries.IsTileBlocked(world, 2, 2));
+        Assert.True(WorldQueries.IsTileBlocked(world, 3, 2));
+        Assert.True(WorldQueries.IsTileBlocked(world, 4, 2));
+        Assert.True(WorldQueries.IsTileBlocked(world, 2, 3));
+        Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
+        Assert.True(WorldQueries.IsTileBlocked(world, 4, 3));
     }
 
     [Fact]
@@ -267,10 +268,10 @@ public class GameWorldTest
 
         world.AddEntity(building);
 
-        Assert.False(world.IsTileBlocked(1, 2));
-        Assert.False(world.IsTileBlocked(2, 1));
-        Assert.False(world.IsTileBlocked(5, 2));
-        Assert.False(world.IsTileBlocked(2, 4));
+        Assert.False(WorldQueries.IsTileBlocked(world, 1, 2));
+        Assert.False(WorldQueries.IsTileBlocked(world, 2, 1));
+        Assert.False(WorldQueries.IsTileBlocked(world, 5, 2));
+        Assert.False(WorldQueries.IsTileBlocked(world, 2, 4));
     }
 
     [Fact]
@@ -281,7 +282,7 @@ public class GameWorldTest
         var tree = new Tree(new GridPosition(3, 3));
         world.AddResource(tree);
 
-        Assert.True(world.IsResourceAt(3, 3));
+        Assert.True(WorldQueries.IsResourceAt(world, 3, 3));
     }
 
     [Fact]
@@ -289,7 +290,7 @@ public class GameWorldTest
     {
         var world = TestWorldFactory.CreateWorld();
 
-        Assert.False(world.IsResourceAt(3, 3));
+        Assert.False(WorldQueries.IsResourceAt(world, 3, 3));
     }
 
     [Fact]
@@ -312,10 +313,10 @@ public class GameWorldTest
 
         world.AddEntity(building);
 
-        Assert.True(world.IsBuildingAt(5, 5));
-        Assert.True(world.IsBuildingAt(6, 5));
-        Assert.True(world.IsBuildingAt(5, 6));
-        Assert.True(world.IsBuildingAt(6, 6));
+        Assert.True(WorldQueries.IsBuildingAt(world, 5, 5));
+        Assert.True(WorldQueries.IsBuildingAt(world, 6, 5));
+        Assert.True(WorldQueries.IsBuildingAt(world, 5, 6));
+        Assert.True(WorldQueries.IsBuildingAt(world, 6, 6));
     }
 
     [Fact]
@@ -323,7 +324,7 @@ public class GameWorldTest
     {
         var world = TestWorldFactory.CreateWorld();
 
-        Assert.False(world.IsBuildingAt(5, 5));
+        Assert.False(WorldQueries.IsBuildingAt(world, 5, 5));
     }
 
     private static GameWorld CreateWorld()

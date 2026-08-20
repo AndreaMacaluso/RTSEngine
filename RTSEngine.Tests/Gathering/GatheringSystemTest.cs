@@ -86,6 +86,7 @@ public class GatheringSystemTests
         TestDefinitionFactory.CreateTownCenter(),
         ownerId: 1,
         position: new GridPosition(1, 1));
+        townCenter.IsCompleted = true;
         world.AddEntity(townCenter);
         unit.Gather.TargetResourceId = tree.Id;
         unit.Gather.Phase = GatherPhase.Gathering;
@@ -299,6 +300,7 @@ public class GatheringSystemTests
         TestDefinitionFactory.CreateTownCenter(),
         ownerId: 1,
         position: new GridPosition(1, 5));
+        townCenter.IsCompleted = true;
 
 
         world.AddEntity(townCenter);
@@ -391,6 +393,7 @@ public class GatheringSystemTests
             TestDefinitionFactory.CreateTownCenter(),
             player.Id,
             new GridPosition(1, 5));
+        townCenter.IsCompleted = true;
 
         world.AddEntity(townCenter);
 
@@ -692,6 +695,7 @@ public class GatheringSystemTests
             TestDefinitionFactory.CreateTownCenter(),
             ownerId: 1,
             position: new GridPosition(1, 1));
+        townCenter.IsCompleted = true;
         world.AddEntity(townCenter);
 
         unit.Gather.WaitingForDepositTicks = 3;

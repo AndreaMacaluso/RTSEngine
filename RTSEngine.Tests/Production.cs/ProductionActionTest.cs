@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Players;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Buildings;
 
@@ -14,7 +15,8 @@ public class ProductionActionTests
 {
     private readonly RuntimeContext _context;
     private readonly GameWorld _world;
-    private readonly Building _townCenter;
+    private readonly RTSEngine.Core.Entities.Buildings.Building _townCenter;
+    private readonly Player _player;
 
 
     public ProductionActionTests()
@@ -47,6 +49,10 @@ public class ProductionActionTests
             position: new GridPosition(5,5));
         _townCenter.Production.SpawnPoint = new GridPosition(7,7);
         _world.AddEntity(_townCenter);
+
+        _player = _world.GetPlayerById(1)!;
+        PopulationActions.IncreaseCap(_player, 10);
+        _player.Economy.Add(ResourceType.Food, 200);
     }
 
 
@@ -156,7 +162,7 @@ public class ProductionActionTests
     public void TrainUnit_ShouldQueueProductionCommand()
     {
         var result =
-            ProductionActions.TrainUnit(
+            ProductionActions.TryTrainUnit(
                 _context,
                 _townCenter,
                 "villager");
@@ -175,7 +181,7 @@ public class ProductionActionTests
         _townCenter.Definition.Produces.Clear();
 
         var result =
-            ProductionActions.TrainUnit(
+            ProductionActions.TryTrainUnit(
                 _context,
                 _townCenter,
                 "villager");
@@ -192,7 +198,7 @@ public class ProductionActionTests
     public void TrainUnit_ShouldFail_WhenUnitDoesNotExist()
     {
         var result =
-            ProductionActions.TrainUnit(
+            ProductionActions.TryTrainUnit(
                 _context,
                 _townCenter,
                 "dragon");

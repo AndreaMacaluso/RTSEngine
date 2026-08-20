@@ -3,6 +3,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
@@ -268,10 +269,10 @@ public class CombatSystemTests
 
         world.AddEntity(unit);
 
-        Assert.True(world.IsTileBlocked(3, 3));
+        Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
 
         unit.TakeDamage(50);
 
-        Assert.False(world.IsTileBlocked(3, 3));
+        Assert.False(WorldQueries.IsTileBlocked(world, 3, 3));
     }
 }

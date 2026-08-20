@@ -47,11 +47,11 @@ public static class TestWorldFactory
         }
         GameWorld world = new GameWorld(map);
 
-        Player player1 = PlayerFactory.Create(1);
+        Player player1 = new Player(1, "", ConsoleColor.Gray, PlayerControllerType.Human);
 
         world.AddPlayer(player1);
 
-        Player player2 = PlayerFactory.Create(2);
+        Player player2 = new Player(2, "", ConsoleColor.Gray, PlayerControllerType.Human);
 
         world.AddPlayer(player2);
 

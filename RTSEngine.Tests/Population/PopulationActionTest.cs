@@ -121,4 +121,18 @@ public class PopulationActionsTests
         Assert.False(
             PopulationActions.CanAddPopulation(player, 1));
     }
+
+    [Fact]
+    [Trait("Category", "Population")]
+    public void RemovePopulation_ShouldNotGoBelowZero()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Current = 2;
+
+        PopulationActions.RemovePopulation(player, 5);
+
+        Assert.Equal(0, player.Population.Current);
+    }
 }

@@ -5,7 +5,7 @@ namespace RTSEngine.Core.Entities.Buildings;
 
 public sealed class Building : Entity
 {
-    public int OwnerId { get; }
+    public int OwnerId { get; init; }
 
     public BuildingDefinition Definition { get; }
 
@@ -17,8 +17,8 @@ public sealed class Building : Entity
     public int PopulationBonus { get; set; }
     public ProductionState Production { get; } = new();
 
-    public override bool IsBlocking => true;
-    public override bool IsDead => CurrentHealth <= 0;
+    public override bool IsBlocking => !IsDead;
+    public override bool IsDead => IsCompleted && CurrentHealth <= 0;
 
     public override void TakeDamage(int amount)
     {

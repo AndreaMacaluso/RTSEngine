@@ -4,7 +4,7 @@ namespace RTSEngine.Core.Entities;
 
 public abstract class Entity
 {
-    public int Id { get; set; }
+    public int Id { get; internal set; }
 
     public GridPosition Position { get; set; }
 

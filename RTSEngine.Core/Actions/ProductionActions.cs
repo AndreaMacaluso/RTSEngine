@@ -54,7 +54,7 @@ public static class ProductionActions
         var world = context.World;
         var position = spawnPosition.Value;
 
-        if (world.IsTileBlocked(position.X, position.Y))
+        if (WorldQueries.IsTileBlocked(world, position.X, position.Y))
         {
             var fallback = WorldQueries.FindAdjacentWalkableTile(
                 world,

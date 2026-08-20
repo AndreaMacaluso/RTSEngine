@@ -61,7 +61,7 @@ public static class ConstructionActions
 
         if (building == null)
         {
-            return true;
+            return false;
         }
 
         building.ConstructionProgress++;
@@ -100,17 +100,9 @@ public static class ConstructionActions
             player,
             building.Definition.PopulationBonus);
 
-        if (building.Definition.Produces.Count > 0
-            && building.Production.SpawnPoint is null)
+        if (building.Definition.Produces.Count > 0)
         {
-            var center = new GridPosition(
-                building.Position.X + building.Definition.Width / 2,
-                building.Position.Y + building.Definition.Height / 2);
-            building.Production.SpawnPoint =
-                WorldQueries.FindAdjacentWalkableTile(world, center)
-                ?? new GridPosition(
-                    building.Position.X + building.Definition.Width,
-                    building.Position.Y);
+            WorldQueries.EnsureSpawnPoint(world, building);
         }
     }
 

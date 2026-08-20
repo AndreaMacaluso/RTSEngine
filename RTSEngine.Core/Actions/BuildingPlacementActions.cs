@@ -1,7 +1,10 @@
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Rules;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
@@ -35,9 +38,6 @@ public static class BuildingPlacementActions
             definition,
             player.Id,
             position);
-
-        building.IsCompleted = false;
-        building.ConstructionProgress = 0;
 
         world.AddEntity(building);
 

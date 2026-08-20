@@ -19,7 +19,7 @@ public static class BuildingPlacementRules
                 definition,
                 topLeft))
         {
-            if (!world.IsInsideBounds(tile.X, tile.Y))
+            if (!WorldQueries.IsInsideBounds(world, tile.X, tile.Y))
             {
                 return false;
             }
@@ -32,7 +32,7 @@ public static class BuildingPlacementRules
                 return false;
             }
 
-            if (world.IsTileOccupied(tile.X, tile.Y))
+            if (WorldQueries.IsTileOccupied(world, tile.X, tile.Y))
             {
                 return false;
             }

@@ -7,7 +7,7 @@ using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
-public class ConstructionSystem
+public static class ConstructionSystem
 {
 
     public static void Update(GameWorld world)
@@ -68,6 +68,20 @@ public class ConstructionSystem
     GameWorld world,
     Unit unit)
     {
+        if (unit.Build.BuildingId is not int buildingId)
+        {
+            ConstructionActions.StopBuilding(unit);
+            return;
+        }
+
+        var building = world.GetBuildingById(buildingId);
+
+        if (building == null)
+        {
+            ConstructionActions.StopBuilding(unit);
+            return;
+        }
+
         if (!ConstructionActions.BuildOneTick(world, unit))
         {
             return;

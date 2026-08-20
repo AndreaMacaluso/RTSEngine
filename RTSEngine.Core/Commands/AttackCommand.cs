@@ -2,7 +2,7 @@ namespace RTSEngine.Core.Commands;
 
 public class AttackCommand : ICommand
 {
-    public List<int> UnitIds { get; set; } = [];
+    public required List<int> UnitIds { get; init; }
 
-    public int TargetEntityId { get; set; }
+    public required int TargetEntityId { get; init; }
 }

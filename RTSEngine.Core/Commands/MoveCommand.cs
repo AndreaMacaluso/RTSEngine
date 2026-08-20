@@ -4,7 +4,7 @@ namespace RTSEngine.Core.Commands;
 
 public class MoveCommand : ICommand
 {
-    public List<int> UnitIds { get; set; } = [];
+    public required List<int> UnitIds { get; init; }
 
-    public GridPosition Target { get; set; }
+    public required GridPosition Target { get; init; }
 }

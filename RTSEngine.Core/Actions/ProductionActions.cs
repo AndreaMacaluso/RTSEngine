@@ -89,7 +89,7 @@ public static class ProductionActions
         CompleteUnitSpawned(context, building);
     }
 
-    public static bool TrainUnit(
+    private static bool TrainUnit(
     RuntimeContext context,
     Building building,
     string unitId)
@@ -115,6 +115,9 @@ public static class ProductionActions
         return true;
     }
 
+    // TryTrainUnit is the only entry point for unit production.
+    // Do not call TrainUnit directly — all production must go through TryTrainUnit
+    // to ensure costs and population are validated before queuing.
     public static bool TryTrainUnit(
     RuntimeContext context,
     Building building,

@@ -38,6 +38,7 @@ public class GatherState
         return collected;
     }
 
+    //this reset only the inventory not the resource type(needed to redirect the villager)
     public void Clear()
     {
         CurrentLoad = 0;

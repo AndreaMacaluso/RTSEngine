@@ -66,7 +66,7 @@ public static class PopulationActions
         Player player,
         int amount)
     {
-        player.Population.Current -= amount;
+        player.Population.Current = Math.Max(0, player.Population.Current - amount);
     }
 
     public static void IncreaseCap(

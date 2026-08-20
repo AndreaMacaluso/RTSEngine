@@ -132,6 +132,10 @@ public static class GatherActions
         return GatherResult.ContinueGathering;
     }
 
+    // NOTE: DepositInventory returns void. If the player or resource type is
+    // null, the inventory is never cleared and resources are never transferred.
+    // The caller (HandleDepositing) has no way to detect this failure.
+    // Consider returning bool for error handling.
     public static void DepositInventory(
     GameWorld world,
     Unit unit)
@@ -157,11 +161,13 @@ public static class GatherActions
     {
         var resource = GetTargetResource(world, unit);
 
-        if (resource != null && !resource.IsDepleted)
-        {
-            return true;
-        }
+        return resource != null && !resource.IsDepleted;
+    }
 
+    public static bool TryRetargetResource(
+    GameWorld world,
+    Unit unit)
+    {
         if (unit.Gather.CarriedResource is not ResourceType resourceType)
         {
             return false;
@@ -192,15 +198,13 @@ public static class GatherActions
                     world,
                     unit.Position,
                     nextResource.Position);
-        
+
         if (target == null)
         {
             return false;
         }
 
-
         unit.Gather.TargetResourceId = nextResource.Id;
-
         unit.CurrentTask = UnitTask.Gathering;
         unit.Gather.Phase = GatherPhase.MovingToResource;
         unit.Gather.CarriedResource = resourceType;
@@ -209,12 +213,11 @@ public static class GatherActions
         return true;
     }
 
-   public static void StopGathering(Unit unit)
+    public static void StopGathering(Unit unit)
     {
         unit.Gather.TargetResourceId = null;
         unit.Gather.DepositPosition = null;
         unit.Gather.Phase = GatherPhase.None;
-
         unit.CurrentTask = UnitTask.Idle;
     }
 
@@ -240,31 +243,6 @@ public static class GatherActions
         }
 
         return world.GetResourceById(resourceId);
-    }
-
-    public static bool TryRetargetResource(
-    GameWorld world,
-    Unit unit)
-    {
-        if (unit.Gather.CarriedResource is not ResourceType resourceType)
-        {
-            return false;
-        }
-
-        ResourceNode? nextResource = WorldQueries.FindClosestResource(
-                    world,
-                    unit.Position,
-                    resourceType);
-        
-
-        if (nextResource == null)
-        {
-            return false;
-        }
-
-        unit.Gather.TargetResourceId = nextResource.Id;
-
-        return true;
     }
 
 }

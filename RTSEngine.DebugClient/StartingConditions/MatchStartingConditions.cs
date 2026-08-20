@@ -1,3 +1,4 @@
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Runtime;
@@ -28,7 +29,7 @@ public static class MatchStartingConditions
         int ownerId,
         GridPosition spawnCorner)
     {
-        var definition = context.BuildingRepository.Get("town_center");
+        var definition = context.BuildingRepository.Get(EntityIds.TownCenter);
         var halfW = definition.Width / 2;
         var halfH = definition.Height / 2;
         var center = new GridPosition(

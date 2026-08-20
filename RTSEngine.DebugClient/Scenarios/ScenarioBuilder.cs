@@ -1,5 +1,6 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.DebugClient.StartingConditions;
@@ -22,7 +23,7 @@ public static class ScenarioBuilder
     {
         var world = context.World;
         var villagerDefinition =
-            context.UnitRepository.Get("villager");
+            context.UnitRepository.Get(EntityIds.Villager);
         foreach (Player player in world.Players)
         {
             SpawnUnitWithMoveCommand(
@@ -39,7 +40,7 @@ public static class ScenarioBuilder
     {
         var world = context.World;
         var villagerDefinition =
-            context.UnitRepository.Get("villager");
+            context.UnitRepository.Get(EntityIds.Villager);
         foreach (Player player in world.Players)
         {
             var resource = world.Resources.FirstOrDefault();

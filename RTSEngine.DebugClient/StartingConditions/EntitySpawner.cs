@@ -14,7 +14,7 @@ public static class EntitySpawner
         GridPosition position)
     {
         var definition =
-            context.UnitRepository.Get("villager");
+            context.UnitRepository.Get(EntityIds.Villager);
 
         var unit = UnitFactory.Create(
             definition,
@@ -38,7 +38,7 @@ public static class EntitySpawner
         GridPosition position)
     {
         var definition =
-            context.BuildingRepository.Get("town_center");
+            context.BuildingRepository.Get(EntityIds.TownCenter);
 
         var building = BuildingFactory.Create(
             definition,

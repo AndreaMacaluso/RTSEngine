@@ -51,7 +51,7 @@ public static class ConsoleRenderer
             return;
         }
 
-        var building = world.GetBuildings()
+        var building = world.Buildings
             .FirstOrDefault(entity => BuildingQueries.OccupiesTile(entity, position));
 
         if (building != null)
@@ -117,7 +117,7 @@ public static class ConsoleRenderer
 
         string symbol = unit.Definition.Id switch
         {
-            "villager" => "● ",
+            EntityIds.Villager => "● ",
             _ => "? "
         };
 
@@ -148,12 +148,12 @@ public static class ConsoleRenderer
 
         return building.Definition.Id switch
         {
-            "town_center" => "TC",
-            "house" => "H ",
-            "lumbercamp" => "LC",
-            "minecamp" => "MC",
-            "mill" => "ML",
-            "barracks" => "BR",
+            EntityIds.TownCenter => "TC",
+            EntityIds.House => "H ",
+            EntityIds.LumberCamp => "LC",
+            EntityIds.MineCamp => "MC",
+            EntityIds.Mill => "ML",
+            EntityIds.Barracks => "BR",
             _ => "B "
         };
     }

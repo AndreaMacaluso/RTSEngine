@@ -35,7 +35,7 @@ public static class ScenarioBuilder
         }        
     }
 
-    public static void CreeateGatheringScenario(
+    public static void CreateGatheringScenario(
         RuntimeContext context)
     {
         var world = context.World;

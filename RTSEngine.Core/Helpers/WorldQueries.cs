@@ -166,16 +166,16 @@ public static class WorldQueries
     public static Building? FindBuilding(
         GameWorld world,
         Player player,
-        string building_str)
+        string buildingId)
     {
-        var building_found = world.Entities
+        var buildingFound = world.Entities
             .OfType<Building>()
             .FirstOrDefault(building =>
                 building.OwnerId == player.Id &&
-                building.Definition.Id == building_str &&
+                building.Definition.Id == buildingId &&
                 building.IsCompleted);
 
-        return building_found;
+        return buildingFound;
     }
 
     public static Building? FindEnemyBuilding(
@@ -195,9 +195,9 @@ public static class WorldQueries
     public static bool HasBuilding(
         GameWorld world,
         Player player,
-        string building_str)
+        string buildingId)
     {
-        return FindBuilding(world, player, building_str) != null;
+        return FindBuilding(world, player, buildingId) != null;
     }
 
     public static int CountBuildings(

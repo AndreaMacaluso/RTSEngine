@@ -4,7 +4,7 @@ using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.State;
 namespace RTSEngine.Core.Entities.Units;
 
-public class Unit : Entity
+public sealed class Unit : Entity
 {
     public int OwnerId { get; init; }
     public UnitDefinition Definition { get;}

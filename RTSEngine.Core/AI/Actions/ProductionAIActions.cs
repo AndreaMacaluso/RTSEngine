@@ -1,6 +1,7 @@
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Diagnostics;
 
@@ -16,9 +17,6 @@ public static class ProductionAIActions
 
         if (player == null)
         {
-            DebugSession.Log.Info(
-                "ProductionAIActions.TrainVillager: player not found",
-                [("OwnerId", townCenter.OwnerId)]);
             return false;
         }
 
@@ -37,7 +35,7 @@ public static class ProductionAIActions
         var result = ProductionActions.TryTrainUnit(
             context,
             townCenter,
-            "villager");
+            EntityIds.Villager);
 
         DebugSession.Log.Info(
             "ProductionAIActions.TrainVillager: TryTrainUnit result",
@@ -59,16 +57,13 @@ public static class ProductionAIActions
 
         if (player == null)
         {
-            DebugSession.Log.Info(
-                "ProductionAIActions.TrainMilitia: player not found",
-                [("OwnerId", barracks.OwnerId)]);
             return false;
         }
 
         var result = ProductionActions.TryTrainUnit(
             context,
             barracks,
-            "militia");
+            EntityIds.Militia);
 
         DebugSession.Log.Info(
             "ProductionAIActions.TrainMilitia: TryTrainUnit result",

@@ -7,7 +7,6 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.AI.Planning;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.State;
@@ -21,20 +20,8 @@ public static class ConstructionAIActions
         Player player,
         string buildingId)
     {
-        var definition = context.BuildingRepository.Get(buildingId);
-
-        return RequestConstruction(
-            context,
-            player,
-            definition);
-    }
-
-    private static bool RequestConstruction(
-        RuntimeContext context,
-        Player player,
-        BuildingDefinition definition)
-    {
         var world = context.World;
+        var definition = context.BuildingRepository.Get(buildingId);
 
         Unit? builder = UnitQueries
             .FindIdleVillagers(world, player)
@@ -57,7 +44,7 @@ public static class ConstructionAIActions
             ]);
 
         GridPosition? position =
-            BuildingPlanner.FindBuildPosition(
+            WorldQueries.FindBuildPosition(
                 world,
                 player,
                 definition);

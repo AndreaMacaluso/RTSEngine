@@ -217,7 +217,7 @@ public static class WorldQueries
     {
         return world.Entities
             .OfType<Building>()
-            .Where(b => b.IsDead)
+            .Where(b => b.IsDead && b.IsCompleted)
             .ToList();
     }
 

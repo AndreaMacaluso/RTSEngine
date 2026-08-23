@@ -11,6 +11,4 @@ public abstract class Entity
     public abstract bool IsBlocking { get; }
 
     public abstract bool IsDead { get; }
-
-    public abstract void TakeDamage(int amount);
 }

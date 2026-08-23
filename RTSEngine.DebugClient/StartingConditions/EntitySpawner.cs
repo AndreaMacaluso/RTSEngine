@@ -46,7 +46,7 @@ public static class EntitySpawner
             position);
 
         building.IsCompleted = true;
-        building.CurrentHealth = definition.MaxHealth;
+        building.Health.CurrentHealth = definition.MaxHealth;
 
         var center = new GridPosition(
             position.X + definition.Width / 2,

@@ -133,6 +133,12 @@ public static class GatherSystem
 
             case GatherResult.ResourceDepleted:
 
+                if (!unit.Gather.IsFull
+                    && GatherActions.TryRetargetResource(world, unit))
+                {
+                    return;
+                }
+
                 unit.Gather.Phase = GatherPhase.MovingToDeposit;
 
                 if (!GatherActions.BeginMoveToDeposit(world, unit))
@@ -234,6 +240,6 @@ public static class GatherSystem
         }
 
         GatherActions.StopGathering(unit);
-        unit.Gather.Clear();
+        unit.Gather.ClearInventory();
     }
 }

@@ -12,9 +12,6 @@ public abstract class ResourceNode : Entity
 
     public override bool IsDead => false;
 
-    public override void TakeDamage(int amount) { }
-
-    
     protected ResourceNode(
         GridPosition position,
         int amount,

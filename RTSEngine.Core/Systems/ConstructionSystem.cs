@@ -45,9 +45,12 @@ public static class ConstructionSystem
         {
             unit.Movement.NeedsRepath = false;
 
-            ConstructionActions.BeginMoveToConstruction(
+            if (!ConstructionActions.BeginMoveToConstruction(
                 world,
-                unit);
+                unit))
+            {
+                ConstructionActions.StopBuilding(unit);
+            }
 
             return;
         }
@@ -76,7 +79,7 @@ public static class ConstructionSystem
 
         var building = world.GetBuildingById(buildingId);
 
-        if (building == null)
+        if (building == null || building.IsCompleted)
         {
             ConstructionActions.StopBuilding(unit);
             return;

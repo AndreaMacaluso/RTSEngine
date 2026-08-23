@@ -149,6 +149,13 @@ public static class CommandSystem
     {
         unit.Movement.PathQueue.Clear();
 
+        if (unit.Position == target)
+        {
+            unit.Movement.Destination = target;
+            unit.Movement.CurrentStep = null;
+            return;
+        }
+
         var path = PathSystem.GeneratePath(
             world,
             unit.Position,

@@ -12,12 +12,6 @@ public sealed class FileLogSink : ILogSink, IDisposable
 
     public void Write(LogEntry entry)
     {
-        if (entry.Message.StartsWith("MovementSystem") ||
-            entry.Message.StartsWith("Scenario"))
-        {
-            _indent = 0;
-        }
-
         var indent = new string(' ', _indent * 2);
 
         _writer.WriteLine($"{indent}[{entry.Level}] {entry.Message}");

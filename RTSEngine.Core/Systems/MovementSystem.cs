@@ -67,22 +67,25 @@ public static class MovementSystem
                 continue;
             }
             
-            TryMove(
+            bool moved = TryMove(
                 world,
                 unit,
                 currentStep);
-            unit.Movement.CurrentStep = null;
+            if (moved)
+            {
+                unit.Movement.CurrentStep = null;
+            }
             
         }
     }
-    private static void TryMove(
+    private static bool TryMove(
     GameWorld world,
     Unit unit,
     GridPosition target)
     {
         if (!WorldQueries.IsAdjacent(unit.Position,target))
         {
-            return;
+            return false;
         }
 
         if (WorldQueries.IsTileBlocked(world, target.X, target.Y))
@@ -97,22 +100,24 @@ public static class MovementSystem
                 unit.Movement.PathQueue.Clear();
                 unit.Movement.CurrentStep = null;
                 unit.CurrentTask = UnitTask.Idle;
-                return;
+                return false;
             }
 
             if (unit.Movement.BlockedTicks >= RepathThreshold)
             {
                 unit.Movement.BlockedTicks = 0;
                 unit.Movement.NeedsRepath = true;
+                unit.Movement.CurrentStep = null;
             }
 
-            return;
+            return false;
         }
 
         unit.Position = target;
         unit.Movement.CurrentStep = null;
         unit.Movement.BlockedTicks = 0;
         unit.Movement.NeedsRepath = false;
+        return true;
     }
 
     public static void BeginMove(

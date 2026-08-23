@@ -4,15 +4,12 @@ namespace RTSEngine.Core.Actions;
 
 public static class PopulationActions
 {
-    public const int MaxPopulation = 75;
-
     public static bool CanAddPopulation(
         Player player,
         int amount)
     {
         return
-            player.Population.Current + player.Population.Reserved + amount <= player.Population.Capacity &&
-            player.Population.Current + player.Population.Reserved + amount <= MaxPopulation;
+            player.Population.Current + player.Population.Reserved + amount <= player.Population.Capacity;
     }
 
     public static void AddPopulation(
@@ -73,10 +70,7 @@ public static class PopulationActions
         Player player,
         int amount)
     {
-        player.Population.Capacity =
-            Math.Min(
-                player.Population.Capacity + amount,
-                MaxPopulation);
+        player.Population.Capacity += amount;
     }
 
     public static void DecreaseCap(

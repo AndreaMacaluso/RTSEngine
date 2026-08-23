@@ -152,7 +152,7 @@ public static class GatherActions
             return;
         }
         player.Economy.Add(gatheredResource,unit.Gather.CurrentLoad);
-        unit.Gather.Clear();
+        unit.Gather.ClearInventory();
     }
 
     public static bool CanContinueGathering(

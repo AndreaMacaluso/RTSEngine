@@ -1,0 +1,123 @@
+using RTSEngine.Core.Actions;
+using RTSEngine.Tests.TestHelpers;
+
+namespace RTSEngine.Tests.Population;
+
+public class PopulationActionsTests
+{
+    [Fact]
+    public void AddPopulation_ShouldIncreasePopulation()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        PopulationActions.AddPopulation(player, 3);
+
+        Assert.Equal(3, player.Population.Current );
+    }
+
+    [Fact]
+    public void RemovePopulation_ShouldDecreasePopulation()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Current  = 5;
+
+        PopulationActions.RemovePopulation(player, 2);
+
+        Assert.Equal(3, player.Population.Current );
+    }
+
+    [Fact]
+    public void IncreaseCap_ShouldIncreasePopulationCap()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Capacity = 5;
+
+        PopulationActions.IncreaseCap(player, 5);
+
+        Assert.Equal(10, player.Population.Capacity);
+    }
+
+    [Fact]
+    public void IncreaseCap_ShouldIncreaseWithoutLimit()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Capacity = 74;
+
+        PopulationActions.IncreaseCap(player, 10);
+
+        Assert.Equal(84, player.Population.Capacity);
+    }
+
+    [Fact]
+    public void DecreaseCap_ShouldDecreasePopulationCap()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Capacity = 10;
+
+        PopulationActions.DecreaseCap(player, 4);
+
+        Assert.Equal(6, player.Population.Capacity);
+    }
+
+    [Fact]
+    public void DecreaseCap_ShouldNotGoBelowZero()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Capacity = 2;
+
+        PopulationActions.DecreaseCap(player, 10);
+
+        Assert.Equal(0, player.Population.Capacity);
+    }
+
+    [Fact]
+    public void CanAddPopulation_ShouldReturnTrue_WhenEnoughCapacity()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Current  = 4;
+        player.Population.Capacity = 5;
+
+        Assert.True(
+            PopulationActions.CanAddPopulation(player, 1));
+    }
+
+    [Fact]
+    public void CanAddPopulation_ShouldReturnFalse_WhenCapReached()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Current  = 5;
+        player.Population.Capacity = 5;
+
+        Assert.False(
+            PopulationActions.CanAddPopulation(player, 1));
+    }
+
+    [Fact]
+    [Trait("Category", "Population")]
+    public void RemovePopulation_ShouldNotGoBelowZero()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
+
+        player.Population.Current = 2;
+
+        PopulationActions.RemovePopulation(player, 5);
+
+        Assert.Equal(0, player.Population.Current);
+    }
+}

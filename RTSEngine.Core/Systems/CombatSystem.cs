@@ -1,5 +1,6 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
@@ -123,7 +124,15 @@ public static class CombatSystem
             return;
         }
 
-        target.TakeDamage(unit.Combat.AttackDamage);
+        switch (target)
+        {
+            case Unit u:
+                u.Health.TakeDamage(unit.Combat.AttackDamage);
+                break;
+            case Building b:
+                b.Health.TakeDamage(unit.Combat.AttackDamage);
+                break;
+        }
         unit.Combat.ResetCooldown();
     }
 

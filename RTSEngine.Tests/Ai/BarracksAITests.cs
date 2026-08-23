@@ -1,11 +1,9 @@
-using RTSEngine.Core.AI.Planning;
-using RTSEngine.Core.AI.Decisions;
+using RTSEngine.Core.AI.Brains;
 using RTSEngine.Core.AI.Actions;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
-using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
@@ -64,7 +62,7 @@ public class BarracksAITests
         PopulationActions.AddPopulation(_player, 15);
         _player.Economy.Add(ResourceType.Wood, 200);
 
-        ConstructionDecision.Execute(_context, _player);
+        new ConstructionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         var barracks = _world.Entities
@@ -83,7 +81,7 @@ public class BarracksAITests
         PopulationActions.AddPopulation(_player, 10);
         _player.Economy.Add(ResourceType.Wood, 200);
 
-        ConstructionDecision.Execute(_context, _player);
+        new ConstructionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         var barracks = _world.Entities
@@ -109,7 +107,7 @@ public class BarracksAITests
         existingBarracks.IsCompleted = true;
         _world.AddEntity(existingBarracks);
 
-        ConstructionDecision.Execute(_context, _player);
+        new ConstructionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         var barracksCount = _world.Entities
@@ -124,6 +122,13 @@ public class BarracksAITests
     [Trait("Category", "Barracks")]
     public void ProductionDecision_ShouldTrainMilitia_WhenPopReached()
     {
+        var tc = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            _player.Id,
+            new GridPosition(5, 5));
+        tc.IsCompleted = true;
+        _world.AddEntity(tc);
+
         var barracks = BuildingFactory.Create(
             TestDefinitionFactory.CreateBarracks(),
             _player.Id,
@@ -136,7 +141,7 @@ public class BarracksAITests
         PopulationActions.AddPopulation(_player, 15);
         _player.Economy.Add(ResourceType.Food, 200);
 
-        ProductionDecision.Execute(_context, _player);
+        new ProductionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         Assert.True(barracks.Production.IsProducing);
@@ -147,6 +152,13 @@ public class BarracksAITests
     [Trait("Category", "Barracks")]
     public void ProductionDecision_ShouldTrainMilitia_UntilTargetCount()
     {
+        var tc = BuildingFactory.Create(
+            TestDefinitionFactory.CreateTownCenter(),
+            _player.Id,
+            new GridPosition(5, 5));
+        tc.IsCompleted = true;
+        _world.AddEntity(tc);
+
         var barracks = BuildingFactory.Create(
             TestDefinitionFactory.CreateBarracks(),
             _player.Id,
@@ -161,7 +173,7 @@ public class BarracksAITests
 
         for (int i = 0; i < 5; i++)
         {
-            ProductionDecision.Execute(_context, _player);
+            new ProductionBrain().Execute(_context, _player);
             CommandSystem.Update(_context);
         }
 
@@ -183,7 +195,7 @@ public class BarracksAITests
         PopulationActions.IncreaseCap(_player, 20);
         PopulationActions.AddPopulation(_player, 15);
 
-        ProductionDecision.Execute(_context, _player);
+        new ProductionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         Assert.False(barracks.Production.IsProducing);
@@ -198,7 +210,7 @@ public class BarracksAITests
         PopulationActions.AddPopulation(_player, 15);
         _player.Economy.Add(ResourceType.Food, 200);
 
-        ProductionDecision.Execute(_context, _player);
+        new ProductionBrain().Execute(_context, _player);
 
         // Should not throw
     }
@@ -297,16 +309,18 @@ public class MilitiaCombatAIFullLoopTests
             TestDefinitionFactory.CreateMilitiaWithCombatStats(),
             _player.Id,
             new GridPosition(5, 5));
+        militia.Health.CurrentHealth = 60;
 
         var enemy = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             _enemy.Id,
             new GridPosition(6, 5));
+        enemy.Health.CurrentHealth = 50;
 
         _world.AddEntity(militia);
         _world.AddEntity(enemy);
 
-        CombatDecision.Execute(_world, _player);
+        new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         Assert.Equal(UnitTask.Attacking, militia.CurrentTask);
@@ -332,7 +346,7 @@ public class MilitiaCombatAIFullLoopTests
         _world.AddEntity(militia);
         _world.AddEntity(enemy);
 
-        CombatDecision.Execute(_world, _player);
+        new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         Assert.Equal(UnitTask.Gathering, militia.CurrentTask);
@@ -347,17 +361,18 @@ public class MilitiaCombatAIFullLoopTests
             TestDefinitionFactory.CreateMilitiaWithCombatStats(),
             _player.Id,
             new GridPosition(5, 5));
+        militia.Health.CurrentHealth = 60;
 
         var enemy = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             _enemy.Id,
             new GridPosition(6, 5));
-        enemy.CurrentHealth = 1;
+        enemy.Health.CurrentHealth = 1;
 
         _world.AddEntity(militia);
         _world.AddEntity(enemy);
 
-        CombatDecision.Execute(_world, _player);
+        new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
         Assert.Equal(UnitTask.Attacking, militia.CurrentTask);

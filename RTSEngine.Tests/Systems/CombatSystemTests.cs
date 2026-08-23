@@ -55,7 +55,7 @@ public class CombatSystemTests
             CombatSystem.Update(world);
         }
 
-        Assert.True(target.CurrentHealth < 60);
+        Assert.True(target.Health.CurrentHealth < 60);
     }
 
     [Fact]
@@ -85,6 +85,7 @@ public class CombatSystemTests
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
         var target = UnitFactory.Create(targetDef, 2, new GridPosition(3, 2));
+        target.Health.CurrentHealth = 100;
 
         world.AddEntity(attacker);
         world.AddEntity(target);
@@ -92,22 +93,22 @@ public class CombatSystemTests
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
         CombatSystem.Update(world);
-        Assert.Equal(100, target.CurrentHealth);
+        Assert.Equal(100, target.Health.CurrentHealth);
 
         CombatSystem.Update(world);
-        Assert.Equal(90, target.CurrentHealth);
+        Assert.Equal(90, target.Health.CurrentHealth);
 
         CombatSystem.Update(world);
-        Assert.Equal(90, target.CurrentHealth);
+        Assert.Equal(90, target.Health.CurrentHealth);
 
         CombatSystem.Update(world);
-        Assert.Equal(90, target.CurrentHealth);
+        Assert.Equal(90, target.Health.CurrentHealth);
 
         CombatSystem.Update(world);
-        Assert.Equal(90, target.CurrentHealth);
+        Assert.Equal(90, target.Health.CurrentHealth);
 
         CombatSystem.Update(world);
-        Assert.Equal(80, target.CurrentHealth);
+        Assert.Equal(80, target.Health.CurrentHealth);
     }
 
     [Fact]
@@ -180,6 +181,7 @@ public class CombatSystemTests
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(1, 1));
         var target = UnitFactory.Create(targetDef, 2, new GridPosition(5, 1));
+        target.Health.CurrentHealth = 50;
 
         world.AddEntity(attacker);
         world.AddEntity(target);
@@ -242,17 +244,20 @@ public class CombatSystemTests
         };
 
         var unit = UnitFactory.Create(def, 1, new GridPosition(1, 1));
+        unit.Health.CurrentHealth = 50;
 
         Assert.False(unit.IsDead);
 
-        unit.TakeDamage(50);
+        unit.Health.TakeDamage(50);
 
         Assert.True(unit.IsDead);
-        Assert.Equal(0, unit.CurrentHealth);
+        Assert.Equal(0, unit.Health.CurrentHealth);
     }
 
     [Fact]
     [Trait("Category", "Combat")]
+    // Design: unità morte non è blocking — il corpo è calpestabile.
+    // La tile viene liberata quando RemoveDeadEntities rimuove l'entity dalla lista.
     public void DeadUnit_ShouldNotBlockTile()
     {
         var world = TestWorldFactory.CreateWorld();
@@ -266,12 +271,13 @@ public class CombatSystemTests
         };
 
         var unit = UnitFactory.Create(def, 1, new GridPosition(3, 3));
+        unit.Health.CurrentHealth = 50;
 
         world.AddEntity(unit);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
 
-        unit.TakeDamage(50);
+        unit.Health.TakeDamage(50);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 3, 3));
     }

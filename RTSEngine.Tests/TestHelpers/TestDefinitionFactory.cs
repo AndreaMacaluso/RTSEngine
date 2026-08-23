@@ -78,6 +78,7 @@ public static class TestDefinitionFactory
         {
             Id = "barracks",
             Name = "Barracks",
+            MaxHealth = 100,
             Width = 2,
             Height = 2,
             Produces = ["militia"],
@@ -91,6 +92,7 @@ public static class TestDefinitionFactory
         {
             Id = "house",
             Name = "House",
+            MaxHealth = 100,
             Width = 2,
             Height = 2,
             PopulationBonus = 5,
@@ -106,6 +108,7 @@ public static class TestDefinitionFactory
             Id = "house",
             Name = "House",
             BuildTimeTicks = 10,
+            MaxHealth = 100,
             Width = 2,
             Height = 2,
             PopulationBonus = 5,

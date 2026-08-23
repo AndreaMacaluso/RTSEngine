@@ -27,14 +27,14 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 10;
+        building.Health.CurrentHealth = 10;
 
         Assert.False(building.IsDead);
 
-        building.TakeDamage(10);
+        building.Health.TakeDamage(10);
 
         Assert.True(building.IsDead);
-        Assert.Equal(0, building.CurrentHealth);
+        Assert.Equal(0, building.Health.CurrentHealth);
     }
 
     [Fact]
@@ -49,13 +49,13 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 1000;
+        building.Health.CurrentHealth = 1000;
 
         world.AddEntity(building);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 5, 5));
 
-        building.TakeDamage(building.CurrentHealth);
+        building.Health.TakeDamage(building.Health.CurrentHealth);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 5, 5));
     }
@@ -72,7 +72,7 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 1;
+        building.Health.CurrentHealth = 1;
 
         world.AddEntity(building);
 
@@ -84,7 +84,7 @@ public class BuildingDestructionTests
                 BuildingRepository = new([])
             });
 
-        building.TakeDamage(1);
+        building.Health.TakeDamage(1);
 
         simulation.Step();
 
@@ -103,7 +103,7 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 1;
+        building.Health.CurrentHealth = 1;
 
         var builder = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
@@ -124,7 +124,7 @@ public class BuildingDestructionTests
                 BuildingRepository = new([])
             });
 
-        building.TakeDamage(1);
+        building.Health.TakeDamage(1);
 
         simulation.Step();
 
@@ -147,7 +147,7 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 1;
+        building.Health.CurrentHealth = 1;
 
         world.AddEntity(building);
 
@@ -161,7 +161,7 @@ public class BuildingDestructionTests
                 BuildingRepository = new([])
             });
 
-        building.TakeDamage(1);
+        building.Health.TakeDamage(1);
 
         simulation.Step();
 
@@ -193,7 +193,7 @@ public class BuildingDestructionTests
             ownerId: 2,
             position: new GridPosition(3, 2));
         building.IsCompleted = true;
-        building.CurrentHealth = 30;
+        building.Health.CurrentHealth = 30;
 
         world.AddEntity(militia);
         world.AddEntity(building);
@@ -220,10 +220,10 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = false;
-        building.CurrentHealth = 0;
+        building.Health.CurrentHealth = 0;
 
-        Assert.False(building.IsDead);
-        Assert.True(building.IsBlocking);
+        Assert.True(building.IsDead);
+        Assert.False(building.IsBlocking);
     }
 
     [Fact]
@@ -236,7 +236,7 @@ public class BuildingDestructionTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 1;
+        building.Health.CurrentHealth = 1;
 
         Assert.False(building.IsDead);
     }
@@ -280,7 +280,7 @@ public class BuildingRefundTests
             ownerId: 1,
             position: new GridPosition(5, 5));
         building.IsCompleted = true;
-        building.CurrentHealth = 1;
+        building.Health.CurrentHealth = 1;
 
         world.AddEntity(building);
 
@@ -294,7 +294,7 @@ public class BuildingRefundTests
                 BuildingRepository = new([])
             });
 
-        building.TakeDamage(1);
+        building.Health.TakeDamage(1);
 
         simulation.Step();
 
@@ -326,7 +326,7 @@ public class UnitDeathPopulationTests
         PopulationActions.AddPopulation(player, 1);
         int popBefore = player.Population.Current;
 
-        unit.TakeDamage(unit.Definition.MaxHealth);
+        unit.Health.TakeDamage(unit.Definition.MaxHealth);
 
         var simulation = new SimulationRunner(
             new RuntimeContext

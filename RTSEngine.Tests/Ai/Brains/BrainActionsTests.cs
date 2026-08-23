@@ -11,9 +11,8 @@ public class BrainActionsTests
     [InlineData(BrainActions.TrainMilitia, "militia")]
     [InlineData(BrainActions.BuildBarracks, "barracks")]
     [InlineData(BrainActions.BuildHouse, "house")]
-    public void NeedsDefinition_ShouldReturnTrue_ForUnitAndBuildingActions(string action, string expectedDef)
+    public void GetDefinition_ShouldReturnCorrectDefinition(string action, string expectedDef)
     {
-        Assert.True(BrainActions.NeedsDefinition(action));
         Assert.Equal(expectedDef, BrainActions.GetDefinition(action));
     }
 
@@ -23,9 +22,8 @@ public class BrainActionsTests
     [InlineData(BrainActions.None)]
     [InlineData(BrainActions.AssignGatherers)]
     [InlineData(BrainActions.EngageEnemies)]
-    public void NeedsDefinition_ShouldReturnFalse_ForNonDefinitionActions(string action)
+    public void GetDefinition_ShouldReturnNull_ForNonDefinitionActions(string action)
     {
-        Assert.False(BrainActions.NeedsDefinition(action));
         Assert.Null(BrainActions.GetDefinition(action));
     }
 

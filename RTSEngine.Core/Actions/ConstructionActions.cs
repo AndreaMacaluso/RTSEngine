@@ -54,7 +54,9 @@ public static class ConstructionActions
     {
         if (unit.Build.BuildingId is not int buildingId)
         {
-            return true;
+            // TODO: verify — returning true here signals "construction complete"
+            // when no building is assigned. Should be false.
+            return false;
         }
 
         Building? building = world.GetBuildingById(buildingId);
@@ -86,9 +88,14 @@ public static class ConstructionActions
             return;
         }
 
+        if (building.IsCompleted)
+        {
+            return;
+        }
+
         building.IsCompleted = true;
-        building.CurrentHealth =
-            building.Definition.MaxHealth;
+        building.Health.CurrentHealth =
+            building.Health.MaxHealth;
         var owner = world.GetPlayerById(building.OwnerId);
         
         if (owner is not Player player)

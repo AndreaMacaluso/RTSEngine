@@ -9,26 +9,13 @@ public sealed class Building : Entity
 
     public BuildingDefinition Definition { get; }
 
-    public int CurrentHealth { get; set; }
-
+    public HealthState Health { get; }
     public int ConstructionProgress { get; set; }
-
     public bool IsCompleted { get; set; }
     public int PopulationBonus { get; set; }
     public ProductionState Production { get; } = new();
-
     public override bool IsBlocking => !IsDead;
-    public override bool IsDead => IsCompleted && CurrentHealth <= 0;
-
-    public override void TakeDamage(int amount)
-    {
-        CurrentHealth -= amount;
-
-        if (CurrentHealth < 0)
-        {
-            CurrentHealth = 0;
-        }
-    }
+    public override bool IsDead => Health.IsDead;
 
     public Building(
         int ownerId,
@@ -38,7 +25,7 @@ public sealed class Building : Entity
         OwnerId = ownerId;
         Position = position;
         Definition = definition;
-        CurrentHealth = definition.MaxHealth;
+        Health = new HealthState(definition);
         ConstructionProgress = 0;
         IsCompleted = false;
     }

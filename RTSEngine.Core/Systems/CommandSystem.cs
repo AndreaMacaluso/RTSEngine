@@ -185,6 +185,11 @@ public static class CommandSystem
             return;
         }
 
+        if (building.OwnerId != command.PlayerId)
+        {
+            return;
+        }
+
         var player =world.GetPlayerById(command.PlayerId);
 
         if (player == null)

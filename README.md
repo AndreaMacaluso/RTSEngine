@@ -10,8 +10,10 @@ Rendering, input handling and networking are planned as separate layers in order
 ## Disclaimer
 
 This project is a personal learning and engineering challenge aimed at building a Real-Time Strategy (RTS) engine from scratch.
+It is my first C# project so some of it may seems wrong but its part of the learning process.
 
 Features such as pathfinding, unit management, building construction, resource economy, world state management, and AI are implemented as part of the learning process.
+Being my first project in the world of game develpment some parts were developed with AI assistance.
 
 As a result, some solutions may prioritize educational value and architectural clarity over production-level optimization.
 
@@ -22,6 +24,21 @@ RTSEngine.Core -> deterministic simulation logic
 RTSEngine.DebugClient -> debug visualization and runtime testing
 
 RTSEngine.Tests -> unit and integration tests
+
+-----
+RTSEngine.Core/           
+├── Actions/              -> atomic state mutations
+├── AI/                   -> brain system (temporary, will be replaced by Lua)
+├── Commands/             -> command pattern
+├── Diagnostics/          -> logging framework
+├── Entities/             -> entity hierarchy (Units, Buildings, Resources)
+├── Helpers/              -> query helpers (WorldQueries, UnitQueries)
+├── Map/                  -> tile map, generation, loading
+├── Players/              -> player + states (Economy, Population)
+├── Simulation/           -> simulation runner
+├── Systems/              -> game systems (Movement, Gather, Combat, etc.)
+└── State/                -> GameWorld, WorldState
+-----
 
 ## Architecture Principles
 
@@ -165,20 +182,20 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Continuous gathering
 - [x] Resource cleanup
 - [x] Gather state machine
-- [ ] End-to-end villager gather cycle
-- [ ] Gather interruption handling
+- [x] End-to-end villager gather cycle
+- [x] Gather interruption handling
 - [x] Dynamic deposit selection
 
 ### Production Loop
 
-+ [x] Building production queue
-+ [x] Unit training command
-+ [x] Training progress system
-+ [x] Unit spawn from building
-+ [x] End-to-end production cycle
-+ [x] Resource payment validation
-+ [x] Resource payment on production command
-+ [ ] Production cancellation / refund
+- [x] Building production queue
+- [x] Unit training command
+- [x] Training progress system
+- [x] Unit spawn from building
+- [x] End-to-end production cycle
+- [x] Resource payment validation
+- [x] Resource payment on production command
+- [ ] Production cancellation / refund
 
 ### Construction Loop
 
@@ -192,7 +209,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 - [ ] Multiple builders
 - [ ] Repair
-- [ ] Cancel construction
+- [x] Cancel construction
 
 ## Runtime Gameplay Loop
 
@@ -203,6 +220,9 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Construction loop
 - [x] Production loop
 - [x] Combat loop
+- [x] Military unit production
+- [x] Barracks AI integration
+- [x] Building destruction
 
 ## World Queries
 
@@ -242,8 +262,8 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Adjacent movement validation tests
 - [x] Queued movement tests
 - [x] Command system tests
-- [ ] Tick determinism tests
-- [ ] Resource runtime tests
+- [x] Tick determinism tests
+- [x] Resource runtime tests
 - [x] Pathfinding tests
 - [x] Gather command tests
 - [x] Gather actions tests
@@ -261,7 +281,6 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Construction AI actions tests
 - [x] Building planner tests
 - [x] AI system tests
-- [ ] Builder selector tests
 - [x] Combat AI tests
 - [x] Militia combat AI tests
 - [x] Barracks AI tests
@@ -284,12 +303,6 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 ---
 
-## Documentation
-
-- [x] Architecture documentation (`Docs/Architecture.md`)
-- [x] Loop architecture docs (`Docs/Loops/`)
----
-
 # Phase 2 — Gameplay Systems
 
 ## Economy
@@ -303,7 +316,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 - [x] Resource depletion cleanup
 - [ ] Search radius
-- [ ] Gather interruption
+- [x] Gather interruption
 - [x] Dynamic deposit selection
 - [ ] Resource balancing
 
@@ -324,11 +337,11 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Building completion
 - [x] Barracks
 
-- [ ] Multi-tile structures
-- [ ] Building cancellation
-- [ ] Building refund
+- [x] Multi-tile structures
+- [x] Building cancellation
+- [x] Building refund
 - [ ] Repair system
-- [ ] Building destruction
+- [x] Building destruction
 - [x] Production buildings
 - [ ] Drop-off buildings
 
@@ -372,6 +385,9 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 # Phase 3 — AI Systems
 
+The current AI uses a rule-based brain system. This is a temporary implementation to validate game mechanics. 
+The AI will be rewritten in Lua scripting once the architecture is stable.
+
 - [x] AI player controller
 - [x] AI update system
 - [x] AI decision interval
@@ -404,3 +420,71 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Runtime debug controls
 - [ ] Debug visualization improvements
 - [ ] Unity integration layer
+
+---
+
+# Phase 5 — Architecture Rework (in progress)
+
+Goal: clean up architecture, fix known issues, prepare for Lua integration.
+
+### Pathfinding Refactoring
+- [ ] Extract pathfinding behind interface
+- [ ] Object pooling for path allocations
+- [ ] Spatial index for O(1) position lookups
+- [ ] Decouple CommandQueue from GameWorld
+- [ ] Cache entity lists in GameWorld (snapshot per tick)
+- [ ] Add entity validation to AddEntity/RemoveEntity
+- [ ] Remove debug logging from simulation tick
+
+### Bug Fixes
+- [x] ConstructionSystem — repath loop infinite (BuildOneTick return + IsCompleted guard)
+- [x] ConstructionSystem — buildings removed during construction (FindDeadBuildings filter)
+- [x] Entity.TakeDamage — reject negative values
+- [x] CommandSystem — add OwnerId validation
+- [x] MovementSystem — step lost when blocked
+- [x] Building.IsDead — does not affect construction (verified)
+- [ ] CombatSystem — re-path when target moves out of range
+- [ ] BasicAi — optimize brain instantiation (currently creates new each tick)
+
+### Code Quality
+- [x] Fix typos: CreeateGatheringScenario, ComandSystemTest, ResurceNodeTest
+- [x] Fix file/class mismatches: BuildingState.cs, BuildingPhase.cs, BasicAi.cs, EconomicActions.cs, GatherAction.cs, ResourceCleanUpSystem.cs
+- [x] Fix abstract public → public abstract
+- [x] Add sealed to Unit class
+- [ ] Rename remaining test files (Test → Tests suffix)
+- [ ] Clean up hardcoded config values (move to settings)
+- [ ] Remove debug logging from GatherSystem
+
+---
+
+# Phase 6 — Visibility & Fog of War (planned)
+
+- [ ] Tile visibility system (Hidden / Fog / Visible)
+- [ ] Sight range per unit and building
+- [ ] Visibility updates per tick
+- [ ] Integrate with pathfinding and combat
+- [ ] Restrict AI knowledge to visible area
+
+---
+
+# Phase 7 — Lua Scripting (future)
+
+Goal: replace hardcoded AI with data-driven Lua scripts.
+
+- [ ] Embed Lua runtime
+- [ ] Create scripting API (read world, issue commands)
+- [ ] Migrate AI brains to Lua
+- [ ] Event system for Lua callbacks
+- [ ] Test AI scripts
+
+---
+
+# Phase 8 — Tooling & Integration (future)
+
+- [ ] Replay system
+- [ ] Save/load system
+- [ ] Map editor
+- [ ] Unity integration layer
+- [ ] GUI (non-console renderer)
+
+---

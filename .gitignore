@@ -19,4 +19,8 @@ obj/
 # OS files
 .DS_Store
 Thumbs.db
+
+# Planning and old docs
 /Notes
+/Docs/Loops-new
+/plans

@@ -46,7 +46,7 @@ public class GatherBrain : AIBrain
 
         foreach (var (villager, resource) in _pendingAssignments)
         {
-            GatherAIActions.AssignGatherTask(context.World, villager, resource);
+            GatherAIActions.AssignGatherTask(context.CommandQueue, villager, resource);
         }
 
         _pendingAssignments.Clear();

@@ -1,5 +1,6 @@
 using RTSEngine.Core.AI;
 using RTSEngine.Core.AI.Brains;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
@@ -29,7 +30,8 @@ public class CombatBrainTests
             ]),
             BuildingRepository = new BuildingDefinitionRepository([
                 TestDefinitionFactory.CreateTownCenter()
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;

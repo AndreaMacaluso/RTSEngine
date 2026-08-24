@@ -78,7 +78,7 @@ public static class ScenarioBuilder
 
         world.Entities.Add(unit, player);
 
-        world.AddCommand(new MoveCommand
+        context.CommandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
             Target = targetPosition
@@ -105,7 +105,7 @@ public static class ScenarioBuilder
 
         world.Entities.Add(unit, player);
 
-        world.AddCommand(new GatherCommand
+        context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
             ResourceId = resourceId

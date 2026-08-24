@@ -15,6 +15,7 @@ public static class GatherActions
 {
     public static bool BeginMoveToResource(
     GameWorld world,
+    ICommandQueue commandQueue,
     Unit unit)
     {
         var resource = GetTargetResource(world, unit);
@@ -38,7 +39,7 @@ public static class GatherActions
         }
 
         QueueMoveCommand(
-            world,
+            commandQueue,
             [unit.Id],
             destination);
 
@@ -47,6 +48,7 @@ public static class GatherActions
 
     public static bool BeginMoveToDeposit(
     GameWorld world,
+    ICommandQueue commandQueue,
     Unit unit)
     {
 
@@ -90,7 +92,7 @@ public static class GatherActions
             return false;
         }
 
-        QueueMoveCommand(world, [unit.Id], destination);
+        QueueMoveCommand(commandQueue, [unit.Id], destination);
         return true;
     }
 
@@ -222,11 +224,11 @@ public static class GatherActions
     }
 
     private static void QueueMoveCommand(
-    GameWorld world,
+    ICommandQueue commandQueue,
     List<int> UnitIds,
     GridPosition destination)
     {  
-        world.AddCommand(new MoveCommand
+        commandQueue.Enqueue(new MoveCommand
         {
             UnitIds = UnitIds,
             Target = destination

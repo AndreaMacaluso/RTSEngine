@@ -313,7 +313,8 @@ public class MovementSystemTests
 
         world.Entities.Add(villager, player);
 
-        world.AddCommand(new MoveCommand
+        var queue = new CommandQueue();
+        queue.Enqueue(new MoveCommand
         {
             UnitIds = [villager.Id],
             Target = new GridPosition(5, 2)
@@ -324,7 +325,8 @@ public class MovementSystemTests
             {
                 World = world,
                 UnitRepository = new UnitDefinitionRepository([]),
-                BuildingRepository = new BuildingDefinitionRepository([])
+                BuildingRepository = new BuildingDefinitionRepository([]),
+                CommandQueue = queue
             });
 
         Assert.Equal(UnitTask.Moving, villager.CurrentTask);
@@ -354,7 +356,8 @@ public class MovementSystemTests
 
         world.Entities.Add(villager, player);
 
-        world.AddCommand(new MoveCommand
+        var queue = new CommandQueue();
+        queue.Enqueue(new MoveCommand
         {
             UnitIds = [villager.Id],
             Target = new GridPosition(5, 2)
@@ -365,7 +368,8 @@ public class MovementSystemTests
             {
                 World = world,
                 UnitRepository = new UnitDefinitionRepository([]),
-                BuildingRepository = new BuildingDefinitionRepository([])
+                BuildingRepository = new BuildingDefinitionRepository([]),
+                CommandQueue = queue
             });
 
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);

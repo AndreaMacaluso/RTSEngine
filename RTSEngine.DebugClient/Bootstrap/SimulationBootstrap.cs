@@ -1,3 +1,4 @@
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Loader;
@@ -46,7 +47,8 @@ public static class SimulationBootstrap
         {
             World = world,
             UnitRepository = unitRepository,
-            BuildingRepository = buildingRepository
+            BuildingRepository = buildingRepository,
+            CommandQueue = new CommandQueue()
         };
     }
 

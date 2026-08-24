@@ -13,6 +13,7 @@ public static class ConstructionActions
 {
     public static bool BeginMoveToConstruction(
     GameWorld world,
+    ICommandQueue commandQueue,
     Unit unit)
     {
         if (unit.Build.BuildingId is not int buildingId)
@@ -39,7 +40,7 @@ public static class ConstructionActions
             return false;
         }
 
-        world.AddCommand(new MoveCommand
+        commandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
             Target = destination

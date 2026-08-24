@@ -110,7 +110,7 @@ public static class ProductionActions
             return false;
         }
 
-        context.World.AddCommand(
+        context.CommandQueue.Enqueue(
             new QueueProductionCommand
             (
                 building.OwnerId,

@@ -2,8 +2,6 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Map.Definitions;
-using RTSEngine.Core.Commands;
-
 namespace RTSEngine.Core.State;
 
 public class GameWorld
@@ -14,13 +12,10 @@ public class GameWorld
 
     private readonly List<SpawnPointDefinition> _spawns = [];
     private readonly List<Player> _players = [];
-    private readonly Queue<ICommand> _pendingCommands = [];
 
     public Entities Entities { get; }
     public IReadOnlyList<SpawnPointDefinition> Spawns => _spawns;
     public IReadOnlyList<Player> Players => _players;
-    public IReadOnlyCollection<ICommand> PendingCommands => _pendingCommands;
-    
     public GameWorld(
         TileMap map,
         List<ResourceNode>? resources = null,
@@ -40,18 +35,6 @@ public class GameWorld
     public void AdvanceTick()
     {
         CurrentTick++;
-    }
-
-    public void AddCommand(ICommand command)
-    {
-        _pendingCommands.Enqueue(command);
-    }
-
-    public ICommand? DequeueCommand()
-    {
-        return _pendingCommands.Count > 0
-            ? _pendingCommands.Dequeue()
-            : null;
     }
 
     public void AddPlayer(Player player)

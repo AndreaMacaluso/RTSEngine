@@ -1,4 +1,5 @@
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.States;
@@ -34,9 +35,10 @@ public class GatherActionsTests
 
         unit.Gather.TargetResourceId = tree.Id;
 
-        GatherActions.BeginMoveToResource(world, unit);
+        var queue = new CommandQueue();
+        GatherActions.BeginMoveToResource(world, queue, unit);
 
-        Assert.Single(world.PendingCommands);
+        Assert.Single(queue.Pending);
     }
 
     [Fact]

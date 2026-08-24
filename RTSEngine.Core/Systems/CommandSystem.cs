@@ -12,9 +12,9 @@ public static class CommandSystem
 {
     public static void Update(RuntimeContext context)
     {
-        while (context.World.PendingCommands.Count > 0)
+        while (context.CommandQueue.Count > 0)
         {
-            var command = context.World.DequeueCommand();
+            var command = context.CommandQueue.Dequeue();
 
             if (command is null) break;
 

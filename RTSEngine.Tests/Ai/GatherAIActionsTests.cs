@@ -30,13 +30,14 @@ public class GatherAIActionsTests
         world.Entities.Add(tree);
 
         // Act
+        var queue = new CommandQueue();
         GatherAIActions.AssignGatherTask(
-            world,
+            queue,
             villager,
             tree);
 
         // Assert
-        var command = Assert.Single(world.PendingCommands);
+        var command = Assert.Single(queue.Pending);
 
         var gatherCommand = Assert.IsType<GatherCommand>(command);
 
@@ -66,7 +67,8 @@ public class GatherAIActionsTests
         var tree = new Tree(new GridPosition(10, 5));
         world.Entities.Add(tree);
 
-        world.AddCommand(new GatherCommand
+        var queue = new CommandQueue();
+        queue.Enqueue(new GatherCommand
         {
             UnitIds = [999],
             ResourceId = 999
@@ -74,15 +76,15 @@ public class GatherAIActionsTests
 
         // Act
         GatherAIActions.AssignGatherTask(
-            world,
+            queue,
             villager,
             tree);
 
         // Assert
-        Assert.Equal(2, world.PendingCommands.Count);
+        Assert.Equal(2, queue.Pending.Count);
 
         var gatherCommand = Assert.IsType<GatherCommand>(
-            world.PendingCommands.Last());
+            queue.Pending.Last());
 
         Assert.Equal(villager.Id, gatherCommand.UnitIds[0]);
         Assert.Equal(tree.Id, gatherCommand.ResourceId);

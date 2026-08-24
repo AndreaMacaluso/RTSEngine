@@ -18,7 +18,7 @@ public class CommandSystemTests
     {
         _context = new RuntimeContext
         {
-            World = TestWorldFactory.CreateWorld(),
+            World = TestWorldFactory.CreateWorldWithTwoPlayers(),
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([])
         };
@@ -30,12 +30,13 @@ public class CommandSystemTests
     [Fact]
     public void MoveCommand_ShouldSetTargetPosition()
     {
+        var player = _world.GetPlayerById(1)!;
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, player);
 
         _world.AddCommand(new MoveCommand
         {
@@ -54,17 +55,18 @@ public class CommandSystemTests
     [Fact]
     public void GatherCommand_ShouldSetGatherTask()
     {
+        var player = _world.GetPlayerById(1)!;
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, player);
 
         var tree = new Tree(
             new GridPosition(2,3));
 
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(new GatherCommand
         {
@@ -83,17 +85,18 @@ public class CommandSystemTests
     [Fact]
     public void GatherCommand_ShouldAssignTargetResourceId()
     {
+        var player = _world.GetPlayerById(1)!;
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, player);
 
         var tree = new Tree(
             new GridPosition(2,3));
 
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(new GatherCommand
         {
@@ -112,17 +115,18 @@ public class CommandSystemTests
     [Fact]
     public void GatherCommand_ShouldGenerateMovementPath()
     {
+        var player = _world.GetPlayerById(1)!;
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, player);
 
         var tree = new Tree(
             new GridPosition(2,3));
 
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(new GatherCommand
         {
@@ -140,12 +144,13 @@ public class CommandSystemTests
     [Fact]
     public void GatherCommand_ShouldIgnoreMissingResource()
     {
+        var player = _world.GetPlayerById(1)!;
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, player);
 
         _world.AddCommand(new GatherCommand
         {
@@ -167,7 +172,7 @@ public class CommandSystemTests
         var tree = new Tree(
             new GridPosition(2,3));
 
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(new GatherCommand
         {

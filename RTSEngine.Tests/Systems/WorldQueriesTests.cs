@@ -43,7 +43,7 @@ public class WorldQueriesTests
 
         var resource = new Tree(new GridPosition(10, 10));
 
-        world.AddResource(resource);
+        world.Entities.Add(resource);
 
         var result =
             WorldQueries.FindAdjacentWalkableTile(
@@ -66,8 +66,8 @@ public class WorldQueriesTests
         var tree = new Tree(new GridPosition(5, 5));
         var gold = new GoldMine(new GridPosition(20, 20));
 
-        world.AddResource(tree);
-        world.AddResource(gold);
+        world.Entities.Add(tree);
+        world.Entities.Add(gold);
 
         var result =
             WorldQueries.FindClosestResource(
@@ -85,8 +85,8 @@ public class WorldQueriesTests
         var tree = new Tree(new GridPosition(5, 5));
         var gold = new GoldMine(new GridPosition(6, 6));
 
-        world.AddResource(tree);
-        world.AddResource(gold);
+        world.Entities.Add(tree);
+        world.Entities.Add(gold);
         
         var result =
             WorldQueries.FindClosestResource(
@@ -100,7 +100,8 @@ public class WorldQueriesTests
     [Fact]
     public void FindClosestDeposit_ShouldReturnNearestBuilding()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateTownCenter();
 
@@ -116,12 +117,12 @@ public class WorldQueriesTests
             new GridPosition(20, 20));
         far.IsCompleted = true;
 
-        world.AddEntity(near);
-        world.AddEntity(far);
+        world.Entities.Add(near, player1);
+        world.Entities.Add(far, player1);
 
         var result = WorldQueries.FindClosestDeposit(
             world,
-            1,
+            player1,
             new GridPosition(8, 8),
             ResourceType.Wood);
 
@@ -149,17 +150,17 @@ public class WorldQueriesTests
         var tc1 = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(), player1.Id, new GridPosition(5, 5));
         tc1.IsCompleted = true;
-        world.AddEntity(tc1);
+        world.Entities.Add(tc1, player1);
 
         var tc2 = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(), player1.Id, new GridPosition(8, 5));
         tc2.IsCompleted = false;
-        world.AddEntity(tc2);
+        world.Entities.Add(tc2, player1);
 
         var tc3 = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(), player2.Id, new GridPosition(5, 8));
         tc3.IsCompleted = true;
-        world.AddEntity(tc3);
+        world.Entities.Add(tc3, player2);
 
         Assert.Equal(tc1.Id, WorldQueries.FindBuilding(world, player1, "town_center")!.Id);
         Assert.Null(WorldQueries.FindBuilding(world, player1, "house"));
@@ -178,7 +179,7 @@ public class WorldQueriesTests
         var tc = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(), player.Id, new GridPosition(5, 5));
         tc.IsCompleted = true;
-        world.AddEntity(tc);
+        world.Entities.Add(tc, player);
 
         Assert.True(WorldQueries.HasBuilding(world, player, "town_center"));
 
@@ -198,19 +199,19 @@ public class WorldQueriesTests
 
         var h1 = BuildingFactory.Create(houseDef, player1.Id, new GridPosition(1, 1));
         h1.IsCompleted = true;
-        world.AddEntity(h1);
+        world.Entities.Add(h1, player1);
 
         var h2 = BuildingFactory.Create(houseDef, player1.Id, new GridPosition(3, 1));
         h2.IsCompleted = false;
-        world.AddEntity(h2);
+        world.Entities.Add(h2, player1);
 
         var h3 = BuildingFactory.Create(houseDef, player1.Id, new GridPosition(5, 1));
         h3.IsCompleted = true;
-        world.AddEntity(h3);
+        world.Entities.Add(h3, player1);
 
         var h4 = BuildingFactory.Create(houseDef, player2.Id, new GridPosition(7, 1));
         h4.IsCompleted = true;
-        world.AddEntity(h4);
+        world.Entities.Add(h4, player2);
 
         Assert.Equal(2, WorldQueries.CountBuildings(world, player1, "house"));
         Assert.Equal(1, WorldQueries.CountBuildings(world, player2, "house"));

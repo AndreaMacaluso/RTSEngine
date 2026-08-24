@@ -13,7 +13,8 @@ public class MovementSystemTests
     public void Update_ShouldFollowQueuedPath()
     {
         // Arrange
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var villagerDefinition = new UnitDefinition
         {
@@ -37,7 +38,7 @@ public class MovementSystemTests
         villager.Movement.PathQueue.Enqueue(
             new GridPosition(8, 5));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i <= 12; i++)
@@ -55,7 +56,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void Update_ShouldEmptyQueueAfterPathCompletion()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var villagerDefinition = new UnitDefinition
         {
@@ -73,7 +75,7 @@ public class MovementSystemTests
         villager.Movement.PathQueue.Enqueue(
             new GridPosition(6, 5));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         for (int i = 0; i <= 4; i++)
         {
@@ -88,8 +90,9 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void Update_ShouldStopWhenPathIsBlocked()
     {
-        var world = TestWorldFactory.CreateWorld(
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers(
             TileType.Grass);
+        var player = world.GetPlayerById(1)!;
 
         world.Map.SetTile(
             7,
@@ -118,7 +121,7 @@ public class MovementSystemTests
         villager.Movement.PathQueue.Enqueue(
             new GridPosition(7, 5));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         for (int i = 0; i <= 12; i++)
         {

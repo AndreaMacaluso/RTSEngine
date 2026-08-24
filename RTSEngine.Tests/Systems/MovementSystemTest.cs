@@ -13,7 +13,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void Update_ShouldMoveUnitAfterEnoughProgress()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
         {
             Id = "villager",
@@ -32,7 +33,7 @@ public class MovementSystemTests
             new GridPosition(6,5),
             world);
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i < 5; i++)
@@ -52,7 +53,8 @@ public class MovementSystemTests
         // Arrange
       
 
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
        var villagerDefinition = new UnitDefinition
         {
@@ -73,7 +75,7 @@ public class MovementSystemTests
             new GridPosition(6,5),
             world);
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         // Act
         MovementSystem.Update(world);
@@ -91,7 +93,8 @@ public class MovementSystemTests
     {
        
 
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
         world.Map.SetTile(6, 5,
             new Tile
             {
@@ -116,7 +119,7 @@ public class MovementSystemTests
             new GridPosition(6,5),
             world);
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i < 4; i++)
@@ -135,7 +138,8 @@ public class MovementSystemTests
     public void Update_ShouldNotMoveIntoOccupiedTile()
     {
         // Arrange
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
         {
             Id = "villager",
@@ -161,8 +165,8 @@ public class MovementSystemTests
             1,
             new GridPosition(6, 5));
        
-        world.AddEntity(villagerA);
-        world.AddEntity(villagerB);
+        world.Entities.Add(villagerA, player);
+        world.Entities.Add(villagerB, player);
 
         // Act
         for (int i = 0; i < 4; i++)
@@ -180,7 +184,8 @@ public class MovementSystemTests
     public void Update_ShouldNotTeleportToDistantTile()
     {
         // Arrange
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var villagerDefinition = new UnitDefinition
         {
@@ -201,7 +206,7 @@ public class MovementSystemTests
             new GridPosition(9,9),
             world);
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i < 10; i++)
@@ -218,7 +223,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void Repath_ShouldRecomputePath_WhenBlocked()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
         {
@@ -233,7 +239,7 @@ public class MovementSystemTests
             1,
             new GridPosition(2, 2));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         CommandSystem.AssignMoveTarget(
             villager,
@@ -259,7 +265,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void Repath_ShouldNotAffectGatheringUnits()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
         {
@@ -277,7 +284,7 @@ public class MovementSystemTests
         villager.CurrentTask = UnitTask.Gathering;
         villager.Movement.NeedsRepath = true;
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         MovementSystem.Update(world);
 
@@ -288,7 +295,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void MoveCommand_ShouldSetTaskToMoving()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
         {
@@ -303,7 +311,7 @@ public class MovementSystemTests
             1,
             new GridPosition(2, 2));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         world.AddCommand(new MoveCommand
         {
@@ -326,7 +334,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void MoveCommand_ShouldNotOverwriteGatheringTask()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
         {
@@ -343,7 +352,7 @@ public class MovementSystemTests
 
         villager.CurrentTask = UnitTask.Gathering;
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         world.AddCommand(new MoveCommand
         {
@@ -366,7 +375,8 @@ public class MovementSystemTests
     [Trait("Category", "Movement")]
     public void PathCompletion_ShouldSetTaskToIdle()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
         {
@@ -383,7 +393,7 @@ public class MovementSystemTests
 
         villager.CurrentTask = UnitTask.Moving;
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         CommandSystem.AssignMoveTarget(
             villager,

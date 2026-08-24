@@ -32,6 +32,8 @@ public class SimulationRunner
 
     public void Step()
     {
+        _context.World.Entities.RebuildSpatialIndex();
+
         CommandSystem.Update(_context);
 
         AISystem.Update(_context);
@@ -60,7 +62,11 @@ public class SimulationRunner
         foreach (var unit in deadUnits)
         {
             ReleaseUnitPopulation(world, unit);
-            world.RemoveEntity(unit);
+            var unitPlayer = world.GetPlayerById(unit.OwnerId) as Player;
+            if (unitPlayer is not null)
+            {
+                world.Entities.Remove(unit, unitPlayer);
+            }
         }
 
         var deadBuildings = WorldQueries.FindDeadBuildings(world);
@@ -69,7 +75,11 @@ public class SimulationRunner
         {
             ReleaseBuilders(world, building);
             ReleasePopulation(world, building);
-            world.RemoveEntity(building);
+            var buildingPlayer = world.GetPlayerById(building.OwnerId) as Player;
+            if (buildingPlayer is not null)
+            {
+                world.Entities.Remove(building, buildingPlayer);
+            }
         }
     }
 

@@ -12,6 +12,12 @@ public sealed class Player
     public PopulationState Population { get; }
     public PlayerAIState AI { get; }
 
+    private readonly List<int> _unitIds = [];
+    private readonly List<int> _buildingIds = [];
+
+    public IReadOnlyList<int> UnitIds => _unitIds;
+    public IReadOnlyList<int> BuildingIds => _buildingIds;
+
     public Player(
         int id,
         string name,
@@ -27,4 +33,9 @@ public sealed class Player
         Population = new PopulationState();
         AI = new PlayerAIState();
     }
+
+    internal void AddUnit(int unitId) => _unitIds.Add(unitId);
+    internal void RemoveUnit(int unitId) => _unitIds.Remove(unitId);
+    internal void AddBuilding(int buildingId) => _buildingIds.Add(buildingId);
+    internal void RemoveBuilding(int buildingId) => _buildingIds.Remove(buildingId);
 }

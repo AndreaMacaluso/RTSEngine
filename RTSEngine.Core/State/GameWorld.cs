@@ -3,7 +3,6 @@ using RTSEngine.Core.Entities;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Map.Definitions;
-using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Entities.Buildings;
@@ -19,13 +18,11 @@ public class GameWorld
     private readonly List<ResourceNode> _resources = [];
     private readonly List<SpawnPointDefinition> _spawns = [];
     private readonly List<Player> _players = [];
-    private readonly Queue<ICommand> _pendingCommands = [];
 
     public IReadOnlyList<Entity> Entities => _entities;
     public IReadOnlyList<ResourceNode> Resources => _resources;
     public IReadOnlyList<SpawnPointDefinition> Spawns => _spawns;
     public IReadOnlyList<Player> Players => _players;
-    public IReadOnlyCollection<ICommand> PendingCommands => _pendingCommands;
 
     public IEnumerable<Building> Buildings => _entities.OfType<Building>();
 
@@ -68,18 +65,6 @@ public class GameWorld
     {
         entity.Id = GenerateEntityId();
         _entities.Add(entity);
-    }
-
-    public void AddCommand(ICommand command)
-    {
-        _pendingCommands.Enqueue(command);
-    }
-
-    public ICommand? DequeueCommand()
-    {
-        return _pendingCommands.Count > 0
-            ? _pendingCommands.Dequeue()
-            : null;
     }
 
     public void AddPlayer(Player player)

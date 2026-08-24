@@ -21,6 +21,7 @@ public static class ConstructionAIActions
         string buildingId)
     {
         var world = context.World;
+        var commandQueue = context.CommandQueue;
         var definition = context.BuildingRepository.Get(buildingId);
 
         Unit? builder = UnitQueries
@@ -99,7 +100,7 @@ public static class ConstructionAIActions
 
         builder.CurrentTask = UnitTask.Building;
 
-        world.AddCommand(new BuildCommand
+        commandQueue.Enqueue(new BuildCommand
         {
             UnitIds = [builder.Id],
             BuildingId = building.Id

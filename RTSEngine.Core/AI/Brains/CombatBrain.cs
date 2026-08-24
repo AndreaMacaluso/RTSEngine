@@ -65,12 +65,12 @@ public class CombatBrain : AIBrain
 
         foreach (var (unit, enemyId) in _pendingAttacks)
         {
-            CombatAIActions.AttackTarget(context.World, unit, enemyId);
+            CombatAIActions.AttackTarget(context.CommandQueue, unit, enemyId);
         }
 
         foreach (var (unit, target) in _pendingMoves)
         {
-            CombatAIActions.MoveToTarget(context.World, unit, target);
+            CombatAIActions.MoveToTarget(context.CommandQueue, unit, target);
         }
 
         _pendingAttacks.Clear();

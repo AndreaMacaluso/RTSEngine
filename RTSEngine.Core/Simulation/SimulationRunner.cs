@@ -40,11 +40,11 @@ public class SimulationRunner
 
         CombatSystem.Update(_context.World);
 
-        GatherSystem.Update(_context.World);
+        GatherSystem.Update(_context);
 
         ResourceCleanupSystem.Update(_context.World);
 
-        ConstructionSystem.Update(_context.World);
+        ConstructionSystem.Update(_context);
 
         ProductionSystem.Update(_context);
 

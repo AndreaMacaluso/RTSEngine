@@ -4,14 +4,19 @@ using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Commands;
 
 namespace RTSEngine.Core.Systems;
 
 public static class ConstructionSystem
 {
 
-    public static void Update(GameWorld world)
+    public static void Update(RuntimeContext context)
     { 
+        var world = context.World;
+        var commandQueue = context.CommandQueue;
+
         foreach (var entity in world.Entities)
         {
             if (entity is not Unit unit)
@@ -26,7 +31,7 @@ public static class ConstructionSystem
             switch(unit.Build.Phase)
             {
                 case BuildPhase.MovingToConstruction:
-                    HandleMovingToConstruction(world, unit);
+                    HandleMovingToConstruction(world, commandQueue, unit);
                     break;
 
                 case BuildPhase.Constructing:
@@ -39,6 +44,7 @@ public static class ConstructionSystem
     
     private static void HandleMovingToConstruction(
     GameWorld world,
+    ICommandQueue commandQueue,
     Unit unit)
     {   
         if (unit.Movement.NeedsRepath)
@@ -47,6 +53,7 @@ public static class ConstructionSystem
 
             if (!ConstructionActions.BeginMoveToConstruction(
                 world,
+                commandQueue,
                 unit))
             {
                 ConstructionActions.StopBuilding(unit);

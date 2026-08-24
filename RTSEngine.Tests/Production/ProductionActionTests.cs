@@ -1,4 +1,5 @@
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Units;
@@ -40,7 +41,8 @@ public class ProductionActionTests
             BuildingRepository = new BuildingDefinitionRepository(
             [
                 townCenter
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
         _townCenter = BuildingFactory.Create(
@@ -170,7 +172,7 @@ public class ProductionActionTests
         Assert.True(result);
 
         Assert.Single(
-            _world.PendingCommands);
+            _context.CommandQueue.Pending);
     }
 
 
@@ -189,7 +191,7 @@ public class ProductionActionTests
         Assert.False(result);
 
         Assert.Empty(
-            _world.PendingCommands);
+            _context.CommandQueue.Pending);
     }
 
 
@@ -206,6 +208,6 @@ public class ProductionActionTests
         Assert.False(result);
 
         Assert.Empty(
-            _world.PendingCommands);
+            _context.CommandQueue.Pending);
     }
 }

@@ -20,7 +20,8 @@ public class CommandSystemTests
         {
             World = TestWorldFactory.CreateWorld(),
             UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([])
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;
@@ -37,7 +38,7 @@ public class CommandSystemTests
 
         _world.AddEntity(unit);
 
-        _world.AddCommand(new MoveCommand
+        _context.CommandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
             Target = new GridPosition(5,5)
@@ -66,7 +67,7 @@ public class CommandSystemTests
 
         _world.AddResource(tree);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
             ResourceId = tree.Id
@@ -95,7 +96,7 @@ public class CommandSystemTests
 
         _world.AddResource(tree);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
             ResourceId = tree.Id
@@ -124,7 +125,7 @@ public class CommandSystemTests
 
         _world.AddResource(tree);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
             ResourceId = tree.Id
@@ -147,7 +148,7 @@ public class CommandSystemTests
 
         _world.AddEntity(unit);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
             ResourceId = 999
@@ -169,7 +170,7 @@ public class CommandSystemTests
 
         _world.AddResource(tree);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [999],
             ResourceId = tree.Id

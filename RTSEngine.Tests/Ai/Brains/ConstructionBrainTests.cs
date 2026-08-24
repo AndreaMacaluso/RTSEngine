@@ -1,5 +1,6 @@
 using RTSEngine.Core.AI;
 using RTSEngine.Core.AI.Brains;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
@@ -26,7 +27,8 @@ public class ConstructionBrainTests
                 TestDefinitionFactory.CreateTownCenter(),
                 TestDefinitionFactory.CreateHouse(),
                 TestDefinitionFactory.CreateBarracks()
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;

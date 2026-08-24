@@ -48,7 +48,8 @@ public class UnitProductionFlowTests
             new BuildingDefinitionRepository(
             [
                 townCenter
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
     }
 
@@ -67,7 +68,7 @@ public class UnitProductionFlowTests
         _world.AddEntity(building);
 
 
-        _world.AddCommand(
+        _context.CommandQueue.Enqueue(
             new QueueProductionCommand
             (
                 building.Id,
@@ -106,7 +107,7 @@ public class UnitProductionFlowTests
             "villager");
 
         Assert.True(result);
-        var pending = _world.PendingCommands.ToArray();
+        var pending = _context.CommandQueue.Pending.ToArray();
         Assert.Single(pending);
         Assert.IsType<QueueProductionCommand>(pending[0]);
         Assert.Equal(0, player.Economy.Get(ResourceType.Food));
@@ -134,7 +135,7 @@ public class UnitProductionFlowTests
 
         Assert.False(result);
         Assert.Null(building.Production.Current);
-        Assert.Empty(_world.PendingCommands);
+        Assert.Empty(_context.CommandQueue.Pending);
         Assert.Equal(0, player.Population.Reserved);
     }
 }

@@ -1,6 +1,7 @@
 using RTSEngine.Core.AI.Brains;
 using RTSEngine.Core.AI.Actions;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
@@ -33,7 +34,8 @@ public class BarracksAITests
             [
                 TestDefinitionFactory.CreateTownCenter(),
                 TestDefinitionFactory.CreateBarracks()
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;
@@ -292,7 +294,8 @@ public class MilitiaCombatAIFullLoopTests
             [
                 TestDefinitionFactory.CreateMilitiaWithCombatStats()
             ]),
-            BuildingRepository = new BuildingDefinitionRepository([])
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;

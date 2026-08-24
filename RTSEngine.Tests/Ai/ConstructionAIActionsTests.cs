@@ -1,4 +1,5 @@
 using RTSEngine.Core.AI.Actions;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
@@ -26,7 +27,8 @@ public class ConstructionAIActionsTests
             [
                 TestDefinitionFactory.CreateHouseWithCost(),
                 TestDefinitionFactory.CreateTownCenter()
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;

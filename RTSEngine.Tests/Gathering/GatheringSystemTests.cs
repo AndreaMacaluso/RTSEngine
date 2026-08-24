@@ -1,6 +1,7 @@
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.Resources;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Map.Runtime;
@@ -8,13 +9,13 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Actions;
-using RTSEngine.Core.Commands;
 using RTSEngine.Core.Players;
 
 namespace RTSEngine.Tests.Gathering;
 
 public class GatheringSystemTests
 {
+    private readonly RuntimeContext _context;
     private readonly GameWorld _world;
     private readonly Unit _villager;
     private readonly Tree _tree;
@@ -38,6 +39,14 @@ public class GatheringSystemTests
             1,
             new GridPosition(1, 1));
         _world.AddEntity(_townCenter);
+
+        _context = new RuntimeContext
+        {
+            World = _world,
+            UnitRepository = new RTSEngine.Core.Entities.Definitions.UnitDefinitionRepository([]),
+            BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue()
+        };
     }
 
     [Fact]
@@ -48,7 +57,7 @@ public class GatheringSystemTests
         _villager.Gather.TargetResourceId = _tree.Id;
         _villager.Gather.Phase = GatherPhase.MovingToResource;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.Gathering, _villager.Gather.Phase);
     }
@@ -62,7 +71,7 @@ public class GatheringSystemTests
         _villager.Gather.Phase = GatherPhase.MovingToResource;
         _villager.Gather.TargetResourceId = 999;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
@@ -80,12 +89,12 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = _villager.Gather.Capacity - 1;
         _villager.Gather.CarriedResource = ResourceType.Wood;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(20, _villager.Gather.Capacity);
         Assert.NotNull(_villager.Gather.DepositPosition);
         Assert.Equal(GatherPhase.MovingToDeposit, _villager.Gather.Phase);
-        Assert.Contains(_world.PendingCommands, c => c is MoveCommand);
+        Assert.Contains(_context.CommandQueue.Pending, c => c is MoveCommand);
     }
 
     [Fact]
@@ -98,7 +107,7 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = _villager.Gather.Capacity - 1;
         _villager.Gather.CarriedResource = ResourceType.Wood;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
         Assert.Equal(20, _villager.Gather.CurrentLoad);
@@ -113,7 +122,7 @@ public class GatheringSystemTests
         _villager.Gather.Phase = GatherPhase.MovingToDeposit;
         _villager.Gather.DepositPosition = new GridPosition(5, 6);
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.Depositing, _villager.Gather.Phase);
     }
@@ -133,10 +142,10 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = 10;
         _villager.Gather.Phase = GatherPhase.Depositing;
         _villager.CurrentTask = UnitTask.Gathering;
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.MovingToResource, _villager.Gather.Phase);
-        Assert.Single(_world.PendingCommands);
+        Assert.Single(_context.CommandQueue.Pending);
     }
 
     [Fact]
@@ -150,7 +159,7 @@ public class GatheringSystemTests
         _villager.Gather.Phase = GatherPhase.Depositing;
         _villager.CurrentTask = UnitTask.Gathering;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
@@ -169,7 +178,7 @@ public class GatheringSystemTests
 
         militia.Gather.Phase = GatherPhase.MovingToResource;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.MovingToResource, militia.Gather.Phase);
     }
@@ -181,7 +190,7 @@ public class GatheringSystemTests
     {
         _villager.Gather.Phase = GatherPhase.None;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
     }
@@ -211,13 +220,13 @@ public class GatheringSystemTests
         townCenter.Health.CurrentHealth = townCenter.Health.MaxHealth;
         _world.AddEntity(townCenter);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager.Id],
             ResourceId = tree.Id
         });
 
-        SimulationTestHelper.RunTicks(_world, 1);
+        SimulationTestHelper.RunTicks(_world, 1, _context);
 
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
@@ -226,25 +235,25 @@ public class GatheringSystemTests
         Assert.Equal(0, villager.Gather.CurrentLoad);
         Assert.Equal(ResourceType.Wood, villager.Gather.CarriedResource);
 
-        SimulationTestHelper.RunTicks(_world, 3);
+        SimulationTestHelper.RunTicks(_world, 3, _context);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Gathering, villager.Gather.Phase);
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
         Assert.Equal(1, villager.Gather.CurrentLoad);
 
-        SimulationTestHelper.RunTicks(_world, 19);
+        SimulationTestHelper.RunTicks(_world, 19, _context);
         Assert.Equal(20, villager.Gather.CurrentLoad);
         Assert.NotNull(villager.Gather.DepositPosition);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToDeposit, villager.Gather.Phase);
 
-        SimulationTestHelper.RunTicks(_world, 3);
+        SimulationTestHelper.RunTicks(_world, 3, _context);
         Assert.Equal(20, villager.Gather.CurrentLoad);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Depositing, villager.Gather.Phase);
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
 
-        SimulationTestHelper.RunTicks(_world, 1);
+        SimulationTestHelper.RunTicks(_world, 1, _context);
         Assert.Equal(0, villager.Gather.CurrentLoad);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
@@ -283,24 +292,24 @@ public class GatheringSystemTests
         townCenter.Health.CurrentHealth = townCenter.Health.MaxHealth;
         _world.AddEntity(townCenter);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager.Id],
             ResourceId = tree1.Id
         });
 
-        SimulationTestHelper.RunTicks(_world, 5);
+        SimulationTestHelper.RunTicks(_world, 5, _context);
         Assert.Equal(tree1.Id, villager.Gather.TargetResourceId);
 
         villager.Gather.CurrentLoad = 10;
         villager.Gather.CarriedResource = ResourceType.Wood;
         tree1.Amount = 0;
 
-        SimulationTestHelper.RunTicks(_world, 2);
+        SimulationTestHelper.RunTicks(_world, 2, _context);
         Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
         Assert.Equal(tree2.Id, villager.Gather.TargetResourceId);
 
-        SimulationTestHelper.RunTicks(_world, 5);
+        SimulationTestHelper.RunTicks(_world, 5, _context);
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Gathering, villager.Gather.Phase);
         Assert.Equal(tree2.Id, villager.Gather.TargetResourceId);
@@ -338,19 +347,19 @@ public class GatheringSystemTests
         var tree = new Tree(new GridPosition(5, 1));
         _world.AddResource(tree);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager1.Id],
             ResourceId = tree.Id
         });
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager2.Id],
             ResourceId = tree.Id
         });
 
-        SimulationTestHelper.RunTicks(_world, 20);
+        SimulationTestHelper.RunTicks(_world, 20, _context);
 
         Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
         Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
@@ -403,19 +412,19 @@ public class GatheringSystemTests
         var tree = new Tree(new GridPosition(5, 1));
         _world.AddResource(tree);
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager1.Id],
             ResourceId = tree.Id
         });
 
-        _world.AddCommand(new GatherCommand
+        _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager2.Id],
             ResourceId = tree.Id
         });
 
-        SimulationTestHelper.RunTicks(_world, 20);
+        SimulationTestHelper.RunTicks(_world, 20, _context);
 
         var player1 = _world.GetPlayerById(1)!;
         var player2 = _world.GetPlayerById(2)!;
@@ -444,7 +453,7 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = 20;
         _villager.Gather.CarriedResource = ResourceType.Wood;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
         Assert.Equal(20, _villager.Gather.CurrentLoad);
@@ -463,12 +472,12 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = 20;
         _villager.Gather.CarriedResource = ResourceType.Wood;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
 
         for (int i = 0; i < 3; i++)
         {
-            GatherSystem.Update(_world);
+            GatherSystem.Update(_context);
             Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
         }
     }
@@ -484,12 +493,12 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = 20;
         _villager.Gather.CarriedResource = ResourceType.Wood;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
 
         for (int i = 0; i < 4; i++)
         {
-            GatherSystem.Update(_world);
+            GatherSystem.Update(_context);
         }
 
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
@@ -510,13 +519,13 @@ public class GatheringSystemTests
         _villager.Gather.CurrentLoad = 20;
         _villager.Gather.CarriedResource = ResourceType.Wood;
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
 
         _townCenter.IsCompleted = true;
         _townCenter.Health.CurrentHealth = _townCenter.Health.MaxHealth;
         _villager.Gather.WaitingForDepositTicks = 3;
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.MovingToDeposit, _villager.Gather.Phase);
         Assert.NotNull(_villager.Gather.DepositPosition);
@@ -536,7 +545,7 @@ public class GatheringSystemTests
         _villager.Gather.WaitingForDepositTicks = 1;
         _villager.Movement.Destination = new GridPosition(8, 8);
 
-        GatherSystem.Update(_world);
+        GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
         Assert.Equal(20, _villager.Gather.CurrentLoad);

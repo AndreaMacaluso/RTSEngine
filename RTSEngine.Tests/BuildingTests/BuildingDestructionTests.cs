@@ -81,7 +81,8 @@ public class BuildingDestructionTests
             {
                 World = world,
                 UnitRepository = new([]),
-                BuildingRepository = new([])
+                BuildingRepository = new([]),
+                CommandQueue = new CommandQueue()
             });
 
         building.Health.TakeDamage(1);
@@ -121,7 +122,8 @@ public class BuildingDestructionTests
             {
                 World = world,
                 UnitRepository = new([]),
-                BuildingRepository = new([])
+                BuildingRepository = new([]),
+                CommandQueue = new CommandQueue()
             });
 
         building.Health.TakeDamage(1);
@@ -158,7 +160,8 @@ public class BuildingDestructionTests
             {
                 World = world,
                 UnitRepository = new([]),
-                BuildingRepository = new([])
+                BuildingRepository = new([]),
+                CommandQueue = new CommandQueue()
             });
 
         building.Health.TakeDamage(1);
@@ -291,7 +294,8 @@ public class BuildingRefundTests
             {
                 World = world,
                 UnitRepository = new([]),
-                BuildingRepository = new([])
+                BuildingRepository = new([]),
+                CommandQueue = new CommandQueue()
             });
 
         building.Health.TakeDamage(1);
@@ -333,7 +337,8 @@ public class UnitDeathPopulationTests
             {
                 World = world,
                 UnitRepository = new([]),
-                BuildingRepository = new([])
+                BuildingRepository = new([]),
+                CommandQueue = new CommandQueue()
             });
 
         simulation.Step();

@@ -31,7 +31,8 @@ public class ConstructionCommandTests
             [
                 TestDefinitionFactory.CreateHouseWithCost(),
                 TestDefinitionFactory.CreateTownCenter()
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
 
@@ -58,7 +59,7 @@ public class ConstructionCommandTests
         _world.AddEntity(building);
 
 
-        _world.AddCommand(
+        _context.CommandQueue.Enqueue(
             new BuildCommand
             {
                 UnitIds = [unit.Id],

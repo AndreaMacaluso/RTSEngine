@@ -13,6 +13,7 @@ namespace RTSEngine.Tests.Construction;
 
 public class ConstructionSystemTests
 {
+    private readonly RuntimeContext _context;
     private readonly GameWorld _world;
     private readonly Unit _villager;
 
@@ -25,6 +26,14 @@ public class ConstructionSystemTests
             1,
             new GridPosition(1, 1));
         _world.AddEntity(_villager);
+
+        _context = new RuntimeContext
+        {
+            World = _world,
+            UnitRepository = new RTSEngine.Core.Entities.Definitions.UnitDefinitionRepository([]),
+            BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue()
+        };
     }
 
     [Fact]
@@ -83,13 +92,13 @@ public class ConstructionSystemTests
             new GridPosition(5, 5));
         _world.AddEntity(building);
 
-        _world.AddCommand(new BuildCommand
+        _context.CommandQueue.Enqueue(new BuildCommand
         {
             UnitIds = [_villager.Id],
             BuildingId = building.Id
         });
 
-        SimulationTestHelper.RunTicks(_world, 50);
+        SimulationTestHelper.RunTicks(_world, 50, _context);
 
         Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
         Assert.Equal(BuildPhase.None, _villager.Build.Phase);
@@ -156,7 +165,7 @@ public class ConstructionSystemTests
         _villager.Build.BuildingId = building.Id;
         _villager.Build.Phase = BuildPhase.Constructing;
 
-        ConstructionSystem.Update(_world);
+        ConstructionSystem.Update(_context);
 
         Assert.Equal(BuildPhase.None, _villager.Build.Phase);
         Assert.Null(_villager.Build.BuildingId);

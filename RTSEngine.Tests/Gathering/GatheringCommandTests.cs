@@ -21,7 +21,8 @@ public class GatherCommandTests
         {
             World = TestWorldFactory.CreateWorldWithTwoPlayers(),
             UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([])
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;
@@ -45,7 +46,7 @@ public class GatherCommandTests
 
         _world.AddResource(tree);
 
-        _world.AddCommand(
+        _context.CommandQueue.Enqueue(
             new GatherCommand
             {
                 UnitIds = [unit.Id],

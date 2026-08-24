@@ -1,5 +1,6 @@
 using RTSEngine.Core.AI.Actions;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
@@ -28,7 +29,8 @@ public class ProductionAIActionsTests
             BuildingRepository = new BuildingDefinitionRepository(
             [
                 TestDefinitionFactory.CreateTownCenter()
-            ])
+            ]),
+            CommandQueue = new CommandQueue()
         };
 
         _world = _context.World;

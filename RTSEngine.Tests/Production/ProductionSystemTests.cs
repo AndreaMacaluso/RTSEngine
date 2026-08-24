@@ -1,5 +1,6 @@
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Commands;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
@@ -43,7 +44,8 @@ public class ProductionSystemTests
         {
             World = _world,
             UnitRepository = unitRepository,
-            BuildingRepository = buildingRepository
+            BuildingRepository = buildingRepository,
+            CommandQueue = new CommandQueue()
         };
     }
 

@@ -12,12 +12,8 @@ public static class ConstructionSystem
 
     public static void Update(GameWorld world)
     { 
-        foreach (var entity in world.Entities)
+        foreach (var unit in world.Entities.Units.Values)
         {
-            if (entity is not Unit unit)
-            {
-                continue;
-            } 
            
             if(!unit.Definition.CanBuild )
             {
@@ -77,7 +73,7 @@ public static class ConstructionSystem
             return;
         }
 
-        var building = world.GetBuildingById(buildingId);
+        var building = world.Entities.GetBuildingById(buildingId);
 
         if (building == null || building.IsCompleted)
         {

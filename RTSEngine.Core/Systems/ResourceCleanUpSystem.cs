@@ -7,7 +7,7 @@ public static class ResourceCleanupSystem
     {
         foreach (var resource in WorldQueries.FindDepletedResources(world))
         {
-            world.RemoveResource(resource);
+            world.Entities.Remove(resource);
         }
     }
 }

@@ -16,12 +16,8 @@ public static class GatherSystem
 
     public static void Update(GameWorld world)
     { 
-        foreach (var entity in world.Entities)
+        foreach (var unit in world.Entities.Units.Values)
         {
-            if (entity is not Unit unit)
-            {
-                continue;
-            } 
            
             if(!unit.Definition.CanGather )
             {
@@ -95,7 +91,7 @@ public static class GatherSystem
             return;
         }
 
-        var resource = world.GetResourceById(resourceId);
+        var resource = world.Entities.GetResourceById(resourceId);
 
         if (resource == null)
         {

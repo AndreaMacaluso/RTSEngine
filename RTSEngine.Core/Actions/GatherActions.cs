@@ -64,7 +64,7 @@ public static class GatherActions
 
         var deposit = WorldQueries.FindClosestDeposit(
             world,
-            unit.OwnerId,
+            world.GetPlayerById(unit.OwnerId)!,
             unit.Position,
             resourceType);
         DebugSession.Log.Info(
@@ -175,7 +175,7 @@ public static class GatherActions
 
         var deposit = WorldQueries.FindClosestDeposit(
             world,
-            unit.OwnerId,
+            world.GetPlayerById(unit.OwnerId)!,
             unit.Position,
             resourceType);
 
@@ -242,7 +242,7 @@ public static class GatherActions
             return null;
         }
 
-        return world.GetResourceById(resourceId);
+        return world.Entities.GetResourceById(resourceId);
     }
 
 }

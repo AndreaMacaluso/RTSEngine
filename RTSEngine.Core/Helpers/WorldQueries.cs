@@ -90,7 +90,7 @@ public static class WorldQueries
         GameWorld world,
         GridPosition center)
     {
-        return world.Resources
+        return world.Entities.Resources.Values
             .Where(r => !r.IsDepleted)
             .OrderBy(r => DistanceSquared(center, r.Position))
             .FirstOrDefault();
@@ -101,7 +101,7 @@ public static class WorldQueries
         GridPosition center,
         ResourceType resourceType)
     {
-        return world.Resources
+        return world.Entities.Resources.Values
             .Where(r =>
                 !r.IsDepleted &&
                 r.ResourceType == resourceType)
@@ -111,21 +111,19 @@ public static class WorldQueries
 
     public static List<ResourceNode> FindDepletedResources(GameWorld world)
     {
-        return world.Resources
+        return world.Entities.Resources.Values
             .Where(r => r.IsDepleted)
             .ToList();
     }
 
     public static Building? FindClosestDeposit(
     GameWorld world,
-    int ownerId,
+    Player player,
     GridPosition center,
     ResourceType resourceType)
     {
-        return world.Entities
-            .OfType<Building>()
+        return world.Entities.GetBuildings(player)
             .Where(b =>
-                b.OwnerId == ownerId &&
                 b.IsCompleted &&
                 b.Definition.AcceptedResources.Contains(resourceType))
             .OrderBy(b => DistanceSquared(center, b.Position))
@@ -168,14 +166,10 @@ public static class WorldQueries
         Player player,
         string buildingId)
     {
-        var buildingFound = world.Entities
-            .OfType<Building>()
+        return world.Entities.GetBuildings(player)
             .FirstOrDefault(building =>
-                building.OwnerId == player.Id &&
                 building.Definition.Id == buildingId &&
                 building.IsCompleted);
-
-        return buildingFound;
     }
 
     public static Building? FindEnemyBuilding(
@@ -183,12 +177,9 @@ public static class WorldQueries
         Player player,
         string buildingId)
     {
-        return world.Entities
-            .OfType<Building>()
+        return world.Entities.GetEnemyBuildings(player)
             .FirstOrDefault(b =>
-                b.OwnerId != player.Id
-                && !b.IsDead
-                && b.Definition.Id == buildingId
+                b.Definition.Id == buildingId
                 && b.IsCompleted);
     }
 
@@ -205,39 +196,22 @@ public static class WorldQueries
         Player player,
         string buildingId)
     {
-        return world.Entities
-            .OfType<Building>()
+        return world.Entities.GetBuildings(player)
             .Count(b =>
-                b.OwnerId == player.Id &&
                 b.Definition.Id == buildingId &&
                 b.IsCompleted);
     }
 
     public static List<Building> FindDeadBuildings(GameWorld world)
     {
-        return world.Entities
-            .OfType<Building>()
+        return world.Entities.Buildings.Values
             .Where(b => b.IsDead && b.IsCompleted)
             .ToList();
     }
 
     public static bool IsBuildingAt(GameWorld world, int x, int y)
     {
-        var pos = new GridPosition(x, y);
-
-        return world.Entities
-            .OfType<Building>()
-            .Any(b => b.IsBlocking && BuildingQueries.OccupiesTile(
-                b.Definition,
-                b.Position,
-                pos));
-    }
-
-    public static Entity? GetEntityAt(GameWorld world, int x, int y)
-    {
-        return world.Entities.FirstOrDefault(
-            e => e.Position.X == x
-            && e.Position.Y == y);
+        return world.Entities.Spatial.IsBuildingAt(x, y);
     }
 
     public static bool IsInsideBounds(GameWorld world, int x, int y)
@@ -250,15 +224,12 @@ public static class WorldQueries
 
     public static bool IsTileOccupied(GameWorld world, int x, int y)
     {
-        return GetEntityAt(world, x, y) != null;
+        return world.Entities.Spatial.HasEntityAt(x, y);
     }
 
     public static bool IsResourceAt(GameWorld world, int x, int y)
     {
-        return world.Resources.Any(
-            r => r.Position.X == x
-            && r.Position.Y == y
-            && !r.IsDepleted);
+        return world.Entities.Spatial.GetResourceAt(x, y) is not null;
     }
 
     public static bool IsTileBlocked(GameWorld world, int x, int y)
@@ -285,9 +256,8 @@ public static class WorldQueries
             return true;
         }
 
-        var entity = GetEntityAt(world, x, y);
-
-        return entity?.IsBlocking ?? false;
+        var unit = world.Entities.Spatial.GetUnitAt(x, y);
+        return unit?.IsBlocking ?? false;
     }
 
     public static (Entity Entity, int OwnerId)? FindNearestEnemyEntity(
@@ -295,14 +265,10 @@ public static class WorldQueries
         Player player,
         GridPosition position)
     {
-        var units = world.Entities
-            .OfType<Unit>()
-            .Where(u => u.OwnerId != player.Id && !u.IsDead)
+        var units = world.Entities.GetEnemyUnits(player)
             .Select(u => (Entity: (Entity)u, OwnerId: u.OwnerId));
 
-        var buildings = world.Entities
-            .OfType<Building>()
-            .Where(b => b.OwnerId != player.Id && !b.IsDead)
+        var buildings = world.Entities.GetEnemyBuildings(player)
             .Select(b => (Entity: (Entity)b, OwnerId: b.OwnerId));
 
         return units.Concat(buildings)
@@ -314,15 +280,8 @@ public static class WorldQueries
         GameWorld world,
         Player player)
     {
-        var hasEnemyUnits = world.Entities
-            .OfType<Unit>()
-            .Any(u => u.OwnerId != player.Id && !u.IsDead);
-
-        var hasEnemyBuildings = world.Entities
-            .OfType<Building>()
-            .Any(b => b.OwnerId != player.Id && !b.IsDead);
-
-        return hasEnemyUnits || hasEnemyBuildings;
+        return world.Entities.GetEnemyUnits(player).Any()
+            || world.Entities.GetEnemyBuildings(player).Any();
     }
 
     public static GridPosition? FindBuildPosition(

@@ -14,11 +14,8 @@ public static class UnitQueries
         GameWorld world,
         Player player)
     {
-        return world.Entities
-            .OfType<Unit>()
-            .Where(unit =>
-                unit.OwnerId == player.Id &&
-                unit.CurrentTask == UnitTask.Idle);
+        return world.Entities.GetUnits(player)
+            .Where(unit => unit.CurrentTask == UnitTask.Idle);
     }
 
     public static int CountUnits(
@@ -26,10 +23,8 @@ public static class UnitQueries
         Player player,
         string unitId)
     {
-        return world.Entities
-            .OfType<Unit>()
+        return world.Entities.GetUnits(player)
             .Count(u =>
-                u.OwnerId == player.Id &&
                 !u.IsDead &&
                 u.Definition.Id == unitId);
     }
@@ -39,10 +34,8 @@ public static class UnitQueries
         Player player,
         ResourceType resourceType)
     {
-        return world.Entities
-            .OfType<Unit>()
+        return world.Entities.GetUnits(player)
             .Count(u =>
-                u.OwnerId == player.Id &&
                 u.CurrentTask == UnitTask.Gathering &&
                 u.Gather.CarriedResource == resourceType);
     }
@@ -51,8 +44,7 @@ public static class UnitQueries
         GameWorld world,
         Building building)
     {
-        return world.Entities
-            .OfType<Unit>()
+        return world.Entities.Units.Values
             .Where(u =>
                 u.Build.BuildingId == building.Id
                 && u.Definition.CanBuild)
@@ -61,8 +53,7 @@ public static class UnitQueries
 
     public static List<Unit> FindDeadUnits(GameWorld world)
     {
-        return world.Entities
-            .OfType<Unit>()
+        return world.Entities.Units.Values
             .Where(u => u.IsDead)
             .ToList();
     }
@@ -71,11 +62,9 @@ public static class UnitQueries
         GameWorld world,
         Player player)
     {
-        return world.Entities
-            .OfType<Unit>()
+        return world.Entities.GetUnits(player)
             .Where(u =>
-                u.OwnerId == player.Id
-                && !u.IsDead
+                !u.IsDead
                 && u.Definition.CanAttack
                 && u.CurrentTask == UnitTask.Idle)
             .ToList();

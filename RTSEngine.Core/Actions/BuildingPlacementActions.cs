@@ -39,7 +39,7 @@ public static class BuildingPlacementActions
             player.Id,
             position);
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         return building;
     }
@@ -57,6 +57,6 @@ public static class BuildingPlacementActions
                 building.Definition.Costs);
         }
 
-        world.RemoveEntity(building);
+        world.Entities.Remove(building, player);
     }
 }

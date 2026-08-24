@@ -15,12 +15,8 @@ public static class MovementSystem
     public static void Update(GameWorld world)
     {
         
-        foreach (var entity in world.Entities)
+        foreach (var unit in world.Entities.Units.Values)
         {
-            if (entity is not Unit unit)
-            {
-                continue;
-            } 
 
             if (unit.Movement.NeedsRepath
                 && unit.CurrentTask == UnitTask.Moving)

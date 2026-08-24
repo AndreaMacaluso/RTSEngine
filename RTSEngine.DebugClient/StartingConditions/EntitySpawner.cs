@@ -21,11 +21,11 @@ public static class EntitySpawner
             ownerId,
             position);
 
-        context.World.AddEntity(unit);
-
         var player = context.World.GetPlayerById(ownerId)
             ?? throw new InvalidOperationException(
                 $"Cannot spawn a villager for unknown player {ownerId}.");
+
+        context.World.Entities.Add(unit, player);
 
         PopulationActions.AddPopulation(player, 1);
 
@@ -56,11 +56,11 @@ public static class EntitySpawner
             ?? new GridPosition(position.X + definition.Width, position.Y);
         building.Production.SpawnPoint = spawnPoint;
 
-        context.World.AddEntity(building);
-
         var player = context.World.GetPlayerById(ownerId)
             ?? throw new InvalidOperationException(
                 $"Cannot spawn a town center for unknown player {ownerId}.");
+
+        context.World.Entities.Add(building, player);
 
         PopulationActions.IncreaseCap(player, definition.PopulationBonus);
 

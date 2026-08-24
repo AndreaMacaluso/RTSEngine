@@ -51,11 +51,11 @@ public static class CommandSystem
     {
         foreach (var unitId in command.UnitIds)
         {
-            var unit = world.GetUnitById(unitId);
+            var unit = world.Entities.GetUnitById(unitId);
             if (unit == null)
                 continue;
 
-            var building = world.GetBuildingById(command.BuildingId);
+            var building = world.Entities.GetBuildingById(command.BuildingId);
 
             if (building == null)
             {
@@ -88,11 +88,11 @@ public static class CommandSystem
     {
         foreach (var unitId in command.UnitIds)
         {
-            var unit = world.GetUnitById(unitId);
+            var unit = world.Entities.GetUnitById(unitId);
             if (unit == null)
                 continue;
 
-            var resource = world.GetResourceById(command.ResourceId);
+            var resource = world.Entities.GetResourceById(command.ResourceId);
 
             if (resource == null)
             {
@@ -126,7 +126,7 @@ public static class CommandSystem
     {
         foreach (var unitId in command.UnitIds)
         {
-            var unit = world.GetUnitById(unitId);
+            var unit = world.Entities.GetUnitById(unitId);
 
             if (unit == null)
             {
@@ -178,7 +178,7 @@ public static class CommandSystem
 
         GameWorld world = context.World;
 
-        var building = world.GetBuildingById(command.BuildingId);
+        var building = world.Entities.GetBuildingById(command.BuildingId);
 
         if (building == null)
         {
@@ -220,14 +220,14 @@ public static class CommandSystem
     {
         foreach (var unitId in command.UnitIds)
         {
-            var unit = world.GetUnitById(unitId);
+            var unit = world.Entities.GetUnitById(unitId);
 
             if (unit == null || unit.IsDead)
             {
                 continue;
             }
 
-            var target = world.GetEntityById(command.TargetEntityId);
+            var target = world.Entities.GetEntityById(command.TargetEntityId);
 
             if (target == null)
             {

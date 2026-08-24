@@ -21,7 +21,7 @@ public static class ConstructionActions
         }
 
         Building? building =
-            world.GetBuildingById(buildingId);
+            world.Entities.GetBuildingById(buildingId);
 
         if (building == null)
         {
@@ -59,7 +59,7 @@ public static class ConstructionActions
             return false;
         }
 
-        Building? building = world.GetBuildingById(buildingId);
+        Building? building = world.Entities.GetBuildingById(buildingId);
 
         if (building == null)
         {
@@ -81,7 +81,7 @@ public static class ConstructionActions
         }
 
         Building? building =
-            world.GetBuildingById(buildingId);
+            world.Entities.GetBuildingById(buildingId);
 
         if (building == null)
         {
@@ -123,7 +123,7 @@ public static class ConstructionActions
         }
 
         Building? building =
-            world.GetBuildingById(buildingId);
+            world.Entities.GetBuildingById(buildingId);
 
         return
             building != null &&

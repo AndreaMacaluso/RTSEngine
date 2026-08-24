@@ -40,8 +40,7 @@ public static class ConsoleRenderer
 
         var position = new GridPosition(x, y);
 
-        var unit = world.Entities
-            .OfType<Unit>()
+        var unit = world.Entities.Units.Values
             .FirstOrDefault(entity => entity.Position == position);
 
         if (unit != null)
@@ -51,7 +50,7 @@ public static class ConsoleRenderer
             return;
         }
 
-        var building = world.Buildings
+        var building = world.Entities.Buildings.Values
             .FirstOrDefault(entity => BuildingQueries.OccupiesTile(entity, position));
 
         if (building != null)
@@ -61,7 +60,7 @@ public static class ConsoleRenderer
             return;
         }
 
-        var resource = world.Resources
+        var resource = world.Entities.Resources.Values
             .FirstOrDefault(r =>
                 r.Position.X == x &&
                 r.Position.Y == y);
@@ -253,8 +252,7 @@ public static class ConsoleRenderer
         {
             Console.ForegroundColor = GetOwnerColor(player.Id);
 
-            var units = world.Entities
-                .OfType<RTSEngine.Core.Entities.Units.Unit>()
+            var units = world.Entities.Units.Values
                 .Where(u => u.OwnerId == player.Id && !u.IsDead)
                 .ToList();
 

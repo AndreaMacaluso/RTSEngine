@@ -43,7 +43,7 @@ public static class ScenarioBuilder
             context.UnitRepository.Get(EntityIds.Villager);
         foreach (Player player in world.Players)
         {
-            var resource = world.Resources.FirstOrDefault();
+            var resource = world.Entities.Resources.Values.FirstOrDefault();
             if (resource == null)
             {
                   return;
@@ -72,7 +72,11 @@ public static class ScenarioBuilder
             ownerId,
             spawnPosition);
 
-        world.AddEntity(unit);
+        var player = world.GetPlayerById(ownerId)
+            ?? throw new InvalidOperationException(
+                $"Cannot spawn unit for unknown player {ownerId}.");
+
+        world.Entities.Add(unit, player);
 
         world.AddCommand(new MoveCommand
         {
@@ -95,7 +99,11 @@ public static class ScenarioBuilder
             ownerId,
             spawnPosition);
 
-        world.AddEntity(unit);
+        var player = world.GetPlayerById(ownerId)
+            ?? throw new InvalidOperationException(
+                $"Cannot spawn unit for unknown player {ownerId}.");
+
+        world.Entities.Add(unit, player);
 
         world.AddCommand(new GatherCommand
         {

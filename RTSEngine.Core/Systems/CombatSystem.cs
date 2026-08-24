@@ -11,12 +11,8 @@ public static class CombatSystem
 {
     public static void Update(GameWorld world)
     {
-        foreach (var entity in world.Entities)
+        foreach (var unit in world.Entities.Units.Values)
         {
-            if (entity is not Unit unit)
-            {
-                continue;
-            }
 
             if (unit.CurrentTask != UnitTask.Attacking)
             {
@@ -48,7 +44,7 @@ public static class CombatSystem
             return;
         }
 
-        var target = world.GetEntityById(targetId);
+        var target = world.Entities.GetEntityById(targetId);
 
         if (target == null || IsTargetDead(target))
         {
@@ -101,7 +97,7 @@ public static class CombatSystem
             return;
         }
 
-        var target = world.GetEntityById(targetId);
+        var target = world.Entities.GetEntityById(targetId);
 
         if (target == null || IsTargetDead(target))
         {

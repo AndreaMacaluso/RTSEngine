@@ -6,6 +6,8 @@ using RTSEngine.Core.Commands;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Players;
+using RTSEngine.Core.State;
 namespace RTSEngine.Core.Actions;
 
 public static class ProductionActions
@@ -75,7 +77,11 @@ public static class ProductionActions
             building.OwnerId,
             position);
 
-        world.AddEntity(unit);
+        var unitPlayer = world.GetPlayerById(building.OwnerId) as Player;
+        if (unitPlayer is not null)
+        {
+            world.Entities.Add(unit, unitPlayer);
+        }
 
         DebugSession.Log.Info(
             "UnitSpawned",

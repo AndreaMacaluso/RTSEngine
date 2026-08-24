@@ -97,7 +97,7 @@ public class GatherBrain : AIBrain
                 continue;
 
             var deposit = WorldQueries.FindClosestDeposit(
-                world, player.Id, villager.Position, villager.Gather.CarriedResource.Value);
+                world, player, villager.Position, villager.Gather.CarriedResource.Value);
 
             if (deposit == null) continue;
 

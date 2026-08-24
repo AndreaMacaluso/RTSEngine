@@ -57,9 +57,9 @@ public class GatherBrainTests
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(5, 5));
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
 
-        _world.AddResource(new Tree(new GridPosition(10, 5)));
+        _world.Entities.Add(new Tree(new GridPosition(10, 5)));
 
         var brain = new GatherBrain();
         brain.Execute(_context, _player);
@@ -84,9 +84,9 @@ public class GatherBrainTests
             _player.Id,
             new GridPosition(5, 5));
         villager.CurrentTask = UnitTask.Gathering;
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
 
-        _world.AddResource(new Tree(new GridPosition(10, 5)));
+        _world.Entities.Add(new Tree(new GridPosition(10, 5)));
 
         var brain = new GatherBrain();
         brain.Execute(_context, _player);
@@ -109,7 +109,7 @@ public class GatherBrainTests
             _player.Id,
             new GridPosition(5, 5));
         villager.CurrentTask = UnitTask.Gathering;
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
 
         var brain = new GatherBrain();
         brain.Execute(_context, _player);
@@ -129,9 +129,9 @@ public class GatherBrainTests
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(5, 5));
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
 
-        _world.AddResource(new Tree(new GridPosition(10, 5)));
+        _world.Entities.Add(new Tree(new GridPosition(10, 5)));
         _player.Economy.Add(ResourceType.Wood, 500);
 
         var brain = new GatherBrain();
@@ -158,10 +158,10 @@ public class GatherBrainTests
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(6, 5));
-        _world.AddEntity(villager1);
-        _world.AddEntity(villager2);
+        _world.Entities.Add(villager1, _player);
+        _world.Entities.Add(villager2, _player);
 
-        _world.AddResource(new Tree(new GridPosition(10, 5)));
+        _world.Entities.Add(new Tree(new GridPosition(10, 5)));
 
         var brain = new GatherBrain();
         brain.Execute(_context, _player);

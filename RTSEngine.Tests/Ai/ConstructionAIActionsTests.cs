@@ -39,7 +39,7 @@ public class ConstructionAIActionsTests
             _player.Id,
             new GridPosition(20, 20));
         townCenter.IsCompleted = true;
-        _world.AddEntity(townCenter);
+        _world.Entities.Add(townCenter, _player);
 
     }
 
@@ -52,7 +52,7 @@ public class ConstructionAIActionsTests
             _player.Id,
             new GridPosition(18, 20));
 
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
         var result = ConstructionAIActions.RequestConstruction(
             _context,
             _player,
@@ -62,7 +62,7 @@ public class ConstructionAIActionsTests
         Assert.True(result);
 
         var foundation = Assert.Single(
-            _world.Entities.OfType<Building>(),
+            _world.Entities.Buildings.Values,
             building => !building.IsCompleted);
 
         Assert.Equal("house", foundation.Definition.Id);
@@ -77,7 +77,7 @@ public class ConstructionAIActionsTests
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(18, 20));
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
         // Act
         ConstructionAIActions.RequestConstruction(
             _context,

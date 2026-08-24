@@ -44,7 +44,7 @@ public class ProductionAIActionsTests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         PopulationActions.IncreaseCap(_player, 10);
         _player.Economy.Add(ResourceType.Food, 100);
@@ -63,7 +63,7 @@ public class ProductionAIActionsTests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         PopulationActions.IncreaseCap(_player, 10);
 
@@ -81,7 +81,7 @@ public class ProductionAIActionsTests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         PopulationActions.IncreaseCap(_player, 10);
         _player.Economy.Add(ResourceType.Food, 100);
@@ -100,7 +100,7 @@ public class ProductionAIActionsTests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         PopulationActions.IncreaseCap(_player, 10);
         _player.Economy.Add(ResourceType.Food, 100);

@@ -52,13 +52,14 @@ public class ProductionSystemTests
     [Trait("Category", "Production")]
     public void Production_ShouldDecreaseRemainingTicks()
     {
+        var player = _world.GetPlayerById(1)!;
         var building =
             BuildingFactory.Create(
                 TestDefinitionFactory.CreateTownCenter(),
                 1,
                 new GridPosition(5,5));
 
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         building.Production.Add(
             new ProductionTask(
@@ -76,14 +77,14 @@ public class ProductionSystemTests
     [Trait("Category", "Production")]
     public void Production_ShouldSpawnUnit_OnProductionSpawnPoint_WhenCompleted()
     {
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
                 TestDefinitionFactory.CreateTownCenter(),
                 1,
                 new GridPosition(5,5));
         building.Production.SpawnPoint = new GridPosition(9,9);
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
-        var player = _world.GetPlayerById(1)!;
         PopulationActions.IncreaseCap(player, 5);
         PopulationActions.TryReservePopulation(player, 1);
 
@@ -97,8 +98,7 @@ public class ProductionSystemTests
         RunProductionTicks(3);
 
         var unit =
-            _world.Entities
-            .OfType<Unit>()
+            _world.Entities.Units.Values
             .Single();
 
         Assert.Equal(

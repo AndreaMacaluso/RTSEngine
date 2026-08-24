@@ -42,7 +42,8 @@ public class BuildingDestructionTests
     [Trait("Category", "Destruction")]
     public void DeadBuilding_ShouldNotBlockTiles()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
@@ -51,11 +52,12 @@ public class BuildingDestructionTests
         building.IsCompleted = true;
         building.Health.CurrentHealth = 1000;
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 5, 5));
 
         building.Health.TakeDamage(building.Health.CurrentHealth);
+        world.Entities.RebuildSpatialIndex();
 
         Assert.False(WorldQueries.IsTileBlocked(world, 5, 5));
     }
@@ -66,6 +68,7 @@ public class BuildingDestructionTests
     public void RemoveDeadEntities_ShouldRemoveDeadBuildings()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
@@ -74,7 +77,7 @@ public class BuildingDestructionTests
         building.IsCompleted = true;
         building.Health.CurrentHealth = 1;
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         var simulation = new SimulationRunner(
             new RuntimeContext
@@ -88,7 +91,7 @@ public class BuildingDestructionTests
 
         simulation.Step();
 
-        Assert.DoesNotContain(building, world.Entities.ToList());
+        Assert.DoesNotContain(building, world.Entities.Buildings.Values.ToList());
     }
 
     [Fact]
@@ -97,6 +100,7 @@ public class BuildingDestructionTests
     public void RemoveDeadBuildings_ShouldReleaseBuilders()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
@@ -113,8 +117,8 @@ public class BuildingDestructionTests
         builder.Build.BuildingId = building.Id;
         builder.Build.Phase = BuildPhase.Constructing;
 
-        world.AddEntity(building);
-        world.AddEntity(builder);
+        world.Entities.Add(building, player);
+        world.Entities.Add(builder, player);
 
         var simulation = new SimulationRunner(
             new RuntimeContext
@@ -149,7 +153,7 @@ public class BuildingDestructionTests
         building.IsCompleted = true;
         building.Health.CurrentHealth = 1;
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         int capBefore = player.Population.Capacity;
 
@@ -173,6 +177,8 @@ public class BuildingDestructionTests
     public void Militia_ShouldStopAttacking_WhenBuildingDies()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
 
         var militiaDef = new UnitDefinition
         {
@@ -195,8 +201,8 @@ public class BuildingDestructionTests
         building.IsCompleted = true;
         building.Health.CurrentHealth = 30;
 
-        world.AddEntity(militia);
-        world.AddEntity(building);
+        world.Entities.Add(militia, player1);
+        world.Entities.Add(building, player2);
 
         CombatSystem.BeginAttack(world, militia, building.Id);
 
@@ -282,9 +288,8 @@ public class BuildingRefundTests
         building.IsCompleted = true;
         building.Health.CurrentHealth = 1;
 
-        world.AddEntity(building);
-
         var player = world.GetPlayerById(1)!;
+        world.Entities.Add(building, player);
 
         var simulation = new SimulationRunner(
             new RuntimeContext
@@ -298,8 +303,7 @@ public class BuildingRefundTests
 
         simulation.Step();
 
-        var buildings = world.Entities
-            .OfType<Building>()
+        var buildings = world.Entities.Buildings.Values
             .Where(b => b.OwnerId == 1)
             .ToList();
 
@@ -321,7 +325,7 @@ public class UnitDeathPopulationTests
             TestDefinitionFactory.CreateVillager(),
             ownerId: 1,
             position: new GridPosition(5, 5));
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         PopulationActions.AddPopulation(player, 1);
         int popBefore = player.Population.Current;
@@ -339,6 +343,6 @@ public class UnitDeathPopulationTests
         simulation.Step();
 
         Assert.Equal(popBefore - 1, player.Population.Current);
-        Assert.DoesNotContain(unit, world.Entities.ToList());
+        Assert.DoesNotContain(unit, world.Entities.Units.Values.ToList());
     }
 }

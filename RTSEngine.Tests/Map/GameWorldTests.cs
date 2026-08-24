@@ -52,34 +52,32 @@ public class GameWorldTests
     }
 
     [Fact]
-    public void GetEntityAt_ShouldReturnEntity_WhenTileIsOccupied()
+    public void Units_ShouldContainEntity_WhenTileIsOccupied()
     {
         // Arrange
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         var tree = new Tree(new GridPosition(2, 2));
 
-        world.AddEntity(tree);
+        world.Entities.Add(tree);
 
         // Act
-        var entity = world.GetEntityAt(2, 2);
+        var resource = world.Entities.Resources.Values.FirstOrDefault(
+            r => r.Position.X == 2 && r.Position.Y == 2);
 
         // Assert
-        Assert.NotNull(entity);
-        Assert.Equal(tree, entity);
+        Assert.NotNull(resource);
+        Assert.Equal(tree, resource);
     }
 
     [Fact]
-    public void GetEntityAt_ShouldReturnNull_WhenTileIsEmpty()
+    public void Units_ShouldBeEmpty_WhenTileIsEmpty()
     {
         // Arrange
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
-        // Act
-        var entity = world.GetEntityAt(2, 2);
-
-        // Assert
-        Assert.Null(entity);
+        // Act & Assert
+        Assert.Empty(world.Entities.Units.Values);
     }
 
     [Fact]
@@ -88,7 +86,7 @@ public class GameWorldTests
         // Arrange
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
-        world.AddEntity(
+        world.Entities.Add(
             new Tree(new GridPosition(1, 1)));
 
         // Act
@@ -160,7 +158,7 @@ public class GameWorldTests
         // Arrange
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
-        world.AddEntity(
+        world.Entities.Add(
             new Tree(new GridPosition(3, 3)));
 
         // Act
@@ -189,7 +187,7 @@ public class GameWorldTests
         var world = TestWorldFactory.CreateWorld();
 
         var tree = new Tree(new GridPosition(4, 4));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 4, 4));
     }
@@ -201,7 +199,7 @@ public class GameWorldTests
 
         var tree = new Tree(new GridPosition(4, 4));
         tree.Amount = 0;
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 4, 4));
     }
@@ -212,7 +210,7 @@ public class GameWorldTests
         var world = TestWorldFactory.CreateWorld();
 
         var tree = new Tree(new GridPosition(4, 4));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 3, 4));
         Assert.False(WorldQueries.IsTileBlocked(world, 5, 4));
@@ -223,7 +221,8 @@ public class GameWorldTests
     [Fact]
     public void IsTileBlocked_ShouldReturnTrue_ForAllBuildingFootprintTiles()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = new BuildingDefinition
         {
@@ -240,7 +239,7 @@ public class GameWorldTests
             position: new GridPosition(2, 2));
         building.Health.CurrentHealth = definition.MaxHealth;
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 2, 2));
         Assert.True(WorldQueries.IsTileBlocked(world, 3, 2));
@@ -253,7 +252,8 @@ public class GameWorldTests
     [Fact]
     public void IsTileBlocked_ShouldReturnFalse_OutsideBuildingFootprint()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = new BuildingDefinition
         {
@@ -268,7 +268,7 @@ public class GameWorldTests
             ownerId: 1,
             position: new GridPosition(2, 2));
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 1, 2));
         Assert.False(WorldQueries.IsTileBlocked(world, 2, 1));
@@ -282,7 +282,7 @@ public class GameWorldTests
         var world = TestWorldFactory.CreateWorld();
 
         var tree = new Tree(new GridPosition(3, 3));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         Assert.True(WorldQueries.IsResourceAt(world, 3, 3));
     }
@@ -298,7 +298,8 @@ public class GameWorldTests
     [Fact]
     public void IsBuildingAt_ShouldReturnTrue_ForAnyFootprintTile()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = new BuildingDefinition
         {
@@ -315,7 +316,7 @@ public class GameWorldTests
             position: new GridPosition(5, 5));
         building.Health.CurrentHealth = definition.MaxHealth;
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         Assert.True(WorldQueries.IsBuildingAt(world, 5, 5));
         Assert.True(WorldQueries.IsBuildingAt(world, 6, 5));

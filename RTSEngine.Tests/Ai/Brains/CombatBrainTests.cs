@@ -54,8 +54,8 @@ public class CombatBrainTests
             new GridPosition(6, 5));
         enemy.Health.CurrentHealth = 60;
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemy);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemy, _enemy);
 
         var brain = new CombatBrain();
         brain.Execute(_context, _player);
@@ -80,8 +80,8 @@ public class CombatBrainTests
             _enemy.Id,
             new GridPosition(30, 30));
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemy);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemy, _enemy);
 
         var brain = new CombatBrain();
         brain.Execute(_context, _player);
@@ -108,8 +108,8 @@ public class CombatBrainTests
         enemyTC.IsCompleted = true;
         enemyTC.Health.CurrentHealth = 1000;
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemyTC);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemyTC, _enemy);
 
         var brain = new CombatBrain();
         brain.Execute(_context, _player);
@@ -133,8 +133,8 @@ public class CombatBrainTests
             _player.Id,
             new GridPosition(6, 5));
 
-        _world.AddEntity(militia);
-        _world.AddEntity(friendly);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(friendly, _player);
 
         var brain = new CombatBrain();
         brain.Execute(_context, _player);
@@ -153,7 +153,7 @@ public class CombatBrainTests
             _player.Id,
             new GridPosition(5, 5));
 
-        _world.AddEntity(militia);
+        _world.Entities.Add(militia, _player);
 
         var brain = new CombatBrain();
         brain.Execute(_context, _player);
@@ -178,8 +178,8 @@ public class CombatBrainTests
             _enemy.Id,
             new GridPosition(6, 5));
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemy);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemy, _enemy);
 
         var brain = new CombatBrain();
         brain.Execute(_context, _player);

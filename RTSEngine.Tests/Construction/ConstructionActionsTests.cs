@@ -16,6 +16,7 @@ public class ConstructionActionsTests
     public void BuildOneTick_ShouldIncreaseProgress()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var unit = UnitFactory.Create(
                 TestDefinitionFactory.CreateVillager(),
@@ -27,7 +28,7 @@ public class ConstructionActionsTests
         ownerId: 1,
         position: new GridPosition(1, 5));
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         unit.Build.BuildingId = building.Id;
 
@@ -43,6 +44,7 @@ public class ConstructionActionsTests
     public void CompleteConstruction_ShouldCompleteBuilding()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var unit = UnitFactory.Create(
                 TestDefinitionFactory.CreateVillager(),
@@ -53,7 +55,7 @@ public class ConstructionActionsTests
         ownerId: 1,
         position: new GridPosition(1, 5));
 
-        world.AddEntity(building);
+        world.Entities.Add(building, player);
 
         unit.Build.BuildingId = building.Id;
 

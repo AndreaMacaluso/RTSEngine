@@ -48,14 +48,14 @@ public class ConstructionCommandTests
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, _player);
 
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateHouse(),
             ownerId:1,
             position:new GridPosition(1,5));
 
-        _world.AddEntity(building);
+        _world.Entities.Add(building, _player);
 
 
         _world.AddCommand(

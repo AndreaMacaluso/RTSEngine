@@ -24,10 +24,10 @@ public class GatherAIActionsTests
             player.Id,
             new GridPosition(5, 5));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         var tree = new Tree(new GridPosition(10, 5));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         // Act
         GatherAIActions.AssignGatherTask(
@@ -61,10 +61,10 @@ public class GatherAIActionsTests
             player.Id,
             new GridPosition(5, 5));
 
-        world.AddEntity(villager);
+        world.Entities.Add(villager, player);
 
         var tree = new Tree(new GridPosition(10, 5));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         world.AddCommand(new GatherCommand
         {

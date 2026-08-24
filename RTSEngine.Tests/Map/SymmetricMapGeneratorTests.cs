@@ -89,7 +89,7 @@ public class SymmetricMapGeneratorTests
         Assert.Equal(40, world.Map.Width);
         Assert.Equal(40, world.Map.Height);
         Assert.Equal(2, world.Spawns.Count);
-        Assert.Equal(54, world.Resources.Count);
+        Assert.Equal(54, world.Entities.Resources.Count);
     }
 
     private static MapGenerationDefinition CreateDefinition()

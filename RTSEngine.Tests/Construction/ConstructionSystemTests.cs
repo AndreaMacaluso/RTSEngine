@@ -20,22 +20,25 @@ public class ConstructionSystemTests
     {
         _world = TestWorldFactory.CreateWorldWithTwoPlayers();
 
+        var player = _world.GetPlayerById(1)!;
+
         _villager = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1, 1));
-        _world.AddEntity(_villager);
+        _world.Entities.Add(_villager, player);
     }
 
     [Fact]
     [Trait("Category", "Building")]
     public void Update_ShouldSwitchToConstructing_WhenDestinationReached()
     {
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateHouse(),
             1,
             new GridPosition(1, 2));
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         _villager.Movement.NeedsRepath = true;
         _villager.Build.BuildPosition = building.Position;
@@ -52,11 +55,12 @@ public class ConstructionSystemTests
     [Trait("Category", "Building")]
     public void Update_ShouldCompleteBuilding_WhenProgressFinishes()
     {
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateHouse(),
             1,
             new GridPosition(1, 5));
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         _villager.Build.BuildingId = building.Id;
         _villager.Build.Phase = BuildPhase.Constructing;
@@ -77,11 +81,12 @@ public class ConstructionSystemTests
     {
         _villager.Health.CurrentHealth = 50;
 
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateHouse(),
             1,
             new GridPosition(5, 5));
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         _world.AddCommand(new BuildCommand
         {
@@ -105,11 +110,12 @@ public class ConstructionSystemTests
         _villager.Build.BuildingId = null;
         _villager.Build.Phase = BuildPhase.Constructing;
 
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateHouse(),
             1,
             new GridPosition(1, 2));
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         var result = ConstructionActions.BuildOneTick(_world, _villager);
 
@@ -121,18 +127,18 @@ public class ConstructionSystemTests
     [Trait("Category", "Building")]
     public void CompleteConstruction_ShouldNotDoubleIncrement_WhenAlreadyCompleted()
     {
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
             1,
             new GridPosition(1, 2));
         building.IsCompleted = true;
         building.Health.CurrentHealth = building.Health.MaxHealth;
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         _villager.Build.BuildingId = building.Id;
         _villager.Build.Phase = BuildPhase.Constructing;
 
-        var player = _world.GetPlayerById(1)!;
         int popBefore = player.Population.Capacity;
 
         ConstructionActions.CompleteConstruction(_world, _villager);
@@ -145,13 +151,14 @@ public class ConstructionSystemTests
     [Trait("Category", "Building")]
     public void HandleConstructing_ShouldStopBuilding_WhenBuildingAlreadyCompleted()
     {
+        var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
             TestDefinitionFactory.CreateHouse(),
             1,
             new GridPosition(1, 2));
         building.IsCompleted = true;
         building.Health.CurrentHealth = building.Health.MaxHealth;
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
         _villager.Build.BuildingId = building.Id;
         _villager.Build.Phase = BuildPhase.Constructing;

@@ -50,13 +50,13 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         var villager = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(10, 10));
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, _player);
 
         PopulationActions.IncreaseCap(_player, 20);
         PopulationActions.AddPopulation(_player, 15);
@@ -65,8 +65,7 @@ public class BarracksAITests
         new ConstructionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        var barracks = _world.Entities
-            .OfType<Building>()
+        var barracks = _world.Entities.Buildings.Values
             .FirstOrDefault(b => b.OwnerId == _player.Id && b.Definition.Id == "barracks");
 
         Assert.NotNull(barracks);
@@ -84,8 +83,7 @@ public class BarracksAITests
         new ConstructionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        var barracks = _world.Entities
-            .OfType<Building>()
+        var barracks = _world.Entities.Buildings.Values
             .FirstOrDefault(b => b.OwnerId == _player.Id && b.Definition.Id == "barracks");
 
         Assert.Null(barracks);
@@ -105,13 +103,12 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(20, 20));
         existingBarracks.IsCompleted = true;
-        _world.AddEntity(existingBarracks);
+        _world.Entities.Add(existingBarracks, _player);
 
         new ConstructionBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        var barracksCount = _world.Entities
-            .OfType<Building>()
+        var barracksCount = _world.Entities.Buildings.Values
             .Count(b => b.OwnerId == _player.Id && b.Definition.Id == "barracks");
 
         Assert.Equal(1, barracksCount);
@@ -127,7 +124,7 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         var barracks = BuildingFactory.Create(
             TestDefinitionFactory.CreateBarracks(),
@@ -135,7 +132,7 @@ public class BarracksAITests
             new GridPosition(20, 20));
         barracks.IsCompleted = true;
         barracks.Production.SpawnPoint = new GridPosition(22, 22);
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         PopulationActions.IncreaseCap(_player, 20);
         PopulationActions.AddPopulation(_player, 15);
@@ -157,7 +154,7 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(5, 5));
         tc.IsCompleted = true;
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         var barracks = BuildingFactory.Create(
             TestDefinitionFactory.CreateBarracks(),
@@ -165,7 +162,7 @@ public class BarracksAITests
             new GridPosition(20, 20));
         barracks.IsCompleted = true;
         barracks.Production.SpawnPoint = new GridPosition(22, 22);
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         PopulationActions.IncreaseCap(_player, 30);
         PopulationActions.AddPopulation(_player, 15);
@@ -190,7 +187,7 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(20, 20));
         barracks.IsCompleted = true;
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         PopulationActions.IncreaseCap(_player, 20);
         PopulationActions.AddPopulation(_player, 15);
@@ -225,7 +222,7 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(20, 20));
         barracks.IsCompleted = true;
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         PopulationActions.IncreaseCap(_player, 20);
         _player.Economy.Add(ResourceType.Food, 200);
@@ -245,7 +242,7 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(20, 20));
         barracks.IsCompleted = true;
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         PopulationActions.IncreaseCap(_player, 20);
         _player.Economy.Add(ResourceType.Food, 200);
@@ -265,7 +262,7 @@ public class BarracksAITests
             _player.Id,
             new GridPosition(20, 20));
         barracks.IsCompleted = true;
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         PopulationActions.IncreaseCap(_player, 20);
         _player.Economy.Add(ResourceType.Food, 200);
@@ -317,8 +314,8 @@ public class MilitiaCombatAIFullLoopTests
             new GridPosition(6, 5));
         enemy.Health.CurrentHealth = 50;
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemy);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemy, _enemy);
 
         new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
@@ -343,8 +340,8 @@ public class MilitiaCombatAIFullLoopTests
             _enemy.Id,
             new GridPosition(6, 5));
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemy);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemy, _enemy);
 
         new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
@@ -369,8 +366,8 @@ public class MilitiaCombatAIFullLoopTests
             new GridPosition(6, 5));
         enemy.Health.CurrentHealth = 1;
 
-        _world.AddEntity(militia);
-        _world.AddEntity(enemy);
+        _world.Entities.Add(militia, _player);
+        _world.Entities.Add(enemy, _enemy);
 
         new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);

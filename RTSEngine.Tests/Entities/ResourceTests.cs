@@ -176,19 +176,19 @@ public sealed class ResourceTests
         var world = TestWorldFactory.CreateWorld();
 
         var tree = new Tree(new GridPosition(1, 1));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         var goldMine = new GoldMine(new GridPosition(2, 1));
-        world.AddResource(goldMine);
+        world.Entities.Add(goldMine);
 
-        Assert.Equal(2, world.Resources.Count);
+        Assert.Equal(2, world.Entities.Resources.Count);
 
         tree.Gather(tree.Amount);
 
         ResourceCleanupSystem.Update(world);
 
-        Assert.Single(world.Resources);
-        Assert.Contains(world.Resources, r => r.Id == goldMine.Id);
+        Assert.Single(world.Entities.Resources.Values);
+        Assert.Contains(world.Entities.Resources.Values, r => r.Id == goldMine.Id);
     }
 
     [Fact]
@@ -199,11 +199,11 @@ public sealed class ResourceTests
         var world = TestWorldFactory.CreateWorld();
 
         var tree = new Tree(new GridPosition(1, 1));
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         ResourceCleanupSystem.Update(world);
 
-        Assert.Single(world.Resources);
+        Assert.Single(world.Entities.Resources.Values);
     }
 
     [Fact]
@@ -216,19 +216,19 @@ public sealed class ResourceTests
         var tree1 = new Tree(new GridPosition(1, 1));
         var tree2 = new Tree(new GridPosition(2, 1));
         var tree3 = new Tree(new GridPosition(3, 1));
-        world.AddResource(tree1);
-        world.AddResource(tree2);
-        world.AddResource(tree3);
+        world.Entities.Add(tree1);
+        world.Entities.Add(tree2);
+        world.Entities.Add(tree3);
 
-        Assert.Equal(3, world.Resources.Count);
+        Assert.Equal(3, world.Entities.Resources.Count);
 
         tree1.Gather(tree1.Amount);
         tree3.Gather(tree3.Amount);
 
         ResourceCleanupSystem.Update(world);
 
-        Assert.Single(world.Resources);
-        Assert.Contains(world.Resources, r => r.Id == tree2.Id);
+        Assert.Single(world.Entities.Resources.Values);
+        Assert.Contains(world.Entities.Resources.Values, r => r.Id == tree2.Id);
     }
 
     [Fact]

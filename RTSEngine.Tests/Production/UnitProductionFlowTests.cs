@@ -57,6 +57,7 @@ public class UnitProductionFlowTests
     [Trait("Category", "Production")]
     public void QueueCommand_ShouldCreateProductionTask()
     {
+        var player = _world.GetPlayerById(1)!;
         var building =
             BuildingFactory.Create(
                 TestDefinitionFactory.CreateTownCenter(),
@@ -64,7 +65,7 @@ public class UnitProductionFlowTests
                 new GridPosition(3,3));
 
 
-        _world.AddEntity(building);
+        _world.Entities.Add(building, player);
 
 
         _world.AddCommand(
@@ -94,9 +95,8 @@ public class UnitProductionFlowTests
                 TestDefinitionFactory.CreateTownCenter(),
                 1,
                 new GridPosition(3, 3));
-        _world.AddEntity(building);
-
         var player = _world.GetPlayerById(1)!;
+        _world.Entities.Add(building, player);
         player.Economy.Add(ResourceType.Food, 50);
         player.Population.Capacity = 10;
 
@@ -122,9 +122,8 @@ public class UnitProductionFlowTests
                 TestDefinitionFactory.CreateTownCenter(),
                 1,
                 new GridPosition(3, 3));
-        _world.AddEntity(building);
-
         var player = _world.GetPlayerById(1)!;
+        _world.Entities.Add(building, player);
         player.Population.Capacity = 10;
 
         var result = ProductionActions.TryTrainUnit(

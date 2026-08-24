@@ -24,20 +24,22 @@ public class GatheringSystemTests
     {
         _world = TestWorldFactory.CreateWorldWithTwoPlayers();
 
+        var player = _world.GetPlayerById(1)!;
+
         _villager = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(5, 5));
-        _world.AddEntity(_villager);
+        _world.Entities.Add(_villager, player);
 
         _tree = new Tree(new GridPosition(6, 5));
-        _world.AddResource(_tree);
+        _world.Entities.Add(_tree);
 
         _townCenter = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
             1,
             new GridPosition(1, 1));
-        _world.AddEntity(_townCenter);
+        _world.Entities.Add(_townCenter, player);
     }
 
     [Fact]
@@ -125,7 +127,7 @@ public class GatheringSystemTests
     {
         _villager.Gather.TargetResourceId = _tree.Id;
 
-        var resource = _world.GetResourceById(_villager.Gather.TargetResourceId ?? 0);
+        var resource = _world.Entities.GetResourceById(_villager.Gather.TargetResourceId ?? 0);
         Assert.NotNull(resource);
         Assert.True(GatherActions.CanContinueGathering(_world, _villager));
 
@@ -161,11 +163,12 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering")]
     public void Update_ShouldIgnoreUnitsThatCannotGather()
     {
+        var player = _world.GetPlayerById(1)!;
         var militia = UnitFactory.Create(
             TestDefinitionFactory.CreateMilitia(),
             1,
             new GridPosition(5, 5));
-        _world.AddEntity(militia);
+        _world.Entities.Add(militia, player);
 
         militia.Gather.Phase = GatherPhase.MovingToResource;
 
@@ -192,15 +195,16 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering.Loop")]
     public void GatherLoop_ShouldCollectAndDepositResources()
     {
+        var player = _world.GetPlayerById(1)!;
         var villager = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1, 1));
         villager.Health.CurrentHealth = 50;
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, player);
 
         var tree = new Tree(new GridPosition(5, 1));
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
         int initialAmount = tree.Amount;
 
         var townCenter = BuildingFactory.Create(
@@ -209,7 +213,7 @@ public class GatheringSystemTests
             new GridPosition(1, 5));
         townCenter.IsCompleted = true;
         townCenter.Health.CurrentHealth = townCenter.Health.MaxHealth;
-        _world.AddEntity(townCenter);
+        _world.Entities.Add(townCenter, player);
 
         _world.AddCommand(new GatherCommand
         {
@@ -249,7 +253,6 @@ public class GatheringSystemTests
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
 
-        var player = _world.GetPlayerById(1)!;
         Assert.Equal(20, player.Economy.Get(ResourceType.Wood));
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
         Assert.True(tree.Amount < initialAmount);
@@ -268,12 +271,12 @@ public class GatheringSystemTests
             player.Id,
             new GridPosition(1, 1));
         villager.Health.CurrentHealth = 50;
-        _world.AddEntity(villager);
+        _world.Entities.Add(villager, player);
 
         var tree1 = new Tree(new GridPosition(5, 1));
         var tree2 = new Tree(new GridPosition(8, 1));
-        _world.AddResource(tree1);
-        _world.AddResource(tree2);
+        _world.Entities.Add(tree1);
+        _world.Entities.Add(tree2);
 
         var townCenter = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
@@ -281,7 +284,7 @@ public class GatheringSystemTests
             new GridPosition(1, 5));
         townCenter.IsCompleted = true;
         townCenter.Health.CurrentHealth = townCenter.Health.MaxHealth;
-        _world.AddEntity(townCenter);
+        _world.Entities.Add(townCenter, player);
 
         _world.AddCommand(new GatherCommand
         {
@@ -312,6 +315,8 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering.Loop")]
     public void GatherLoop_ShouldAllowMultipleVillagersToGatherSameResource()
     {
+        var player1 = _world.GetPlayerById(1)!;
+
         var villager1 = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
@@ -324,8 +329,8 @@ public class GatheringSystemTests
             new GridPosition(2, 1));
         villager2.Health.CurrentHealth = 50;
 
-        _world.AddEntity(villager1);
-        _world.AddEntity(villager2);
+        _world.Entities.Add(villager1, player1);
+        _world.Entities.Add(villager2, player1);
 
         var townCenter = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
@@ -333,10 +338,10 @@ public class GatheringSystemTests
             new GridPosition(1, 5));
         townCenter.IsCompleted = true;
         townCenter.Health.CurrentHealth = townCenter.Health.MaxHealth;
-        _world.AddEntity(townCenter);
+        _world.Entities.Add(townCenter, player1);
 
         var tree = new Tree(new GridPosition(5, 1));
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(new GatherCommand
         {
@@ -368,6 +373,9 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering.Loop")]
     public void GatherLoop_ShouldAllowDifferentPlayersToGatherSameResource()
     {
+        var player1 = _world.GetPlayerById(1)!;
+        var player2 = _world.GetPlayerById(2)!;
+
         var villager1 = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
@@ -380,8 +388,8 @@ public class GatheringSystemTests
             new GridPosition(2, 1));
         villager2.Health.CurrentHealth = 50;
 
-        _world.AddEntity(villager1);
-        _world.AddEntity(villager2);
+        _world.Entities.Add(villager1, player1);
+        _world.Entities.Add(villager2, player2);
 
         var townCenter1 = BuildingFactory.Create(
             TestDefinitionFactory.CreateTownCenter(),
@@ -397,11 +405,11 @@ public class GatheringSystemTests
         townCenter2.IsCompleted = true;
         townCenter2.Health.CurrentHealth = townCenter2.Health.MaxHealth;
 
-        _world.AddEntity(townCenter1);
-        _world.AddEntity(townCenter2);
+        _world.Entities.Add(townCenter1, player1);
+        _world.Entities.Add(townCenter2, player2);
 
         var tree = new Tree(new GridPosition(5, 1));
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(new GatherCommand
         {
@@ -416,9 +424,6 @@ public class GatheringSystemTests
         });
 
         SimulationTestHelper.RunTicks(_world, 20);
-
-        var player1 = _world.GetPlayerById(1)!;
-        var player2 = _world.GetPlayerById(2)!;
 
         Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
         Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);

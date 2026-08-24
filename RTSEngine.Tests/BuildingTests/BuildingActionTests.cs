@@ -25,7 +25,7 @@ public class BuildingPlacementActionsTests
             new GridPosition(7, 7));
 
         Assert.NotNull(building);
-        Assert.Contains(building, world.Entities);
+        Assert.Contains(building, world.Entities.Buildings.Values);
     }
 
     [Fact]
@@ -102,7 +102,8 @@ public class BuildingPlacementActionsTests
             2,
             new GridPosition(7, 7));
 
-        world.AddEntity(existing);
+        var player2 = world.GetPlayerById(2)!;
+        world.Entities.Add(existing, player2);
 
         var building = BuildingPlacementActions.PlaceFoundation(
             world,

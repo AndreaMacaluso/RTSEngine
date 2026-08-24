@@ -49,7 +49,7 @@ public class ConstructionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         _player.Population.Current = 3;
         _player.Population.Capacity = 5;
@@ -67,7 +67,7 @@ public class ConstructionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         _player.Population.Current = 15;
         _player.Population.Capacity = 20;
@@ -85,13 +85,13 @@ public class ConstructionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         var barracks = CreateCompletedBuilding(
             TestDefinitionFactory.CreateBarracks(),
             _player.Id,
             new GridPosition(5, 0));
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         _player.Population.Current = 15;
         _player.Population.Capacity = 20;

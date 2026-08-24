@@ -17,6 +17,7 @@ public class GatherActionsTests
     public void BeginMoveToResource_ShouldQueueMoveCommand()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateVillager();
 
@@ -25,11 +26,11 @@ public class GatherActionsTests
             1,
             new GridPosition(5, 5));
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         var tree = new Tree(new GridPosition(6, 5));
 
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         unit.Gather.TargetResourceId = tree.Id;
 
@@ -44,6 +45,7 @@ public class GatherActionsTests
     public void GatherOneTick_ShouldIncreaseCurrentLoad()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateVillager();
 
@@ -52,11 +54,11 @@ public class GatherActionsTests
             1,
             new GridPosition(5, 5));
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         var tree = new Tree(new GridPosition(6, 5));
 
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         unit.Gather.TargetResourceId = tree.Id;
 
@@ -71,6 +73,7 @@ public class GatherActionsTests
     public void GatherOneTick_ShouldReduceResourceAmount()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateVillager();
 
@@ -79,11 +82,11 @@ public class GatherActionsTests
             1,
             new GridPosition(5, 5));
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         var tree = new Tree(new GridPosition(6, 5));
 
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         unit.Gather.TargetResourceId = tree.Id;
 
@@ -98,6 +101,7 @@ public class GatherActionsTests
     public void GatherOneTick_ShouldReturnTrueWhenInventoryBecomesFull()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateVillager();
 
@@ -106,11 +110,11 @@ public class GatherActionsTests
             1,
             new GridPosition(5, 5));
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         var tree = new Tree(new GridPosition(6, 5));
 
-        world.AddResource(tree);
+        world.Entities.Add(tree);
 
         unit.Gather.TargetResourceId = tree.Id;
 
@@ -127,16 +131,16 @@ public class GatherActionsTests
     public void DepositInventory_ShouldTransferResourcesToPlayer()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateVillager();
-        Player? player = world.GetPlayerById(1);
-        Assert.NotNull(player);
+
         var unit = UnitFactory.Create(
             definition,
             1,
             new GridPosition(5, 5));
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         unit.Gather.CarriedResource = ResourceType.Wood;
         unit.Gather.CurrentLoad = 15;
@@ -152,6 +156,7 @@ public class GatherActionsTests
     public void DepositInventory_ShouldClearInventory()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var definition = TestDefinitionFactory.CreateVillager();
 
@@ -160,7 +165,7 @@ public class GatherActionsTests
             1,
             new GridPosition(5, 5));
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         unit.Gather.CarriedResource = ResourceType.Wood;
         unit.Gather.CurrentLoad = 15;

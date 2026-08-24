@@ -33,17 +33,18 @@ public class GatherCommandTests
     [Trait("Category", "Gathering")]
     public void GatherCommand_ShouldAssignGatherTaskAndMovement()
     {
+        var player = _world.GetPlayerById(1)!;
         var unit = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
             1,
             new GridPosition(1,1));
 
-        _world.AddEntity(unit);
+        _world.Entities.Add(unit, player);
 
         var tree = new Tree(
             new GridPosition(5,5));
 
-        _world.AddResource(tree);
+        _world.Entities.Add(tree);
 
         _world.AddCommand(
             new GatherCommand

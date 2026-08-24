@@ -17,7 +17,9 @@ public class CombatSystemTests
     [Trait("Category", "Combat")]
     public void Attack_ShouldDealDamage_WhenInMeleeRange()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
 
         var attackerDef = new UnitDefinition
         {
@@ -42,8 +44,8 @@ public class CombatSystemTests
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
         var target = UnitFactory.Create(targetDef, 2, new GridPosition(3, 2));
 
-        world.AddEntity(attacker);
-        world.AddEntity(target);
+        world.Entities.Add(attacker, player1);
+        world.Entities.Add(target, player2);
 
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
@@ -62,7 +64,9 @@ public class CombatSystemTests
     [Trait("Category", "Combat")]
     public void Attack_ShouldRespectCooldown()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
 
         var attackerDef = new UnitDefinition
         {
@@ -87,8 +91,8 @@ public class CombatSystemTests
         var target = UnitFactory.Create(targetDef, 2, new GridPosition(3, 2));
         target.Health.CurrentHealth = 100;
 
-        world.AddEntity(attacker);
-        world.AddEntity(target);
+        world.Entities.Add(attacker, player1);
+        world.Entities.Add(target, player2);
 
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
@@ -115,7 +119,9 @@ public class CombatSystemTests
     [Trait("Category", "Combat")]
     public void Attack_ShouldStop_WhenTargetDies()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
 
         var attackerDef = new UnitDefinition
         {
@@ -139,8 +145,8 @@ public class CombatSystemTests
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
         var target = UnitFactory.Create(targetDef, 2, new GridPosition(3, 2));
 
-        world.AddEntity(attacker);
-        world.AddEntity(target);
+        world.Entities.Add(attacker, player1);
+        world.Entities.Add(target, player2);
 
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
@@ -158,7 +164,9 @@ public class CombatSystemTests
     [Trait("Category", "Combat")]
     public void Attack_ShouldChaseTarget_WhenNotInMeleeRange()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
 
         var attackerDef = new UnitDefinition
         {
@@ -183,8 +191,8 @@ public class CombatSystemTests
         var target = UnitFactory.Create(targetDef, 2, new GridPosition(5, 1));
         target.Health.CurrentHealth = 50;
 
-        world.AddEntity(attacker);
-        world.AddEntity(target);
+        world.Entities.Add(attacker, player1);
+        world.Entities.Add(target, player2);
 
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
@@ -203,7 +211,8 @@ public class CombatSystemTests
     [Trait("Category", "Combat")]
     public void Attack_ShouldStop_WhenTargetNotExists()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player1 = world.GetPlayerById(1)!;
 
         var attackerDef = new UnitDefinition
         {
@@ -218,7 +227,7 @@ public class CombatSystemTests
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
 
-        world.AddEntity(attacker);
+        world.Entities.Add(attacker, player1);
 
         CombatSystem.BeginAttack(world, attacker, 999);
 
@@ -260,7 +269,8 @@ public class CombatSystemTests
     // La tile viene liberata quando RemoveDeadEntities rimuove l'entity dalla lista.
     public void DeadUnit_ShouldNotBlockTile()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
         {
@@ -273,11 +283,12 @@ public class CombatSystemTests
         var unit = UnitFactory.Create(def, 1, new GridPosition(3, 3));
         unit.Health.CurrentHealth = 50;
 
-        world.AddEntity(unit);
+        world.Entities.Add(unit, player);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
 
         unit.Health.TakeDamage(50);
+        world.Entities.RebuildSpatialIndex();
 
         Assert.False(WorldQueries.IsTileBlocked(world, 3, 3));
     }

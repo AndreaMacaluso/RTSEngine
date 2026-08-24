@@ -53,7 +53,7 @@ public class ProductionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         _player.Population.Current = 0;
         _player.Population.Capacity = 5;
@@ -75,7 +75,7 @@ public class ProductionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         _player.Population.Current = 0;
         _player.Population.Capacity = 5;
@@ -96,13 +96,13 @@ public class ProductionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         var barracks = CreateCompletedBuilding(
             TestDefinitionFactory.CreateBarracks(),
             _player.Id,
             new GridPosition(5, 0));
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         _player.Population.Current = 15;
         _player.Population.Capacity = 20;
@@ -124,13 +124,13 @@ public class ProductionBrainTests
             TestDefinitionFactory.CreateTownCenter(),
             _player.Id,
             new GridPosition(0, 0));
-        _world.AddEntity(tc);
+        _world.Entities.Add(tc, _player);
 
         var barracks = CreateCompletedBuilding(
             TestDefinitionFactory.CreateBarracks(),
             _player.Id,
             new GridPosition(5, 0));
-        _world.AddEntity(barracks);
+        _world.Entities.Add(barracks, _player);
 
         for (int i = 0; i < GameConfig.TargetMilitiaCount; i++)
         {
@@ -139,7 +139,7 @@ public class ProductionBrainTests
                 _player.Id,
                 new GridPosition(8 + i, 0));
             militia.Health.CurrentHealth = 60;
-            _world.AddEntity(militia);
+            _world.Entities.Add(militia, _player);
         }
 
         _player.Population.Current = 15;

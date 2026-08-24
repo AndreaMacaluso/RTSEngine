@@ -43,14 +43,15 @@ public class ProductionActionTests
             ])
         };
 
+        _player = _world.GetPlayerById(1)!;
+
         _townCenter = BuildingFactory.Create(
             townCenter,
             ownerId: 1,
             position: new GridPosition(5,5));
         _townCenter.Production.SpawnPoint = new GridPosition(7,7);
-        _world.AddEntity(_townCenter);
+        _world.Entities.Add(_townCenter, _player);
 
-        _player = _world.GetPlayerById(1)!;
         PopulationActions.IncreaseCap(_player, 10);
         _player.Economy.Add(ResourceType.Food, 200);
     }
@@ -89,7 +90,7 @@ public class ProductionActionTests
             _townCenter);
 
         Assert.Empty(
-            _world.Entities.OfType<Unit>());
+            _world.Entities.Units.Values);
     }
 
 
@@ -111,7 +112,7 @@ public class ProductionActionTests
             _townCenter);
 
         var unit =
-            _world.Entities.OfType<Unit>()
+            _world.Entities.Units.Values
             .FirstOrDefault();
 
         Assert.NotNull(unit);
@@ -153,7 +154,7 @@ public class ProductionActionTests
             _townCenter);
 
         Assert.Empty(
-            _world.Entities.OfType<Unit>());
+            _world.Entities.Units.Values);
     }
 
 

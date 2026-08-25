@@ -1,5 +1,6 @@
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
 using RTSEngine.Tests.TestHelpers;
@@ -14,6 +15,14 @@ public class MovementSystemTests
     public void Update_ShouldMoveUnitAfterEnoughProgress()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
         {
@@ -31,14 +40,14 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villager,
             new GridPosition(6,5),
-            world);
+            context);
 
         world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i < 5; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         // Assert
@@ -54,6 +63,14 @@ public class MovementSystemTests
       
 
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
        var villagerDefinition = new UnitDefinition
@@ -73,14 +90,14 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villager,
             new GridPosition(6,5),
-            world);
+            context);
 
         world.Entities.Add(villager, player);
 
         // Act
-        MovementSystem.Update(world);
-        MovementSystem.Update(world);
-        MovementSystem.Update(world);
+        MovementSystem.Update(context);
+        MovementSystem.Update(context);
+        MovementSystem.Update(context);
 
         // Assert
         Assert.Equal(5, villager.Position.X);
@@ -94,6 +111,14 @@ public class MovementSystemTests
        
 
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
         world.Map.SetTile(6, 5,
             new Tile
@@ -117,14 +142,14 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villager,
             new GridPosition(6,5),
-            world);
+            context);
 
         world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i < 4; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         // Assert
@@ -139,6 +164,14 @@ public class MovementSystemTests
     {
         // Arrange
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
         {
@@ -157,7 +190,7 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villagerA,
             new GridPosition(6,5),
-            world);
+            context);
        
 
         var villagerB = UnitFactory.Create(
@@ -171,7 +204,7 @@ public class MovementSystemTests
         // Act
         for (int i = 0; i < 4; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         // Assert
@@ -185,6 +218,14 @@ public class MovementSystemTests
     {
         // Arrange
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         var villagerDefinition = new UnitDefinition
@@ -204,14 +245,14 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villager,
             new GridPosition(9,9),
-            world);
+            context);
 
         world.Entities.Add(villager, player);
 
         // Act
         for (int i = 0; i < 10; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         // Assert
@@ -224,6 +265,14 @@ public class MovementSystemTests
     public void Repath_ShouldRecomputePath_WhenBlocked()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -244,7 +293,7 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villager,
             new GridPosition(6, 2),
-            world);
+            context);
 
         villager.CurrentTask = UnitTask.Moving;
 
@@ -253,7 +302,7 @@ public class MovementSystemTests
 
         for (int i = 0; i < 20; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         Assert.Equal(6, villager.Position.X);
@@ -266,6 +315,14 @@ public class MovementSystemTests
     public void Repath_ShouldNotAffectGatheringUnits()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -286,7 +343,7 @@ public class MovementSystemTests
 
         world.Entities.Add(villager, player);
 
-        MovementSystem.Update(world);
+        MovementSystem.Update(context);
 
         Assert.True(villager.Movement.NeedsRepath);
     }
@@ -321,12 +378,13 @@ public class MovementSystemTests
         });
 
         CommandSystem.Update(
-            new RTSEngine.Core.Entities.Runtime.RuntimeContext
+            new RuntimeContext
             {
                 World = world,
                 UnitRepository = new UnitDefinitionRepository([]),
                 BuildingRepository = new BuildingDefinitionRepository([]),
-                CommandQueue = queue
+                CommandQueue = queue,
+                PathFinder = new AStarPathFinder(new GroundMovementFilter())
             });
 
         Assert.Equal(UnitTask.Moving, villager.CurrentTask);
@@ -364,12 +422,13 @@ public class MovementSystemTests
         });
 
         CommandSystem.Update(
-            new RTSEngine.Core.Entities.Runtime.RuntimeContext
+            new RuntimeContext
             {
                 World = world,
                 UnitRepository = new UnitDefinitionRepository([]),
                 BuildingRepository = new BuildingDefinitionRepository([]),
-                CommandQueue = queue
+                CommandQueue = queue,
+                PathFinder = new AStarPathFinder(new GroundMovementFilter())
             });
 
         Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
@@ -380,6 +439,14 @@ public class MovementSystemTests
     public void PathCompletion_ShouldSetTaskToIdle()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -402,11 +469,11 @@ public class MovementSystemTests
         CommandSystem.AssignMoveTarget(
             villager,
             new GridPosition(3, 2),
-            world);
+            context);
 
         for (int i = 0; i < 5; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         Assert.Equal(UnitTask.Idle, villager.CurrentTask);

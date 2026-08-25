@@ -10,6 +10,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Gathering;
 
@@ -47,7 +48,8 @@ public class GatheringSystemTests
             World = _world,
             UnitRepository = new RTSEngine.Core.Entities.Definitions.UnitDefinitionRepository([]),
             BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
     }
 

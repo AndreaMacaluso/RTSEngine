@@ -8,6 +8,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Production;
 
@@ -49,7 +50,8 @@ public class UnitProductionFlowTests
             [
                 townCenter
             ]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
     }
 

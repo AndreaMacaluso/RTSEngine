@@ -8,16 +8,30 @@ using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Systems;
 
 public class CombatSystemTests
 {
+    private RuntimeContext CreateContext(GameWorld world)
+    {
+        return new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
+    }
+
     [Fact]
     [Trait("Category", "Combat")]
     public void Attack_ShouldDealDamage_WhenInMeleeRange()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
         var player2 = world.GetPlayerById(2)!;
 
@@ -53,8 +67,8 @@ public class CombatSystemTests
 
         for (int i = 0; i < 10; i++)
         {
-            MovementSystem.Update(world);
-            CombatSystem.Update(world);
+            MovementSystem.Update(context);
+            CombatSystem.Update(context);
         }
 
         Assert.True(target.Health.CurrentHealth < 60);
@@ -65,6 +79,7 @@ public class CombatSystemTests
     public void Attack_ShouldRespectCooldown()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
         var player2 = world.GetPlayerById(2)!;
 
@@ -96,22 +111,22 @@ public class CombatSystemTests
 
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
-        CombatSystem.Update(world);
+        CombatSystem.Update(context);
         Assert.Equal(100, target.Health.CurrentHealth);
 
-        CombatSystem.Update(world);
+        CombatSystem.Update(context);
         Assert.Equal(90, target.Health.CurrentHealth);
 
-        CombatSystem.Update(world);
+        CombatSystem.Update(context);
         Assert.Equal(90, target.Health.CurrentHealth);
 
-        CombatSystem.Update(world);
+        CombatSystem.Update(context);
         Assert.Equal(90, target.Health.CurrentHealth);
 
-        CombatSystem.Update(world);
+        CombatSystem.Update(context);
         Assert.Equal(90, target.Health.CurrentHealth);
 
-        CombatSystem.Update(world);
+        CombatSystem.Update(context);
         Assert.Equal(80, target.Health.CurrentHealth);
     }
 
@@ -120,6 +135,7 @@ public class CombatSystemTests
     public void Attack_ShouldStop_WhenTargetDies()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
         var player2 = world.GetPlayerById(2)!;
 
@@ -152,8 +168,8 @@ public class CombatSystemTests
 
         for (int i = 0; i < 20; i++)
         {
-            MovementSystem.Update(world);
-            CombatSystem.Update(world);
+            MovementSystem.Update(context);
+            CombatSystem.Update(context);
         }
 
         Assert.True(target.IsDead);
@@ -165,6 +181,7 @@ public class CombatSystemTests
     public void Attack_ShouldChaseTarget_WhenNotInMeleeRange()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
         var player2 = world.GetPlayerById(2)!;
 
@@ -200,8 +217,8 @@ public class CombatSystemTests
 
         for (int i = 0; i < 20; i++)
         {
-            MovementSystem.Update(world);
-            CombatSystem.Update(world);
+            MovementSystem.Update(context);
+            CombatSystem.Update(context);
         }
 
         Assert.Equal(UnitTask.Attacking, attacker.CurrentTask);
@@ -212,6 +229,7 @@ public class CombatSystemTests
     public void Attack_ShouldStop_WhenTargetNotExists()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
 
         var attackerDef = new UnitDefinition
@@ -233,8 +251,8 @@ public class CombatSystemTests
 
         for (int i = 0; i < 10; i++)
         {
-            MovementSystem.Update(world);
-            CombatSystem.Update(world);
+            MovementSystem.Update(context);
+            CombatSystem.Update(context);
         }
 
         Assert.Equal(UnitTask.Idle, attacker.CurrentTask);

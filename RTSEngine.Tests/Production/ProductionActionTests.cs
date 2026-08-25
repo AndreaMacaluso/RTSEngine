@@ -9,6 +9,7 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Players;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Production;
 
@@ -42,7 +43,8 @@ public class ProductionActionTests
             [
                 townCenter
             ]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
 
         _player = _world.GetPlayerById(1)!;

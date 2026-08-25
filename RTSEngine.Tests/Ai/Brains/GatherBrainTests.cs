@@ -10,6 +10,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 
 namespace RTSEngine.Tests.AI.Brains;
@@ -31,7 +32,8 @@ public class GatherBrainTests
             BuildingRepository = new BuildingDefinitionRepository([
                 TestDefinitionFactory.CreateTownCenter()
             ]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
 
         _world = _context.World;

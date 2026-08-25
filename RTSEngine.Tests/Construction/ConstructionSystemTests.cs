@@ -8,6 +8,7 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Construction;
 
@@ -34,7 +35,8 @@ public class ConstructionSystemTests
             World = _world,
             UnitRepository = new RTSEngine.Core.Entities.Definitions.UnitDefinitionRepository([]),
             BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
     }
 

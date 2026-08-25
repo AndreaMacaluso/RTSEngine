@@ -1,18 +1,20 @@
 using RTSEngine.Core.Map.Runtime;
-using RTSEngine.Core.Systems;
+using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 
 namespace RTSEngine.Tests.Systems;
 
 public class PathSystemTests
 {
+    private static readonly AStarPathFinder PathFinder = new(
+        new GroundMovementFilter());
 
     [Fact]
     [Trait("Category", "Movement")]
     public void GeneratePath_ShouldCreateExpectedStepCount()
     {
         var world = TestWorldFactory.CreateWorld();
-        var path = PathSystem.GeneratePath(
+        var path = PathFinder.FindPath(
             world,
             new GridPosition(1,1),
             new GridPosition(5,5));
@@ -28,7 +30,7 @@ public class PathSystemTests
         var start = new GridPosition(1, 1);
         var target = new GridPosition(5, 5);
 
-        var path = PathSystem.GeneratePath(
+        var path = PathFinder.FindPath(
             world,
             start,
             target);

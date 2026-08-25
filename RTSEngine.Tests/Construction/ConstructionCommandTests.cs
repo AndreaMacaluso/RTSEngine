@@ -7,6 +7,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Construction;
 
@@ -32,7 +33,8 @@ public class ConstructionCommandTests
                 TestDefinitionFactory.CreateHouseWithCost(),
                 TestDefinitionFactory.CreateTownCenter()
             ]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
 
 

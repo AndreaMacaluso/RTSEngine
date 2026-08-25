@@ -7,6 +7,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Gathering;
 
@@ -22,7 +23,8 @@ public class GatherCommandTests
             World = TestWorldFactory.CreateWorldWithTwoPlayers(),
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
 
         _world = _context.World;

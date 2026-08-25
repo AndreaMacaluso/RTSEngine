@@ -10,6 +10,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 
 namespace RTSEngine.Tests.AI;
@@ -35,7 +36,8 @@ public class BarracksAITests
                 TestDefinitionFactory.CreateTownCenter(),
                 TestDefinitionFactory.CreateBarracks()
             ]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
 
         _world = _context.World;
@@ -292,7 +294,8 @@ public class MilitiaCombatAIFullLoopTests
                 TestDefinitionFactory.CreateMilitiaWithCombatStats()
             ]),
             BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
 
         _world = _context.World;
@@ -377,9 +380,9 @@ public class MilitiaCombatAIFullLoopTests
 
         Assert.Equal(UnitTask.Attacking, militia.CurrentTask);
 
-        CombatSystem.Update(_world);
-        CombatSystem.Update(_world);
-        CombatSystem.Update(_world);
+        CombatSystem.Update(_context);
+        CombatSystem.Update(_context);
+        CombatSystem.Update(_context);
 
         Assert.True(enemy.IsDead);
         Assert.Equal(UnitTask.Idle, militia.CurrentTask);

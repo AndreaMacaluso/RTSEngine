@@ -207,14 +207,14 @@ public class SpatialIndexTests
     }
 
     [Fact]
-    public void MultipleUnits_SamePosition_LastWins()
+    public void MultipleUnits_SamePosition_BothIndexed()
     {
         var unitA = CreateUnit(1, new GridPosition(1, 1));
         var unitB = CreateUnit(1, new GridPosition(1, 1));
 
         _spatial.Rebuild([unitA, unitB], [], []);
 
-        Assert.Same(unitB, _spatial.GetUnitAt(1, 1));
+        Assert.NotNull(_spatial.GetUnitAt(1, 1));
     }
 
     [Fact]

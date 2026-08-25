@@ -4,6 +4,8 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Commands;
+using RTSEngine.Core.Systems.Pathfinding;
 namespace RTSEngine.Tests.Systems.QueuedMovementTests;
 
 public class MovementSystemTests
@@ -14,6 +16,14 @@ public class MovementSystemTests
     {
         // Arrange
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         var villagerDefinition = new UnitDefinition
@@ -43,7 +53,7 @@ public class MovementSystemTests
         // Act
         for (int i = 0; i <= 12; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         // Assert
@@ -57,6 +67,14 @@ public class MovementSystemTests
     public void Update_ShouldEmptyQueueAfterPathCompletion()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         var villagerDefinition = new UnitDefinition
@@ -79,7 +97,7 @@ public class MovementSystemTests
 
         for (int i = 0; i <= 4; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         Assert.Empty(villager.Movement.PathQueue);
@@ -92,6 +110,14 @@ public class MovementSystemTests
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers(
             TileType.Grass);
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+        };
         var player = world.GetPlayerById(1)!;
 
         world.Map.SetTile(
@@ -125,7 +151,7 @@ public class MovementSystemTests
 
         for (int i = 0; i <= 12; i++)
         {
-            MovementSystem.Update(world);
+            MovementSystem.Update(context);
         }
 
         Assert.Equal(6, villager.Position.X);

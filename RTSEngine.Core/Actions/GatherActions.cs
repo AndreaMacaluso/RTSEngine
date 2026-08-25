@@ -8,6 +8,7 @@ using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.Core.Actions;
 
@@ -167,9 +168,11 @@ public static class GatherActions
     }
 
     public static bool TryRetargetResource(
-    GameWorld world,
+    RuntimeContext context,
     Unit unit)
     {
+        GameWorld world = context.World;
+
         if (unit.Gather.CarriedResource is not ResourceType resourceType)
         {
             return false;
@@ -210,7 +213,7 @@ public static class GatherActions
         unit.CurrentTask = UnitTask.Gathering;
         unit.Gather.Phase = GatherPhase.MovingToResource;
         unit.Gather.CarriedResource = resourceType;
-        CommandSystem.AssignMoveTarget(unit, target.Value, world);
+        CommandSystem.AssignMoveTarget(unit, target.Value, context);
 
         return true;
     }

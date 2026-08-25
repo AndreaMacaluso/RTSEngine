@@ -6,7 +6,6 @@ using RTSEngine.Core.Entities.Rules;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Map.Rules;
 using RTSEngine.Core.State;
-using RTSEngine.Core.Systems;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Players;
 
@@ -14,6 +13,20 @@ namespace RTSEngine.Core.Helpers;
 
 public static class WorldQueries
 {
+    public static readonly GridPosition[] Directions =
+    [
+        new(-1, -1),
+        new( 0, -1),
+        new( 1, -1),
+
+        new(-1,  0),
+        new( 1,  0),
+
+        new(-1,  1),
+        new( 0,  1),
+        new( 1,  1)
+    ];
+
     public static bool IsAdjacent(
         GridPosition a,
         GridPosition b)
@@ -28,7 +41,7 @@ public static class WorldQueries
         GameWorld world,
         GridPosition center)
     {
-        foreach (var direction in PathSystem.Directions)
+        foreach (var direction in Directions)
         {
             var candidate = new GridPosition(
                 center.X + direction.X,
@@ -58,7 +71,7 @@ public static class WorldQueries
         GridPosition? best = null;
         int bestDistance = int.MaxValue;
 
-        foreach (var direction in PathSystem.Directions)
+        foreach (var direction in Directions)
         {
             var candidate = new GridPosition(
                 center.X + direction.X,
@@ -90,10 +103,21 @@ public static class WorldQueries
         GameWorld world,
         GridPosition center)
     {
-        return world.Entities.Resources.Values
-            .Where(r => !r.IsDepleted)
-            .OrderBy(r => DistanceSquared(center, r.Position))
-            .FirstOrDefault();
+        ResourceNode? closest = null;
+        int bestDist = int.MaxValue;
+
+        foreach (var r in world.Entities.Resources.Values)
+        {
+            if (r.IsDepleted) continue;
+
+            int dist = DistanceSquared(center, r.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                closest = r;
+            }
+        }
+        return closest;
     }
 
     public static ResourceNode? FindClosestResource(
@@ -101,12 +125,22 @@ public static class WorldQueries
         GridPosition center,
         ResourceType resourceType)
     {
-        return world.Entities.Resources.Values
-            .Where(r =>
-                !r.IsDepleted &&
-                r.ResourceType == resourceType)
-            .OrderBy(r => DistanceSquared(center, r.Position))
-            .FirstOrDefault();
+        ResourceNode? closest = null;
+        int bestDist = int.MaxValue;
+
+        foreach (var r in world.Entities.Resources.Values)
+        {
+            if (r.IsDepleted) continue;
+            if (r.ResourceType != resourceType) continue;
+
+            int dist = DistanceSquared(center, r.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                closest = r;
+            }
+        }
+        return closest;
     }
 
     public static List<ResourceNode> FindDepletedResources(GameWorld world)
@@ -122,12 +156,22 @@ public static class WorldQueries
     GridPosition center,
     ResourceType resourceType)
     {
-        return world.Entities.GetBuildings(player)
-            .Where(b =>
-                b.IsCompleted &&
-                b.Definition.AcceptedResources.Contains(resourceType))
-            .OrderBy(b => DistanceSquared(center, b.Position))
-            .FirstOrDefault();
+        Building? closest = null;
+        int bestDist = int.MaxValue;
+
+        foreach (var building in world.Entities.GetBuildings(player))
+        {
+            if (!building.IsCompleted) continue;
+            if (!building.Definition.AcceptedResources.Contains(resourceType)) continue;
+
+            int dist = DistanceSquared(center, building.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                closest = building;
+            }
+        }
+        return closest;
     }
 
     public static int DistanceSquared(
@@ -265,15 +309,35 @@ public static class WorldQueries
         Player player,
         GridPosition position)
     {
-        var units = world.Entities.GetEnemyUnits(player)
-            .Select(u => (Entity: (Entity)u, OwnerId: u.OwnerId));
+        Entity? bestEntity = null;
+        int bestOwnerId = 0;
+        int bestDist = int.MaxValue;
 
-        var buildings = world.Entities.GetEnemyBuildings(player)
-            .Select(b => (Entity: (Entity)b, OwnerId: b.OwnerId));
+        foreach (var unit in world.Entities.GetEnemyUnits(player))
+        {
+            int dist = ChebyshevDistance(position, unit.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestEntity = unit;
+                bestOwnerId = unit.OwnerId;
+            }
+        }
 
-        return units.Concat(buildings)
-            .OrderBy(e => ChebyshevDistance(position, e.Entity.Position))
-            .FirstOrDefault();
+        foreach (var building in world.Entities.GetEnemyBuildings(player))
+        {
+            int dist = ChebyshevDistance(position, building.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestEntity = building;
+                bestOwnerId = building.OwnerId;
+            }
+        }
+
+        return bestEntity is not null
+            ? (bestEntity, bestOwnerId)
+            : null;
     }
 
     public static bool HasEnemies(

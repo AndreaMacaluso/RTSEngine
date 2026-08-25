@@ -31,7 +31,7 @@ public class GatherBrain : AIBrain
 
         if (idleVillagers.Count == 0) return BrainActions.None;
 
-        AssignDepositsForResourceCarriers(context.World, player, idleVillagers);
+        AssignDepositsForResourceCarriers(context, player, idleVillagers);
 
         _pendingAssignments = FindAllAssignments(context, player, idleVillagers);
 
@@ -87,10 +87,12 @@ public class GatherBrain : AIBrain
     }
 
     private static void AssignDepositsForResourceCarriers(
-        GameWorld world,
+        RuntimeContext context,
         Player player,
         List<Unit> idleVillagers)
     {
+        GameWorld world = context.World;
+
         foreach (var villager in idleVillagers)
         {
             if (villager.Gather.CurrentLoad <= 0 || !villager.Gather.CarriedResource.HasValue)
@@ -109,7 +111,7 @@ public class GatherBrain : AIBrain
             villager.CurrentTask = UnitTask.Gathering;
             villager.Gather.Phase = GatherPhase.MovingToDeposit;
             villager.Gather.DepositPosition = deposit.Position;
-            CommandSystem.AssignMoveTarget(villager, destination, world);
+            CommandSystem.AssignMoveTarget(villager, destination, context);
         }
     }
 }

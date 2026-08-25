@@ -29,13 +29,13 @@ public static class CommandSystem
         switch (command)
         {
             case MoveCommand moveCommand:
-                ProcessMoveCommand(context.World, moveCommand);
+                ProcessMoveCommand(context, moveCommand);
                 break;
             case GatherCommand gatherCommand:
-                HandleGather(context.World, gatherCommand);
+                HandleGather(context, gatherCommand);
                 break;
             case BuildCommand buildCommand:
-                HandleBuild(context.World, buildCommand);
+                HandleBuild(context, buildCommand);
                 break;
             case QueueProductionCommand productionCommand:
                 HandleProduction(context, productionCommand);
@@ -46,9 +46,11 @@ public static class CommandSystem
         }
     }
     private static void HandleBuild(
-    GameWorld world,
+    RuntimeContext context,
     BuildCommand command)
     {
+        GameWorld world = context.World;
+
         foreach (var unitId in command.UnitIds)
         {
             var unit = world.Entities.GetUnitById(unitId);
@@ -79,13 +81,15 @@ public static class CommandSystem
             unit.Build.BuildingId = building.Id;
             unit.Build.BuildPosition = building.Position;
             unit.Build.Phase = BuildPhase.MovingToConstruction;
-            AssignMoveTarget(unit, target.Value, world);
+            AssignMoveTarget(unit, target.Value, context);
         }
     }
     private static void HandleGather(
-    GameWorld world,
+    RuntimeContext context,
     GatherCommand command)
     {
+        GameWorld world = context.World;
+
         foreach (var unitId in command.UnitIds)
         {
             var unit = world.Entities.GetUnitById(unitId);
@@ -117,13 +121,15 @@ public static class CommandSystem
             unit.Gather.TargetResourceId = command.ResourceId;
             unit.Gather.Phase = GatherPhase.MovingToResource;
             unit.Gather.CarriedResource = resource.ResourceType;
-            AssignMoveTarget(unit, target.Value, world);
+            AssignMoveTarget(unit, target.Value, context);
         }
     }
     private static void ProcessMoveCommand(
-    GameWorld world,
+    RuntimeContext context,
     MoveCommand command)
     {
+        GameWorld world = context.World;
+
         foreach (var unitId in command.UnitIds)
         {
             var unit = world.Entities.GetUnitById(unitId);
@@ -138,14 +144,14 @@ public static class CommandSystem
                 unit.CurrentTask = UnitTask.Moving;
             }
 
-            AssignMoveTarget(unit, command.Target,world);
+            AssignMoveTarget(unit, command.Target, context);
         }
     }
 
     public static void AssignMoveTarget(
         Unit unit,
         GridPosition target,
-        GameWorld world)
+        RuntimeContext context)
     {
         unit.Movement.PathQueue.Clear();
 
@@ -156,8 +162,8 @@ public static class CommandSystem
             return;
         }
 
-        var path = PathSystem.GeneratePath(
-            world,
+        var path = context.PathFinder.FindPath(
+            context.World,
             unit.Position,
             target);
 

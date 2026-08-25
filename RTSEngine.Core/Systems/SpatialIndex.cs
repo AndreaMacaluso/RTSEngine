@@ -9,7 +9,7 @@ namespace RTSEngine.Core.Systems;
 
 public class SpatialIndex
 {
-    private readonly Dictionary<GridPosition, Unit> _units = new();
+    private readonly Dictionary<GridPosition, List<Unit>> _units = new();
     private readonly Dictionary<GridPosition, Building> _buildings = new();
     private readonly Dictionary<GridPosition, ResourceNode> _resources = new();
     private readonly HashSet<GridPosition> _blockedTiles = new();
@@ -26,7 +26,12 @@ public class SpatialIndex
 
         foreach (var unit in units)
         {
-            _units[unit.Position] = unit;
+            if (!_units.TryGetValue(unit.Position, out var list))
+            {
+                list = [];
+                _units[unit.Position] = list;
+            }
+            list.Add(unit);
         }
 
         foreach (var building in buildings)
@@ -54,7 +59,8 @@ public class SpatialIndex
 
     public Unit? GetUnitAt(int x, int y)
     {
-        return _units.GetValueOrDefault(new GridPosition(x, y));
+        var list = _units.GetValueOrDefault(new GridPosition(x, y));
+        return list is { Count: > 0 } ? list[0] : null;
     }
 
     public Building? GetBuildingAt(int x, int y)

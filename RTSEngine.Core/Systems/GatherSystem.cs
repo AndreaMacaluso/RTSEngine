@@ -35,7 +35,7 @@ public static class GatherSystem
                     break;
 
                 case GatherPhase.Gathering:
-                    HandleGathering(world, commandQueue, unit);
+                    HandleGathering(context, commandQueue, unit);
                     break;
 
                 case GatherPhase.MovingToDeposit:
@@ -47,7 +47,7 @@ public static class GatherSystem
                     break;
 
                 case GatherPhase.Depositing:
-                    HandleDepositing(world, commandQueue, unit);
+                    HandleDepositing(context, commandQueue, unit);
                     break;
             }
 
@@ -113,10 +113,11 @@ public static class GatherSystem
         unit.Gather.Phase = GatherPhase.Gathering;
     }
     private static void HandleGathering(
-    GameWorld world,
+    RuntimeContext context,
     ICommandQueue commandQueue,
     Unit unit)
     {
+        var world = context.World;
         switch (GatherActions.GatherOneTick(world, unit))
         {
             case GatherResult.ContinueGathering:
@@ -137,7 +138,7 @@ public static class GatherSystem
             case GatherResult.ResourceDepleted:
 
                 if (!unit.Gather.IsFull
-                    && GatherActions.TryRetargetResource(world, unit))
+                    && GatherActions.TryRetargetResource(context, unit))
                 {
                     return;
                 }
@@ -225,10 +226,11 @@ public static class GatherSystem
         }
     }
     private static void HandleDepositing(
-    GameWorld world,
+    RuntimeContext context,
     ICommandQueue commandQueue,
     Unit unit)
     {
+        var world = context.World;
         GatherActions.DepositInventory(world, unit);
 
        if (GatherActions.CanContinueGathering(world, unit))
@@ -238,7 +240,7 @@ public static class GatherSystem
             return;
         }
 
-        if (GatherActions.TryRetargetResource(world, unit))
+        if (GatherActions.TryRetargetResource(context, unit))
         {
             unit.Gather.Phase = GatherPhase.MovingToResource;
             GatherActions.BeginMoveToResource(world, commandQueue, unit);

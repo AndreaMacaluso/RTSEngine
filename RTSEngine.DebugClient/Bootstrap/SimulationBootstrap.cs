@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Loader;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.DebugClient.Bootstrap;
 
@@ -48,7 +49,8 @@ public static class SimulationBootstrap
             World = world,
             UnitRepository = unitRepository,
             BuildingRepository = buildingRepository,
-            CommandQueue = new CommandQueue()
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter())
         };
     }
 

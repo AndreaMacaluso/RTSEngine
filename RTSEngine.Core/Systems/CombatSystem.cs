@@ -4,13 +4,16 @@ using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
 public static class CombatSystem
 {
-    public static void Update(GameWorld world)
+    public static void Update(RuntimeContext context)
     {
+        GameWorld world = context.World;
+
         foreach (var unit in world.Entities.Units.Values)
         {
 
@@ -24,7 +27,7 @@ public static class CombatSystem
             switch (unit.Combat.Phase)
             {
                 case CombatPhase.MovingToTarget:
-                    HandleMovingToTarget(world, unit);
+                    HandleMovingToTarget(context, unit);
                     break;
 
                 case CombatPhase.Attacking:
@@ -35,9 +38,11 @@ public static class CombatSystem
     }
 
     private static void HandleMovingToTarget(
-        GameWorld world,
+        RuntimeContext context,
         Unit unit)
     {
+        GameWorld world = context.World;
+
         if (unit.Combat.TargetEntityId is not int targetId)
         {
             StopAttacking(unit);
@@ -78,7 +83,7 @@ public static class CombatSystem
                 CommandSystem.AssignMoveTarget(
                     unit,
                     tile,
-                    world);
+                    context);
             }
             else
             {

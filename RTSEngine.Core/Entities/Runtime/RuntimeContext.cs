@@ -1,6 +1,7 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Core.Entities.Runtime;
 
@@ -13,4 +14,6 @@ public sealed class RuntimeContext
     public required BuildingDefinitionRepository BuildingRepository { get; init; }
 
     public required ICommandQueue CommandQueue { get; init; }
+
+    public required IPathFinder PathFinder { get; init; }
 }

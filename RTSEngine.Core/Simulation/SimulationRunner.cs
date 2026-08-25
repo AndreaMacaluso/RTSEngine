@@ -38,9 +38,9 @@ public class SimulationRunner
 
         AISystem.Update(_context);
 
-        MovementSystem.Update(_context.World);
+        MovementSystem.Update(_context);
 
-        CombatSystem.Update(_context.World);
+        CombatSystem.Update(_context);
 
         GatherSystem.Update(_context);
 

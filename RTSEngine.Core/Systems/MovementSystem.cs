@@ -2,18 +2,18 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
 public static class MovementSystem
 {
-    // TODO: adaptive threshold (wait for moving units, immediate for static)
-    // causes gather test failures. Revisit with proper unit-avoidance system.
     private const int RepathThreshold = 1;
     private const int DeadlockThreshold = 10;
 
-    public static void Update(GameWorld world)
+    public static void Update(RuntimeContext context)
     {
+        GameWorld world = context.World;
         
         foreach (var unit in world.Entities.Units.Values)
         {
@@ -28,7 +28,7 @@ public static class MovementSystem
                     CommandSystem.AssignMoveTarget(
                         unit,
                         destination,
-                        world);
+                        context);
                 }
 
                 continue;
@@ -125,10 +125,5 @@ public static class MovementSystem
         unit.Movement.CurrentStep = null;
         unit.Movement.BlockedTicks = 0;
         unit.Movement.NeedsRepath = false;
-
-        CommandSystem.AssignMoveTarget(
-            unit,
-            destination,
-            world);
     }
 }

@@ -26,18 +26,18 @@ RTSEngine.DebugClient -> debug visualization and runtime testing
 RTSEngine.Tests -> unit and integration tests
 
 -----
-RTSEngine.Core/           
-├── Actions/              -> atomic state mutations
-├── AI/                   -> brain system (temporary, will be replaced by Lua)
-├── Commands/             -> command pattern
-├── Diagnostics/          -> logging framework
-├── Entities/             -> entity hierarchy (Units, Buildings, Resources)
-├── Helpers/              -> query helpers (WorldQueries, UnitQueries)
-├── Map/                  -> tile map, generation, loading
-├── Players/              -> player + states (Economy, Population)
-├── Simulation/           -> simulation runner
-├── Systems/              -> game systems (Movement, Gather, Combat, etc.)
-└── State/                -> GameWorld, WorldState
+RTSEngine.Core          
+├── Actions -> atomic state mutations
+├── AI -> brain system (temporary, will be replaced by Lua)
+├── Commands -> command pattern
+├── Diagnostics -> logging framework
+├── Entities -> entity hierarchy (Units, Buildings, Resources)
+├── Helpers -> query helpers (WorldQueries, UnitQueries)
+├── Map -> tile map, generation, loading
+├── Players -> player + states (Economy, Population)
+├── Simulation -> simulation runner
+├── Systems -> game systems (Movement, Gather, Combat, etc.)
+└── State -> GameWorld, WorldState
 -----
 
 ## Architecture Principles
@@ -428,13 +428,18 @@ The AI will be rewritten in Lua scripting once the architecture is stable.
 Goal: clean up architecture, fix known issues, prepare for Lua integration.
 
 ### Pathfinding Refactoring
-- [ ] Extract pathfinding behind interface
-- [ ] Object pooling for path allocations
-- [ ] Spatial index for O(1) position lookups
-- [ ] Decouple CommandQueue from GameWorld
-- [ ] Cache entity lists in GameWorld (snapshot per tick)
+- [x] Extract pathfinding behind interface (`IPathFinder`)
+- [x] Object pooling for path allocations
+- [x] Spatial index for O(1) position lookups
+- [x] Decouple CommandQueue from GameWorld (`ICommandQueue` in RuntimeContext)
+- [x] A* pathfinding with Octile heuristic
+- [x] IMovementFilter for extensible passability checks
+- [x] SpatialIndex — handle multiple units on same tile
+- [x] SpatialIndex — double rebuild fix
+- [x] SpatialIndex — ToList allocations removed
+- [x] SpatialIndex — IsTileBlocked checks all units
+- [x] SpatialIndex — dead units filtered on rebuild
 - [ ] Add entity validation to AddEntity/RemoveEntity
-- [ ] Remove debug logging from simulation tick
 
 ### Bug Fixes
 - [x] ConstructionSystem — repath loop infinite (BuildOneTick return + IsCompleted guard)
@@ -443,17 +448,35 @@ Goal: clean up architecture, fix known issues, prepare for Lua integration.
 - [x] CommandSystem — add OwnerId validation
 - [x] MovementSystem — step lost when blocked
 - [x] Building.IsDead — does not affect construction (verified)
-- [ ] CombatSystem — re-path when target moves out of range
-- [ ] BasicAi — optimize brain instantiation (currently creates new each tick)
+- [x] ConstructionSystem — CompleteConstruction releases builder
+- [x] ConstructionSystem — BuildPosition redundant field removed
+- [x] TileType — Forest mapped in TileTypeMapper
+- [x] ProductionSystem — .ToList() allocation removed
+- [ ] CombatSystem — re-path when target moves out of range (deferred)
+- [ ] BasicAi — brain instantiation optimization (deferred)
 
 ### Code Quality
 - [x] Fix typos: CreeateGatheringScenario, ComandSystemTest, ResurceNodeTest
 - [x] Fix file/class mismatches: BuildingState.cs, BuildingPhase.cs, BasicAi.cs, EconomicActions.cs, GatherAction.cs, ResourceCleanUpSystem.cs
 - [x] Fix abstract public → public abstract
 - [x] Add sealed to Unit class
+- [x] Remove debug logging from GatherSystem
+- [x] File naming: ResourceCleanUpSystem, AiSystem, BasicAi
+- [x] Namespace: Loader → Loaders
+- [x] UnitDefinitionRepository — sealed added
+- [x] Double space in usings removed
+- [x] GatherActions — UnitIds parameter to camelCase
+- [x] MovementState — PathQueue setter removed (get-only)
+- [x] Building — PopulationBonus dead field removed
+- [x] LogScope — IDisposable removed
 - [ ] Rename remaining test files (Test → Tests suffix)
 - [ ] Clean up hardcoded config values (move to settings)
-- [ ] Remove debug logging from GatherSystem
+
+### Duplicated Logic
+- [x] GroundMovementFilter.CanPass duplicated IsTileBlocked
+- [x] TrainUnit duplicated TryTrainUnit validations
+- [x] FindClosestResource two identical overloads
+- [x] DefinitionLoader duplicated (Unit/Building)
 
 ---
 

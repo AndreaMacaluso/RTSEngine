@@ -22,7 +22,7 @@ public class SpatialIndexTests
 
         _spatial.Rebuild([unit], [], []);
 
-        Assert.Same(unit, _spatial.GetUnitAt(3, 5));
+        Assert.Same(unit, _spatial.GetUnitsAt(3, 5)[0]);
     }
 
     [Fact]
@@ -30,7 +30,7 @@ public class SpatialIndexTests
     {
         _spatial.Rebuild([], [], []);
 
-        Assert.Null(_spatial.GetUnitAt(0, 0));
+        Assert.Empty(_spatial.GetUnitsAt(0, 0));
     }
 
     [Fact]
@@ -187,11 +187,11 @@ public class SpatialIndexTests
         var unitB = CreateUnit(1, new GridPosition(5, 5));
 
         _spatial.Rebuild([unitA], [], []);
-        Assert.Same(unitA, _spatial.GetUnitAt(1, 1));
+        Assert.Same(unitA, _spatial.GetUnitsAt(1, 1)[0]);
 
         _spatial.Rebuild([unitB], [], []);
-        Assert.Null(_spatial.GetUnitAt(1, 1));
-        Assert.Same(unitB, _spatial.GetUnitAt(5, 5));
+        Assert.Empty(_spatial.GetUnitsAt(1, 1));
+        Assert.Same(unitB, _spatial.GetUnitsAt(5, 5)[0]);
     }
 
     [Fact]
@@ -214,7 +214,7 @@ public class SpatialIndexTests
 
         _spatial.Rebuild([unitA, unitB], [], []);
 
-        Assert.NotNull(_spatial.GetUnitAt(1, 1));
+        Assert.NotEmpty(_spatial.GetUnitsAt(1, 1));
     }
 
     [Fact]

@@ -1,5 +1,5 @@
 using  RTSEngine.Core.Entities.Definitions;
-using  RTSEngine.Core.Entities.Loader;
+using RTSEngine.Core.Entities.Loaders;
 
 namespace RTSEngine.Tests.Resources;
 
@@ -9,11 +9,8 @@ public sealed class UnitsTests
     [Fact]
     public void Load_ShouldLoadDefinitions()
     {
-        var loader =
-            new UnitDefinitionLoader();
-
         var definitions =
-            loader.Load("Data/Units/units.json");
+            DefinitionLoader<UnitDefinition>.Load("Data/Units/units.json");
 
         Assert.NotEmpty(definitions);
 

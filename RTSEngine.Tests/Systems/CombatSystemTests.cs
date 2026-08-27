@@ -132,8 +132,9 @@ public class CombatSystemTests
 
     [Fact]
     [Trait("Category", "Combat")]
-    public void Attack_ShouldStop_WhenTargetDies()
+    public void Attack_ShouldStop_WhenTargetIsGone()
     {
+        // Scenario 1: target dies during attack
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
@@ -174,6 +175,36 @@ public class CombatSystemTests
 
         Assert.True(target.IsDead);
         Assert.Equal(UnitTask.Idle, attacker.CurrentTask);
+
+        // Scenario 2: target does not exist
+        var world2 = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context2 = CreateContext(world2);
+        var player1_2 = world2.GetPlayerById(1)!;
+
+        var attackerDef2 = new UnitDefinition
+        {
+            Id = "militia",
+            Name = "Militia",
+            MaxHealth = 60,
+            MovementSpeed = 1f,
+            AttackDamage = 6,
+            AttackRange = 1,
+            AttackCooldownTicks = 1
+        };
+
+        var attacker2 = UnitFactory.Create(attackerDef2, 1, new GridPosition(2, 2));
+
+        world2.Entities.Add(attacker2, player1_2);
+
+        CombatSystem.BeginAttack(world2, attacker2, 999);
+
+        for (int i = 0; i < 10; i++)
+        {
+            MovementSystem.Update(context2);
+            CombatSystem.Update(context2);
+        }
+
+        Assert.Equal(UnitTask.Idle, attacker2.CurrentTask);
     }
 
     [Fact]
@@ -226,42 +257,9 @@ public class CombatSystemTests
 
     [Fact]
     [Trait("Category", "Combat")]
-    public void Attack_ShouldStop_WhenTargetNotExists()
+    public void Unit_ShouldDie_AndReleaseTile_WhenHealthReachesZero()
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var context = CreateContext(world);
-        var player1 = world.GetPlayerById(1)!;
-
-        var attackerDef = new UnitDefinition
-        {
-            Id = "militia",
-            Name = "Militia",
-            MaxHealth = 60,
-            MovementSpeed = 1f,
-            AttackDamage = 6,
-            AttackRange = 1,
-            AttackCooldownTicks = 1
-        };
-
-        var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
-
-        world.Entities.Add(attacker, player1);
-
-        CombatSystem.BeginAttack(world, attacker, 999);
-
-        for (int i = 0; i < 10; i++)
-        {
-            MovementSystem.Update(context);
-            CombatSystem.Update(context);
-        }
-
-        Assert.Equal(UnitTask.Idle, attacker.CurrentTask);
-    }
-
-    [Fact]
-    [Trait("Category", "Combat")]
-    public void Unit_ShouldDie_WhenHealthReachesZero()
-    {
+        // Unit dies when health reaches zero
         var def = new UnitDefinition
         {
             Id = "villager",
@@ -279,18 +277,12 @@ public class CombatSystemTests
 
         Assert.True(unit.IsDead);
         Assert.Equal(0, unit.Health.CurrentHealth);
-    }
 
-    [Fact]
-    [Trait("Category", "Combat")]
-    // Design: unità morte non è blocking — il corpo è calpestabile.
-    // La tile viene liberata quando RemoveDeadEntities rimuove l'entity dalla lista.
-    public void DeadUnit_ShouldNotBlockTile()
-    {
+        // Dead unit does not block tile
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        var def = new UnitDefinition
+        var def2 = new UnitDefinition
         {
             Id = "villager",
             Name = "Villager",
@@ -298,14 +290,14 @@ public class CombatSystemTests
             MovementSpeed = 1f
         };
 
-        var unit = UnitFactory.Create(def, 1, new GridPosition(3, 3));
-        unit.Health.CurrentHealth = 50;
+        var unit2 = UnitFactory.Create(def2, 1, new GridPosition(3, 3));
+        unit2.Health.CurrentHealth = 50;
 
-        world.Entities.Add(unit, player);
+        world.Entities.Add(unit2, player);
 
         Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
 
-        unit.Health.TakeDamage(50);
+        unit2.Health.TakeDamage(50);
         world.Entities.RebuildSpatialIndex();
 
         Assert.False(WorldQueries.IsTileBlocked(world, 3, 3));

@@ -16,108 +16,64 @@ public class PopulationActionsTests
         Assert.Equal(3, player.Population.Current );
     }
 
-    [Fact]
-    public void RemovePopulation_ShouldDecreasePopulation()
+    [Theory]
+    [InlineData(5, 5, 10)]
+    [InlineData(74, 10, 84)]
+    public void IncreaseCap_ShouldIncreasePopulationCap(int initialCap, int increase, int expected)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population.Current  = 5;
+        player.Population.Capacity = initialCap;
 
-        PopulationActions.RemovePopulation(player, 2);
+        PopulationActions.IncreaseCap(player, increase);
 
-        Assert.Equal(3, player.Population.Current );
+        Assert.Equal(expected, player.Population.Capacity);
     }
 
-    [Fact]
-    public void IncreaseCap_ShouldIncreasePopulationCap()
+    [Theory]
+    [InlineData(10, 4, 6)]
+    [InlineData(2, 10, 0)]
+    public void DecreaseCap_ShouldDecreasePopulationCap(int initialCap, int decrease, int expected)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population.Capacity = 5;
+        player.Population.Capacity = initialCap;
 
-        PopulationActions.IncreaseCap(player, 5);
+        PopulationActions.DecreaseCap(player, decrease);
 
-        Assert.Equal(10, player.Population.Capacity);
+        Assert.Equal(expected, player.Population.Capacity);
     }
 
-    [Fact]
-    public void IncreaseCap_ShouldIncreaseWithoutLimit()
+    [Theory]
+    [InlineData(4, 5, 1, true)]
+    [InlineData(5, 5, 1, false)]
+    public void CanAddPopulation_ShouldReturnCorrectResult(
+        int currentPop, int capacity, int addCount, bool expected)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population.Capacity = 74;
+        player.Population.Current  = currentPop;
+        player.Population.Capacity = capacity;
 
-        PopulationActions.IncreaseCap(player, 10);
-
-        Assert.Equal(84, player.Population.Capacity);
+        Assert.Equal(expected,
+            PopulationActions.CanAddPopulation(player, addCount));
     }
 
-    [Fact]
-    public void DecreaseCap_ShouldDecreasePopulationCap()
+    [Theory]
+    [InlineData(5, 2, 3)]
+    [InlineData(2, 5, 0)]
+    public void RemovePopulation_ShouldDecreasePopulation(int initialPop, int removeCount, int expected)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 
-        player.Population.Capacity = 10;
+        player.Population.Current = initialPop;
 
-        PopulationActions.DecreaseCap(player, 4);
+        PopulationActions.RemovePopulation(player, removeCount);
 
-        Assert.Equal(6, player.Population.Capacity);
-    }
-
-    [Fact]
-    public void DecreaseCap_ShouldNotGoBelowZero()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var player = world.GetPlayerById(1)!;
-
-        player.Population.Capacity = 2;
-
-        PopulationActions.DecreaseCap(player, 10);
-
-        Assert.Equal(0, player.Population.Capacity);
-    }
-
-    [Fact]
-    public void CanAddPopulation_ShouldReturnTrue_WhenEnoughCapacity()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var player = world.GetPlayerById(1)!;
-
-        player.Population.Current  = 4;
-        player.Population.Capacity = 5;
-
-        Assert.True(
-            PopulationActions.CanAddPopulation(player, 1));
-    }
-
-    [Fact]
-    public void CanAddPopulation_ShouldReturnFalse_WhenCapReached()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var player = world.GetPlayerById(1)!;
-
-        player.Population.Current  = 5;
-        player.Population.Capacity = 5;
-
-        Assert.False(
-            PopulationActions.CanAddPopulation(player, 1));
-    }
-
-    [Fact]
-    [Trait("Category", "Population")]
-    public void RemovePopulation_ShouldNotGoBelowZero()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var player = world.GetPlayerById(1)!;
-
-        player.Population.Current = 2;
-
-        PopulationActions.RemovePopulation(player, 5);
-
-        Assert.Equal(0, player.Population.Current);
+        Assert.Equal(expected, player.Population.Current);
     }
 }

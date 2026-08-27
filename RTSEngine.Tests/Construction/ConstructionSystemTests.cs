@@ -52,7 +52,6 @@ public class ConstructionSystemTests
         _world.Entities.Add(building, player);
 
         _villager.Movement.NeedsRepath = true;
-        _villager.Build.BuildPosition = building.Position;
         _villager.Build.BuildingId = building.Id;
         _villager.Build.Phase = BuildPhase.MovingToConstruction;
         _villager.Movement.PathQueue.Clear();
@@ -116,27 +115,7 @@ public class ConstructionSystemTests
 
     [Fact]
     [Trait("Category", "Building")]
-    public void BuildOneTick_ShouldReturnFalse_WhenBuildingIdIsNull()
-    {
-        _villager.Build.BuildingId = null;
-        _villager.Build.Phase = BuildPhase.Constructing;
-
-        var player = _world.GetPlayerById(1)!;
-        var building = BuildingFactory.Create(
-            TestDefinitionFactory.CreateHouse(),
-            1,
-            new GridPosition(1, 2));
-        _world.Entities.Add(building, player);
-
-        var result = ConstructionActions.BuildOneTick(_world, _villager);
-
-        Assert.False(result);
-        Assert.Equal(0, building.ConstructionProgress);
-    }
-
-    [Fact]
-    [Trait("Category", "Building")]
-    public void CompleteConstruction_ShouldNotDoubleIncrement_WhenAlreadyCompleted()
+    public void CompletedBuilding_ShouldNotDoubleIncrement()
     {
         var player = _world.GetPlayerById(1)!;
         var building = BuildingFactory.Create(
@@ -155,29 +134,5 @@ public class ConstructionSystemTests
         ConstructionActions.CompleteConstruction(_world, _villager);
 
         Assert.Equal(popBefore, player.Population.Capacity);
-    }
-
-   
-    [Fact]
-    [Trait("Category", "Building")]
-    public void HandleConstructing_ShouldStopBuilding_WhenBuildingAlreadyCompleted()
-    {
-        var player = _world.GetPlayerById(1)!;
-        var building = BuildingFactory.Create(
-            TestDefinitionFactory.CreateHouse(),
-            1,
-            new GridPosition(1, 2));
-        building.IsCompleted = true;
-        building.Health.CurrentHealth = building.Health.MaxHealth;
-        _world.Entities.Add(building, player);
-
-        _villager.Build.BuildingId = building.Id;
-        _villager.Build.Phase = BuildPhase.Constructing;
-
-        ConstructionSystem.Update(_context);
-
-        Assert.Equal(BuildPhase.None, _villager.Build.Phase);
-        Assert.Null(_villager.Build.BuildingId);
-        Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
     }
 }

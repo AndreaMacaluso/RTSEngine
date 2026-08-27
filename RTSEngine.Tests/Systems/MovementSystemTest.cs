@@ -10,9 +10,11 @@ namespace RTSEngine.Tests.Systems;
 
 public class MovementSystemTests
 {
-    [Fact]
+    [Theory]
     [Trait("Category", "Movement")]
-    public void Update_ShouldMoveUnitAfterEnoughProgress()
+    [InlineData(5, 6, 5)]
+    [InlineData(3, 5, 5)]
+    public void Update_ShouldMoveUnitOnlyAfterEnoughProgress(int iterations, int expectedX, int expectedY)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = new RuntimeContext
@@ -44,125 +46,21 @@ public class MovementSystemTests
 
         world.Entities.Add(villager, player);
 
-        // Act
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < iterations; i++)
         {
             MovementSystem.Update(context);
         }
 
-        // Assert
-        Assert.Equal(6, villager.Position.X);
-        Assert.Equal(5, villager.Position.Y);
+        Assert.Equal(expectedX, villager.Position.X);
+        Assert.Equal(expectedY, villager.Position.Y);
     }
 
-    [Fact]
+    [Theory]
     [Trait("Category", "Movement")]
-    public void Update_ShouldNotMoveUnitBeforeEnoughProgress()
+    [InlineData("BlockedByTerrain")]
+    [InlineData("BlockedByOccupant")]
+    public void Update_ShouldNotMoveIntoBlockedTile(string scenario)
     {
-        // Arrange
-      
-
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var context = new RuntimeContext
-        {
-            World = world,
-            UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
-        };
-        var player = world.GetPlayerById(1)!;
-
-       var villagerDefinition = new UnitDefinition
-        {
-            Id = "villager",
-            Name = "Villager",
-            MaxHealth = 50,
-            MovementSpeed = 0.25f
-        };
-
-        var villager = UnitFactory.Create(
-            villagerDefinition,
-            1,
-            new GridPosition(5, 5));
-
-        
-        CommandSystem.AssignMoveTarget(
-            villager,
-            new GridPosition(6,5),
-            context);
-
-        world.Entities.Add(villager, player);
-
-        // Act
-        MovementSystem.Update(context);
-        MovementSystem.Update(context);
-        MovementSystem.Update(context);
-
-        // Assert
-        Assert.Equal(5, villager.Position.X);
-        Assert.Equal(5, villager.Position.Y);
-    }
-
-    [Fact]
-    [Trait("Category", "Movement")]
-    public void Update_ShouldNotMoveIntoBlockedTile()
-    {
-       
-
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var context = new RuntimeContext
-        {
-            World = world,
-            UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
-        };
-        var player = world.GetPlayerById(1)!;
-        world.Map.SetTile(6, 5,
-            new Tile
-            {
-                TerrainType = TileType.Water
-            });
-       var villagerDefinition = new UnitDefinition
-        {
-            Id = "villager",
-            Name = "Villager",
-            MaxHealth = 50,
-            MovementSpeed = 0.25f
-        };
-
-        var villager = UnitFactory.Create(
-            villagerDefinition,
-            1,
-            new GridPosition(5, 5));
-
-       
-        CommandSystem.AssignMoveTarget(
-            villager,
-            new GridPosition(6,5),
-            context);
-
-        world.Entities.Add(villager, player);
-
-        // Act
-        for (int i = 0; i < 4; i++)
-        {
-            MovementSystem.Update(context);
-        }
-
-        // Assert
-        Assert.Equal(5, villager.Position.X);
-        Assert.Equal(5, villager.Position.Y);
-    }
-
-    [Fact]
-    [Trait("Category", "Movement")]
-
-    public void Update_ShouldNotMoveIntoOccupiedTile()
-    {
-        // Arrange
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = new RuntimeContext
         {
@@ -181,42 +79,48 @@ public class MovementSystemTests
             MovementSpeed = 0.25f
         };
 
-        var villagerA = UnitFactory.Create(
+        var villager = UnitFactory.Create(
             villagerDefinition,
             1,
             new GridPosition(5, 5));
 
-        
         CommandSystem.AssignMoveTarget(
-            villagerA,
+            villager,
             new GridPosition(6,5),
             context);
-       
 
-        var villagerB = UnitFactory.Create(
-            villagerDefinition,
-            1,
-            new GridPosition(6, 5));
-       
-        world.Entities.Add(villagerA, player);
-        world.Entities.Add(villagerB, player);
+        if (scenario == "BlockedByTerrain")
+        {
+            world.Map.SetTile(6, 5,
+                new Tile
+                {
+                    TerrainType = TileType.Water
+                });
+            world.Entities.Add(villager, player);
+        }
+        else
+        {
+            var villagerB = UnitFactory.Create(
+                villagerDefinition,
+                1,
+                new GridPosition(6, 5));
+            world.Entities.Add(villager, player);
+            world.Entities.Add(villagerB, player);
+        }
 
-        // Act
         for (int i = 0; i < 4; i++)
         {
             MovementSystem.Update(context);
         }
 
-        // Assert
-        Assert.Equal(5, villagerA.Position.X);
-        Assert.Equal(5, villagerA.Position.Y);
+        Assert.Equal(5, villager.Position.X);
+        Assert.Equal(5, villager.Position.Y);
     }
 
     [Fact]
     [Trait("Category", "Movement")]
     public void Update_ShouldNotTeleportToDistantTile()
     {
-        // Arrange
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = new RuntimeContext
         {
@@ -260,9 +164,11 @@ public class MovementSystemTests
         Assert.NotEqual(9, villager.Position.Y);
     }
 
-    [Fact]
+    [Theory]
     [Trait("Category", "Movement")]
-    public void Repath_ShouldRecomputePath_WhenBlocked()
+    [InlineData(UnitTask.Moving)]
+    [InlineData(UnitTask.Gathering)]
+    public void Repath_ShouldRecomputePath_WhenBlocked(UnitTask initialTask)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = new RuntimeContext
@@ -288,69 +194,28 @@ public class MovementSystemTests
             1,
             new GridPosition(2, 2));
 
-        world.Entities.Add(villager, player);
-
-        CommandSystem.AssignMoveTarget(
-            villager,
-            new GridPosition(6, 2),
-            context);
-
-        villager.CurrentTask = UnitTask.Moving;
-
-        world.Map.SetTile(4, 2,
-            new Tile { TerrainType = TileType.Water });
-
-        for (int i = 0; i < 20; i++)
-        {
-            MovementSystem.Update(context);
-        }
-
-        Assert.Equal(6, villager.Position.X);
-        Assert.Equal(2, villager.Position.Y);
-        Assert.False(villager.Movement.NeedsRepath);
-    }
-
-    [Fact]
-    [Trait("Category", "Movement")]
-    public void Repath_ShouldNotAffectGatheringUnits()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var context = new RuntimeContext
-        {
-            World = world,
-            UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
-        };
-        var player = world.GetPlayerById(1)!;
-
-        var def = new UnitDefinition
-        {
-            Id = "villager",
-            Name = "Villager",
-            MaxHealth = 50,
-            MovementSpeed = 1f
-        };
-
-        var villager = UnitFactory.Create(
-            def,
-            1,
-            new GridPosition(2, 2));
-
-        villager.CurrentTask = UnitTask.Gathering;
+        villager.CurrentTask = initialTask;
         villager.Movement.NeedsRepath = true;
 
         world.Entities.Add(villager, player);
 
         MovementSystem.Update(context);
 
-        Assert.True(villager.Movement.NeedsRepath);
+        if (initialTask == UnitTask.Moving)
+        {
+            Assert.False(villager.Movement.NeedsRepath);
+        }
+        else
+        {
+            Assert.True(villager.Movement.NeedsRepath);
+        }
     }
 
-    [Fact]
+    [Theory]
     [Trait("Category", "Movement")]
-    public void MoveCommand_ShouldSetTaskToMoving()
+    [InlineData(UnitTask.Moving)]
+    [InlineData(UnitTask.Gathering)]
+    public void MoveCommand_ShouldSetTaskToMoving(UnitTask initialTask)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
@@ -367,6 +232,8 @@ public class MovementSystemTests
             def,
             1,
             new GridPosition(2, 2));
+
+        villager.CurrentTask = initialTask;
 
         world.Entities.Add(villager, player);
 
@@ -387,51 +254,14 @@ public class MovementSystemTests
                 PathFinder = new AStarPathFinder(new GroundMovementFilter())
             });
 
-        Assert.Equal(UnitTask.Moving, villager.CurrentTask);
-    }
-
-    [Fact]
-    [Trait("Category", "Movement")]
-    public void MoveCommand_ShouldNotOverwriteGatheringTask()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var player = world.GetPlayerById(1)!;
-
-        var def = new UnitDefinition
+        if (initialTask == UnitTask.Moving)
         {
-            Id = "villager",
-            Name = "Villager",
-            MaxHealth = 50,
-            MovementSpeed = 1f
-        };
-
-        var villager = UnitFactory.Create(
-            def,
-            1,
-            new GridPosition(2, 2));
-
-        villager.CurrentTask = UnitTask.Gathering;
-
-        world.Entities.Add(villager, player);
-
-        var queue = new CommandQueue();
-        queue.Enqueue(new MoveCommand
+            Assert.Equal(UnitTask.Moving, villager.CurrentTask);
+        }
+        else
         {
-            UnitIds = [villager.Id],
-            Target = new GridPosition(5, 2)
-        });
-
-        CommandSystem.Update(
-            new RuntimeContext
-            {
-                World = world,
-                UnitRepository = new UnitDefinitionRepository([]),
-                BuildingRepository = new BuildingDefinitionRepository([]),
-                CommandQueue = queue,
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
-            });
-
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+            Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        }
     }
 
     [Fact]

@@ -11,7 +11,7 @@ public class PathSystemTests
 
     [Fact]
     [Trait("Category", "Movement")]
-    public void GeneratePath_ShouldCreateExpectedStepCount()
+    public void GeneratePath_ShouldCreateExpectedStepCountAndReachTarget()
     {
         var world = TestWorldFactory.CreateWorld();
         var path = PathFinder.FindPath(
@@ -20,25 +20,9 @@ public class PathSystemTests
             new GridPosition(5,5));
 
         Assert.Equal(4, path.Count);
-    }
-
-    [Fact]
-    public void GeneratePath_ShouldReachTarget()
-    {
-        var world = TestWorldFactory.CreateWorld();
-
-        var start = new GridPosition(1, 1);
-        var target = new GridPosition(5, 5);
-
-        var path = PathFinder.FindPath(
-            world,
-            start,
-            target);
-
         Assert.NotEmpty(path);
-
         Assert.Equal(
-            target,
+            new GridPosition(5, 5),
             path.Last());
     }
 }

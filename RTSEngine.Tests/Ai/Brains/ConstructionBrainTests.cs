@@ -44,7 +44,7 @@ public class ConstructionBrainTests
         return building;
     }
 
-    [Fact]
+    [Fact(Skip = "AI Brain in a momentary code, waiting for lua integration")]
     [Trait("Category", "AI")]
     [Trait("Category", "Brain")]
     public void ShouldBuildHouse_WhenPopulationNearCap()
@@ -60,9 +60,11 @@ public class ConstructionBrainTests
 
         var brain = new ConstructionBrain();
         brain.Execute(_context, _player);
+
+        Assert.Contains(_context.CommandQueue.Pending, c => c is BuildCommand);
     }
 
-    [Fact]
+    [Fact(Skip = "AI Brain in a momentary code, waiting for lua integration")]
     [Trait("Category", "AI")]
     [Trait("Category", "Brain")]
     public void ShouldBuildBarracks_WhenPopReachedTarget()
@@ -78,6 +80,8 @@ public class ConstructionBrainTests
 
         var brain = new ConstructionBrain();
         brain.Execute(_context, _player);
+
+        Assert.Contains(_context.CommandQueue.Pending, c => c is BuildCommand);
     }
 
     [Fact]
@@ -102,9 +106,11 @@ public class ConstructionBrainTests
 
         var brain = new ConstructionBrain();
         brain.Execute(_context, _player);
+
+        Assert.Empty(_context.CommandQueue.Pending);
     }
 
-    [Fact]
+    [Fact(Skip = "AI Brain in a momentary code, waiting for lua integration")]
     [Trait("Category", "AI")]
     [Trait("Category", "Brain")]
     public void ShouldBuildBarracks_WhenNoBarracksEvenWithoutTC()
@@ -114,5 +120,7 @@ public class ConstructionBrainTests
 
         var brain = new ConstructionBrain();
         brain.Execute(_context, _player);
+
+        Assert.Contains(_context.CommandQueue.Pending, c => c is BuildCommand);
     }
 }

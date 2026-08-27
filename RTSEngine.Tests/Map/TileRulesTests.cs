@@ -5,81 +5,29 @@ namespace RTSEngine.Tests.Map;
 
 public class TileRulesTest
 {
-    [Fact]
-    public void Grass_ShouldBeWalkable()
+    [Theory]
+    [InlineData(TileType.Grass, true)]
+    [InlineData(TileType.Water, false)]
+    [InlineData(TileType.Mountain, false)]
+    public void IsWalkable(TileType terrainType, bool expected)
     {
-        // Arrange
-        var tile = new Tile { TerrainType = TileType.Grass };
+        var tile = new Tile { TerrainType = terrainType };
 
-        // Act
         var result = TileRules.IsWalkable(tile);
 
-        // Assert
-        Assert.True(result);
+        Assert.Equal(expected, result);
     }
 
-    [Fact]
-    public void Water_ShouldNotBeWalkable()
+    [Theory]
+    [InlineData(TileType.Grass, true)]
+    [InlineData(TileType.Water, false)]
+    [InlineData(TileType.Mountain, false)]
+    public void IsBuildable(TileType terrainType, bool expected)
     {
-        // Arrange
-        var tile = new Tile { TerrainType = TileType.Water };
+        var tile = new Tile { TerrainType = terrainType };
 
-        // Act
-        var result = TileRules.IsWalkable(tile);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Mountain_ShouldNotBeWalkable()
-    {
-        // Arrange
-        var tile = new Tile { TerrainType = TileType.Mountain };
-
-        // Act
-        var result = TileRules.IsWalkable(tile);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Grass_ShouldBeBuildable()
-    {
-        // Arrange
-        var tile = new Tile { TerrainType = TileType.Grass };
-
-        // Act
         var result = TileRules.IsBuildable(tile);
 
-        // Assert
-        Assert.True(result);
-    }
-
-    [Fact]
-    public void Water_ShouldNotBeBuildable()
-    {
-        // Arrange
-        var tile = new Tile { TerrainType = TileType.Water };
-
-        // Act
-        var result = TileRules.IsBuildable(tile);
-
-        // Assert
-        Assert.False(result);
-    }
-
-    [Fact]
-    public void Mountain_ShouldNotBeBuildable()
-    {
-        // Arrange
-        var tile = new Tile { TerrainType = TileType.Mountain };
-
-        // Act
-        var result = TileRules.IsBuildable(tile);
-
-        // Assert
-        Assert.False(result);
+        Assert.Equal(expected, result);
     }
 }

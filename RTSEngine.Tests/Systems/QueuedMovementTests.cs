@@ -8,11 +8,11 @@ using RTSEngine.Core.Commands;
 using RTSEngine.Core.Systems.Pathfinding;
 namespace RTSEngine.Tests.Systems.QueuedMovementTests;
 
-public class MovementSystemTests
+public class QueuedMovementTests
 {
     [Fact]
     [Trait("Category", "Movement")]
-    public void Update_ShouldFollowQueuedPath()
+    public void Update_ShouldFollowQueuedPathAndEmptyOnCompletion()
     {
         // Arrange
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
@@ -59,46 +59,6 @@ public class MovementSystemTests
         // Assert
         Assert.Equal(8, villager.Position.X);
         Assert.Equal(5, villager.Position.Y);
-
-        Assert.Empty(villager.Movement.PathQueue);
-    }
-    [Fact]
-    [Trait("Category", "Movement")]
-    public void Update_ShouldEmptyQueueAfterPathCompletion()
-    {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var context = new RuntimeContext
-        {
-            World = world,
-            UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
-        };
-        var player = world.GetPlayerById(1)!;
-
-        var villagerDefinition = new UnitDefinition
-        {
-            Id = "villager",
-            Name = "Villager",
-            MaxHealth = 50,
-            MovementSpeed = 0.25f
-        };
-
-        var villager = UnitFactory.Create(
-            villagerDefinition,
-            1,
-            new GridPosition(5, 5));
-
-        villager.Movement.PathQueue.Enqueue(
-            new GridPosition(6, 5));
-
-        world.Entities.Add(villager, player);
-
-        for (int i = 0; i <= 4; i++)
-        {
-            MovementSystem.Update(context);
-        }
 
         Assert.Empty(villager.Movement.PathQueue);
 

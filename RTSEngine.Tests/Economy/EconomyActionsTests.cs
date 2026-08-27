@@ -7,75 +7,45 @@ namespace RTSEngine.Tests.Actions;
 
 public class EconomyActionsTests
 {
-    [Fact]
+    [Theory]
     [Trait("Category", "Economy")]
-    public void CanAfford_ShouldReturnTrue_WhenPlayerHasResources()
+    [InlineData(100, 50, 50, 25, true)]
+    [InlineData(20, 0, 50, 0, false)]
+    public void CanAfford_ShouldReturnCorrectResult(
+        int woodAmount, int goldAmount, int woodCost, int goldCost, bool expected)
     {
         var player = new Player(1, "", ConsoleColor.Gray, PlayerControllerType.Human);
 
-        player.Economy.Add(ResourceType.Wood, 100);
-        player.Economy.Add(ResourceType.Gold, 50);
+        if (woodAmount > 0) player.Economy.Add(ResourceType.Wood, woodAmount);
+        if (goldAmount > 0) player.Economy.Add(ResourceType.Gold, goldAmount);
 
-        var costs = new List<ResourceCost>
-        {
-            new(ResourceType.Wood, 50),
-            new(ResourceType.Gold, 25)
-        };
-        Assert.True(EconomyActions.CanAfford(player, costs));
+        var costs = new List<ResourceCost>();
+        if (woodCost > 0) costs.Add(new(ResourceType.Wood, woodCost));
+        if (goldCost > 0) costs.Add(new(ResourceType.Gold, goldCost));
+
+        Assert.Equal(expected, EconomyActions.CanAfford(player, costs));
     }
 
-    [Fact]
+    [Theory]
     [Trait("Category", "Economy")]
-    public void CanAfford_ShouldReturnFalse_WhenPlayerLacksResources()
+    [InlineData(100, 40, true, 60)]
+    [InlineData(20, 50, false, 20)]
+    public void TryPay_ShouldReturnResultAndAdjustResources(
+        int initialWood, int woodCost, bool expectedResult, int expectedRemaining)
     {
         var player = new Player(1, "", ConsoleColor.Gray, PlayerControllerType.Human);
 
-        player.Economy.Add(ResourceType.Wood, 20);
+        player.Economy.Add(ResourceType.Wood, initialWood);
 
         var costs = new List<ResourceCost>
         {
-            new(ResourceType.Wood, 50),
-        };
-
-        Assert.False(EconomyActions.CanAfford(player, costs));
-    }
-
-    [Fact]
-    [Trait("Category", "Economy")]
-    public void TryPay_ShouldRemoveResources()
-    {
-        var player = new Player(1, "", ConsoleColor.Gray, PlayerControllerType.Human);
-
-        player.Economy.Add(ResourceType.Wood, 100);
-
-        var costs = new List<ResourceCost>
-        {
-            new(ResourceType.Wood, 40),
+            new(ResourceType.Wood, woodCost),
         };
 
         var result = EconomyActions.TryPay(player, costs);
 
-        Assert.True(result);
-        Assert.Equal(60, player.Economy.Get(ResourceType.Wood));
-    }
-
-    [Fact]
-    [Trait("Category", "Economy")]
-    public void TryPay_ShouldNotRemoveResources_WhenCannotAfford()
-    {
-        var player = new Player(1, "", ConsoleColor.Gray, PlayerControllerType.Human);
-
-        player.Economy.Add(ResourceType.Wood, 20);
-
-        var costs = new List<ResourceCost>
-        {
-            new(ResourceType.Wood, 50),
-        };
-
-        var result = EconomyActions.TryPay(player, costs);
-
-        Assert.False(result);
-        Assert.Equal(20, player.Economy.Get(ResourceType.Wood));
+        Assert.Equal(expectedResult, result);
+        Assert.Equal(expectedRemaining, player.Economy.Get(ResourceType.Wood));
     }
 
     [Fact]

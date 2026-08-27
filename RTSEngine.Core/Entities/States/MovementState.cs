@@ -12,7 +12,7 @@ public class MovementState
 
     public GridPosition? CurrentStep { get; set; }
 
-    public Queue<GridPosition> PathQueue { get; set; } = [];
+    public Queue<GridPosition> PathQueue { get; } = [];
 
     public int BlockedTicks { get; set; } = 0;
 

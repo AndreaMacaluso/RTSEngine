@@ -73,25 +73,12 @@ public class SimulationRunner
 
         foreach (var building in deadBuildings)
         {
-            ReleaseBuilders(world, building);
             ReleasePopulation(world, building);
             var buildingPlayer = world.GetPlayerById(building.OwnerId) as Player;
             if (buildingPlayer is not null)
             {
                 world.Entities.Remove(building, buildingPlayer);
             }
-        }
-    }
-
-    private static void ReleaseBuilders(
-        GameWorld world,
-        Building building)
-    {
-        var builders = UnitQueries.FindBuildersForBuilding(world, building);
-
-        foreach (var builder in builders)
-        {
-            ConstructionActions.StopBuilding(builder);
         }
     }
 

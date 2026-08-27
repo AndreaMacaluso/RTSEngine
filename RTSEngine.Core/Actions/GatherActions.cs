@@ -228,12 +228,12 @@ public static class GatherActions
 
     private static void QueueMoveCommand(
     ICommandQueue commandQueue,
-    List<int> UnitIds,
+    List<int> unitIds,
     GridPosition destination)
     {  
         commandQueue.Enqueue(new MoveCommand
         {
-            UnitIds = UnitIds,
+            UnitIds = unitIds,
             Target = destination
         });
     }

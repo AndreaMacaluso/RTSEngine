@@ -199,8 +199,6 @@ public static class ConsoleRenderer
 
             TileType.Water => ConsoleColor.Blue,
 
-            TileType.Forest => ConsoleColor.DarkGreen,
-
             TileType.Mountain => ConsoleColor.DarkGray,
 
             TileType.Sand => ConsoleColor.Yellow,

@@ -56,12 +56,18 @@ public static class ConstructionSystem
 
             return;
         }
-        if (unit.Build.BuildPosition is not GridPosition destination)
+        if (unit.Build.BuildingId is not int buildingId)
             {
                 return;
             }
 
-        if (!WorldQueries.HasReachedDestination(unit, destination))
+        var building = world.Entities.GetBuildingById(buildingId);
+        if (building is null)
+            {
+                return;
+            }
+
+        if (!WorldQueries.HasReachedDestination(unit, building.Position))
             {
                 return;
             }

@@ -1,6 +1,6 @@
 namespace RTSEngine.Core.Entities.Definitions;
 
-public class UnitDefinitionRepository
+public sealed class UnitDefinitionRepository
 {
     private readonly Dictionary<string, UnitDefinition> _definitions;
 

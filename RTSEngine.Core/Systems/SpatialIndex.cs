@@ -15,9 +15,9 @@ public class SpatialIndex
     private readonly HashSet<GridPosition> _blockedTiles = new();
 
     public void Rebuild(
-        IReadOnlyList<Unit> units,
-        IReadOnlyList<Building> buildings,
-        IReadOnlyList<ResourceNode> resources)
+        ICollection<Unit> units,
+        ICollection<Building> buildings,
+        ICollection<ResourceNode> resources)
     {
         _units.Clear();
         _buildings.Clear();
@@ -26,6 +26,7 @@ public class SpatialIndex
 
         foreach (var unit in units)
         {
+            if (unit.IsDead) continue;
             if (!_units.TryGetValue(unit.Position, out var list))
             {
                 list = [];
@@ -57,10 +58,10 @@ public class SpatialIndex
         }
     }
 
-    public Unit? GetUnitAt(int x, int y)
+    public IReadOnlyList<Unit> GetUnitsAt(int x, int y)
     {
-        var list = _units.GetValueOrDefault(new GridPosition(x, y));
-        return list is { Count: > 0 } ? list[0] : null;
+        var pos = new GridPosition(x, y);
+        return _units.TryGetValue(pos, out var list) ? list : [];
     }
 
     public Building? GetBuildingAt(int x, int y)

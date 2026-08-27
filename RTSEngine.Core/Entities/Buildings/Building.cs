@@ -12,7 +12,6 @@ public sealed class Building : Entity
     public HealthState Health { get; }
     public int ConstructionProgress { get; set; }
     public bool IsCompleted { get; set; }
-    public int PopulationBonus { get; set; }
     public ProductionState Production { get; } = new();
     public override bool IsBlocking => !IsDead;
     public override bool IsDead => Health.IsDead;

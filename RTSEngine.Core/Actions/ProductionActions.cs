@@ -1,4 +1,5 @@
 using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Units;
@@ -98,24 +99,14 @@ public static class ProductionActions
     private static bool TrainUnit(
     RuntimeContext context,
     Building building,
-    string unitId)
+    UnitDefinition unitDefinition)
     {
-        if (!context.UnitRepository.Exists(unitId))
-        {
-            return false;
-        }
-
-        if (!building.Definition.Produces.Contains(unitId))
-        {
-            return false;
-        }
-
         context.CommandQueue.Enqueue(
             new QueueProductionCommand
             (
                 building.OwnerId,
                 building.Id,
-                unitId
+                unitDefinition.Id
         ));
 
         return true;
@@ -143,7 +134,7 @@ public static class ProductionActions
         foreach (var cost in unitDefinition.Costs)
             player.Economy.Spend(cost.Type, cost.Amount);
 
-        return TrainUnit(context, building, unitId);
+        return TrainUnit(context, building, unitDefinition);
     }
 
     private static void CompleteUnitSpawned(

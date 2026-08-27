@@ -1,7 +1,7 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
-using RTSEngine.Core.Entities.Loader;
+using RTSEngine.Core.Entities.Loaders;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Runtime;
@@ -65,8 +65,7 @@ public static class SimulationBootstrap
     private static UnitDefinitionRepository LoadUnitRepository(
         string unitsPath)
     {
-        var unitLoader = new UnitDefinitionLoader();
-        var unitDefinitions = unitLoader.Load(unitsPath);
+        var unitDefinitions = DefinitionLoader<UnitDefinition>.Load(unitsPath);
 
         return new UnitDefinitionRepository(unitDefinitions);
     }
@@ -74,9 +73,7 @@ public static class SimulationBootstrap
     private static BuildingDefinitionRepository LoadBuildingRepository(
     string buildingsPath)
     {
-        var loader = new BuildingDefinitionLoader();
-
-        var definitions = loader.Load(buildingsPath);
+        var definitions = DefinitionLoader<BuildingDefinition>.Load(buildingsPath);
 
         return new BuildingDefinitionRepository(definitions);
     }

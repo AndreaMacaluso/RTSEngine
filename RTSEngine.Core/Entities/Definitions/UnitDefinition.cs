@@ -1,4 +1,4 @@
-using  RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Entities.Definitions;
 public class UnitDefinition
 {

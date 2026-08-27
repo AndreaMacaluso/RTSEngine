@@ -40,17 +40,6 @@ public static class UnitQueries
                 u.Gather.CarriedResource == resourceType);
     }
 
-    public static List<Unit> FindBuildersForBuilding(
-        GameWorld world,
-        Building building)
-    {
-        return world.Entities.Units.Values
-            .Where(u =>
-                u.Build.BuildingId == building.Id
-                && u.Definition.CanBuild)
-            .ToList();
-    }
-
     public static List<Unit> FindDeadUnits(GameWorld world)
     {
         return world.Entities.Units.Values

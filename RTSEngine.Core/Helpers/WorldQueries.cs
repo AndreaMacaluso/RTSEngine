@@ -103,27 +103,13 @@ public static class WorldQueries
         GameWorld world,
         GridPosition center)
     {
-        ResourceNode? closest = null;
-        int bestDist = int.MaxValue;
-
-        foreach (var r in world.Entities.Resources.Values)
-        {
-            if (r.IsDepleted) continue;
-
-            int dist = DistanceSquared(center, r.Position);
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                closest = r;
-            }
-        }
-        return closest;
+        return FindClosestResource(world, center, null);
     }
 
     public static ResourceNode? FindClosestResource(
         GameWorld world,
         GridPosition center,
-        ResourceType resourceType)
+        ResourceType? resourceType)
     {
         ResourceNode? closest = null;
         int bestDist = int.MaxValue;
@@ -131,7 +117,7 @@ public static class WorldQueries
         foreach (var r in world.Entities.Resources.Values)
         {
             if (r.IsDepleted) continue;
-            if (r.ResourceType != resourceType) continue;
+            if (resourceType.HasValue && r.ResourceType != resourceType.Value) continue;
 
             int dist = DistanceSquared(center, r.Position);
             if (dist < bestDist)
@@ -300,8 +286,14 @@ public static class WorldQueries
             return true;
         }
 
-        var unit = world.Entities.Spatial.GetUnitAt(x, y);
-        return unit?.IsBlocking ?? false;
+        var units = world.Entities.Spatial.GetUnitsAt(x, y);
+        foreach (var unit in units)
+        {
+            if (unit.IsBlocking)
+                return true;
+        }
+
+        return false;
     }
 
     public static (Entity Entity, int OwnerId)? FindNearestEnemyEntity(

@@ -1,5 +1,5 @@
 namespace RTSEngine.Core.Diagnostics;
-public sealed class LogScope : IDisposable
+public sealed class LogScope
 {
     private readonly Logger _logger;
     private readonly LogScope? _parent;
@@ -43,11 +43,5 @@ public sealed class LogScope : IDisposable
     public LogScope Scope(string name)
     {
         return new LogScope(_logger, name, this);
-    }
-
-    public void Dispose()
-    {
-        // niente obbligatorio per ora
-        // (qui potremo fare finalize tree logging in futuro)
     }
 }

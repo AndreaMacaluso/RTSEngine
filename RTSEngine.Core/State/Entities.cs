@@ -32,9 +32,9 @@ public class Entities
         if (_spatialDirty)
         {
             _spatial.Rebuild(
-                _units.Values.ToList(),
-                _buildings.Values.ToList(),
-                _resources.Values.ToList());
+                _units.Values,
+                _buildings.Values,
+                _resources.Values);
             _spatialDirty = false;
         }
         return _spatial;
@@ -169,14 +169,18 @@ public class Entities
         if (_buildings.TryGetValue(id, out var building))
             return building;
 
+        if (_resources.TryGetValue(id, out var resource))
+            return resource;
+
         return null;
     }
 
     public void RebuildSpatialIndex()
     {
         Spatial.Rebuild(
-            _units.Values.ToList(),
-            _buildings.Values.ToList(),
-            _resources.Values.ToList());
+            _units.Values,
+            _buildings.Values,
+            _resources.Values);
+        _spatialDirty = false;
     }
 }

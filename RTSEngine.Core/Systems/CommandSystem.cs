@@ -79,7 +79,6 @@ public static class CommandSystem
 
             unit.CurrentTask = UnitTask.Building;
             unit.Build.BuildingId = building.Id;
-            unit.Build.BuildPosition = building.Position;
             unit.Build.Phase = BuildPhase.MovingToConstruction;
             AssignMoveTarget(unit, target.Value, context);
         }

@@ -84,7 +84,7 @@ public static class ProductionActions
             world.Entities.Add(unit, unitPlayer);
         }
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "UnitSpawned",
             [
                 ("UnitId", unit.Id),

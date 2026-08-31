@@ -51,7 +51,7 @@ public static class GatherSystem
                     break;
             }
 
-            DebugSession.Log.Info(
+            DebugSession.Log.Debug(
             "Gather state",
             [
                 //("Key", "GatherSystem_48"),

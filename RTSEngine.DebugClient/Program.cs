@@ -21,7 +21,9 @@ class Program
             logsDirectory,
             $"session_{DateTime.Now:yyyyMMdd_HHmmss}.log");
 
-        var logger = new Logger();
+        var context = SimulationBootstrap.Create();
+
+        var logger = new Logger(context.Settings.DebugMode);
         logger.AddSink(new FileLogSink(logPath));
         DebugSession.Initialize(logger);
 
@@ -29,7 +31,6 @@ class Program
 
         try
         {
-            var context = SimulationBootstrap.Create();
             DebugSession.Log.Info("context Created");
             DebugSession.Log.Info("CreateStartingBaseScenario");
             ScenarioBuilder.CreateStartingBaseScenario(context);

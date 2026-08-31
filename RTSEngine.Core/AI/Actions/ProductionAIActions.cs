@@ -20,7 +20,7 @@ public static class ProductionAIActions
             return false;
         }
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "ProductionAIActions.TrainVillager: calling TryTrainUnit",
             [
                 ("PlayerId", player.Id),
@@ -37,7 +37,7 @@ public static class ProductionAIActions
             townCenter,
             EntityIds.Villager);
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "ProductionAIActions.TrainVillager: TryTrainUnit result",
             [
                 ("PlayerId", player.Id),
@@ -65,7 +65,7 @@ public static class ProductionAIActions
             barracks,
             EntityIds.Militia);
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "ProductionAIActions.TrainMilitia: TryTrainUnit result",
             [
                 ("PlayerId", player.Id),

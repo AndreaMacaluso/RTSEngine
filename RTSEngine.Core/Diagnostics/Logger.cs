@@ -3,10 +3,33 @@ namespace RTSEngine.Core.Diagnostics;
 public sealed class Logger
 {
     private readonly List<ILogSink> _sinks = [];
+    private readonly bool _debugEnabled;
+
+    public Logger(bool debugEnabled = false)
+    {
+        _debugEnabled = debugEnabled;
+    }
 
     public void AddSink(ILogSink sink)
     {
         _sinks.Add(sink);
+    }
+
+    public void Debug(
+        string message,
+        IReadOnlyList<(string Key, object? Value)>? context = null,
+        Exception? exception = null)
+    {
+        if (!_debugEnabled)
+        {
+            return;
+        }
+
+        Write(new LogEntry(
+            LogLevel.Debug,
+            message,
+            context,
+            exception));
     }
 
     public void Info(

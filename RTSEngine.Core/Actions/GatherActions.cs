@@ -48,7 +48,7 @@ public static class GatherActions
     Unit unit)
     {
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
         "BeginMoveToDeposit",
         [
             ("Unit", unit.Id),
@@ -65,7 +65,7 @@ public static class GatherActions
             context.World.GetPlayerById(unit.OwnerId)!,
             unit.Position,
             resourceType);
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
         "Deposit found",
         [
             ("Deposit", deposit?.Position),

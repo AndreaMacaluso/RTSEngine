@@ -6,6 +6,7 @@ public sealed class GameSettings
     public GameSpeed Speed { get; set; } = GameSpeed.Normal;
     public VisibilityMode Visibility { get; set; } = VisibilityMode.FullMap;
     public VictoryCondition Victory { get; set; } = new();
+    public bool DebugMode { get; set; } = false;
 }
 
 public enum GameSpeed

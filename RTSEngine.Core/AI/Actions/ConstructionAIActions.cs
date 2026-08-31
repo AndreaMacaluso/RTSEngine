@@ -30,13 +30,13 @@ public static class ConstructionAIActions
 
         if (builder == null)
         {
-            DebugSession.Log.Info(
+            DebugSession.Log.Debug(
                 "ConstructionAIActions: no idle villager found",
                 [("PlayerId", player.Id)]);
             return false;
         }
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "ConstructionAIActions: found idle villager",
             [
                 ("PlayerId", player.Id),
@@ -52,7 +52,7 @@ public static class ConstructionAIActions
 
         if (position == null)
         {
-            DebugSession.Log.Info(
+            DebugSession.Log.Debug(
                 "ConstructionAIActions: no build position found",
                 [
                     ("PlayerId", player.Id),
@@ -61,7 +61,7 @@ public static class ConstructionAIActions
             return false;
         }
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "ConstructionAIActions: found build position",
             [
                 ("PlayerId", player.Id),
@@ -78,7 +78,7 @@ public static class ConstructionAIActions
 
         if (building == null)
         {
-            DebugSession.Log.Info(
+            DebugSession.Log.Debug(
                 "ConstructionAIActions: PlaceFoundation failed",
                 [
                     ("PlayerId", player.Id),
@@ -89,7 +89,7 @@ public static class ConstructionAIActions
             return false;
         }
 
-        DebugSession.Log.Info(
+        DebugSession.Log.Debug(
             "ConstructionAIActions: foundation placed, queuing build command",
             [
                 ("PlayerId", player.Id),

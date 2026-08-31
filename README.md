@@ -25,19 +25,7 @@ RTSEngine.DebugClient -> debug visualization and runtime testing
 
 RTSEngine.Tests -> unit and integration tests
 
------
-RTSEngine.Core          
-├── Actions -> atomic state mutations
-├── AI -> brain system (temporary, will be replaced by Lua)
-├── Commands -> command pattern
-├── Diagnostics -> logging framework
-├── Entities -> entity hierarchy (Units, Buildings, Resources)
-├── Helpers -> query helpers (WorldQueries, UnitQueries)
-├── Map -> tile map, generation, loading
-├── Players -> player + states (Economy, Population)
-├── Simulation -> simulation runner
-├── Systems -> game systems (Movement, Gather, Combat, etc.)
-└── State -> GameWorld, WorldState
+
 -----
 
 ## Architecture Principles

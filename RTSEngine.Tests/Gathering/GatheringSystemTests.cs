@@ -10,6 +10,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Gathering;
@@ -49,7 +50,8 @@ public class GatheringSystemTests
             UnitRepository = new RTSEngine.Core.Entities.Definitions.UnitDefinitionRepository([]),
             BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
     }
 
@@ -98,7 +100,7 @@ public class GatheringSystemTests
         Assert.Equal(20, _villager.Gather.Capacity);
         Assert.NotNull(_villager.Gather.DepositPosition);
         Assert.Equal(GatherPhase.MovingToDeposit, _villager.Gather.Phase);
-        Assert.Contains(_context.CommandQueue.Pending, c => c is MoveCommand);
+        Assert.NotNull(_villager.Movement.Destination);
     }
 
     [Fact]
@@ -149,7 +151,7 @@ public class GatheringSystemTests
         GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.MovingToResource, _villager.Gather.Phase);
-        Assert.Single(_context.CommandQueue.Pending);
+        Assert.NotNull(_villager.Movement.Destination);
     }
 
     [Fact]

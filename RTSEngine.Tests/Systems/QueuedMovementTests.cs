@@ -5,6 +5,7 @@ using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 namespace RTSEngine.Tests.Systems.QueuedMovementTests;
 
@@ -22,7 +23,8 @@ public class QueuedMovementTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -76,7 +78,8 @@ public class QueuedMovementTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
 

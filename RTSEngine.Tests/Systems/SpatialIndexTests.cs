@@ -264,6 +264,7 @@ public class SpatialIndexTests
 
         var definition = TestDefinitionFactory.CreateHouse();
         var building = BuildingFactory.Create(definition, 1, new GridPosition(5, 5));
+        building.IsCompleted = true;
         building.Health.CurrentHealth = definition.MaxHealth;
         world.Entities.Add(building, player);
 
@@ -279,6 +280,7 @@ public class SpatialIndexTests
 
         var definition = TestDefinitionFactory.CreateHouse();
         var building = BuildingFactory.Create(definition, 1, new GridPosition(5, 5));
+        building.IsCompleted = true;
         building.Health.CurrentHealth = definition.MaxHealth;
         world.Entities.Add(building, player);
 
@@ -333,6 +335,7 @@ public class SpatialIndexTests
             MaxHealth = 100
         };
         var building = BuildingFactory.Create(definition, ownerId, position);
+        building.IsCompleted = true;
         building.Health.CurrentHealth = definition.MaxHealth;
         return building;
     }

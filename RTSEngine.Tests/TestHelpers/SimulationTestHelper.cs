@@ -3,6 +3,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.TestHelpers;
@@ -20,7 +21,8 @@ public static class SimulationTestHelper
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var simulation = new SimulationRunner(context);
 

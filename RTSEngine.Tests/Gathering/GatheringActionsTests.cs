@@ -5,6 +5,9 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Settings;
+using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Players;
 
@@ -15,7 +18,7 @@ public class GatherActionsTests
     [Fact]
     [Trait("Category", "GatheringAction")]
     [Trait("Category", "Gathering")]
-    public void BeginMoveToResource_ShouldQueueMoveCommand()
+    public void BeginMoveToResource_ShouldFillPathQueue()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
@@ -35,10 +38,19 @@ public class GatherActionsTests
 
         unit.Gather.TargetResourceId = tree.Id;
 
-        var queue = new CommandQueue();
-        GatherActions.BeginMoveToResource(world, queue, unit);
+        var context = new RuntimeContext
+        {
+            World = world,
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            Settings = new GameSettings()
+        };
+        var result = GatherActions.BeginMoveToResource(context, unit);
 
-        Assert.Single(queue.Pending);
+        Assert.True(result);
+        Assert.NotNull(unit.Movement.Destination);
     }
 
     [Fact]

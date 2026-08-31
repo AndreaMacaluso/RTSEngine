@@ -7,6 +7,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Core.Actions;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 namespace RTSEngine.Tests.Production;
@@ -47,7 +48,8 @@ public class ProductionSystemTests
             UnitRepository = unitRepository,
             BuildingRepository = buildingRepository,
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
     }
 

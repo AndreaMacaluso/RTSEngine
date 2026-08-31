@@ -8,6 +8,7 @@ using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 
 namespace RTSEngine.Tests.Systems;
@@ -22,7 +23,8 @@ public class CombatSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
     }
 

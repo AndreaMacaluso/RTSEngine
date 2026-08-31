@@ -118,6 +118,7 @@ public class GameWorldTests
             definition,
             ownerId: 1,
             position: new GridPosition(2, 2));
+        building.IsCompleted = true;
         building.Health.CurrentHealth = definition.MaxHealth;
         world3.Entities.Add(building, player);
 
@@ -183,6 +184,7 @@ public class GameWorldTests
             definition,
             ownerId: 1,
             position: new GridPosition(5, 5));
+        building.IsCompleted = true;
         building.Health.CurrentHealth = definition.MaxHealth;
         world2.Entities.Add(building, player);
 

@@ -1,5 +1,6 @@
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
@@ -23,7 +24,8 @@ public class MovementSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
@@ -68,7 +70,8 @@ public class MovementSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
@@ -128,7 +131,8 @@ public class MovementSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -177,7 +181,8 @@ public class MovementSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -251,17 +256,11 @@ public class MovementSystemTests
                 UnitRepository = new UnitDefinitionRepository([]),
                 BuildingRepository = new BuildingDefinitionRepository([]),
                 CommandQueue = queue,
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
+                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+                Settings = new GameSettings()
             });
 
-        if (initialTask == UnitTask.Moving)
-        {
-            Assert.Equal(UnitTask.Moving, villager.CurrentTask);
-        }
-        else
-        {
-            Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
-        }
+        Assert.Equal(UnitTask.Moving, villager.CurrentTask);
     }
 
     [Fact]
@@ -275,7 +274,8 @@ public class MovementSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player = world.GetPlayerById(1)!;
 

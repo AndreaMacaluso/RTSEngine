@@ -4,6 +4,7 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Systems;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Definitions;
@@ -23,7 +24,8 @@ public class CommandSystemTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
 
         _world = _context.World;

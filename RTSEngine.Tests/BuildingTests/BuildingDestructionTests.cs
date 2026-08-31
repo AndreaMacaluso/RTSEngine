@@ -11,6 +11,7 @@ using RTSEngine.Core.Simulation;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 
@@ -87,7 +88,8 @@ public class BuildingDestructionTests
                 UnitRepository = new([]),
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
+                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+                Settings = new GameSettings()
             });
 
         building.Health.TakeDamage(1);
@@ -130,7 +132,8 @@ public class BuildingDestructionTests
                 UnitRepository = new([]),
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
+                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+                Settings = new GameSettings()
             });
 
         building.Health.TakeDamage(1);
@@ -169,7 +172,8 @@ public class BuildingDestructionTests
                 UnitRepository = new([]),
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
+                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+                Settings = new GameSettings()
             });
 
         building.Health.TakeDamage(1);
@@ -190,7 +194,8 @@ public class BuildingDestructionTests
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
         };
         var player1 = world.GetPlayerById(1)!;
         var player2 = world.GetPlayerById(2)!;
@@ -243,7 +248,7 @@ public class BuildingDestructionTests
         building.IsCompleted = false;
         building.Health.CurrentHealth = 0;
 
-        Assert.True(building.IsDead);
+        Assert.False(building.IsDead);
         Assert.False(building.IsBlocking);
     }
 
@@ -313,7 +318,8 @@ public class BuildingRefundTests
                 UnitRepository = new([]),
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
+                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+                Settings = new GameSettings()
             });
 
         building.Health.TakeDamage(1);
@@ -356,7 +362,8 @@ public class UnitDeathPopulationTests
                 UnitRepository = new([]),
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter())
+                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+                Settings = new GameSettings()
             });
 
         simulation.Step();

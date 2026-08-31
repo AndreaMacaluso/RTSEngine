@@ -62,7 +62,7 @@ public static class EntitySpawner
 
         context.World.Entities.Add(building, player);
 
-        PopulationActions.IncreaseCap(player, definition.PopulationBonus);
+        PopulationActions.IncreaseCap(player, definition.PopulationBonus, context.Settings.PopulationCap);
 
         return building;
     }

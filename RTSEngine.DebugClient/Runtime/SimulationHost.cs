@@ -2,16 +2,17 @@ using RTSEngine.Core.Simulation;
 using RTSEngine.Core.State;
 using RTSEngine.DebugClient.Renders;
 using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Settings;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.DebugClient.Runtime;
 
 public static class SimulationHost
 {
-    private const int FrameDelayMs = 300;
-
     public static void Run(
         GameWorld world,
-        SimulationRunner simulation)
+        SimulationRunner simulation,
+        RuntimeContext context)
     {
         while (true)
         {
@@ -22,8 +23,8 @@ public static class SimulationHost
 
             simulation.Tick();
 
-            RenderFrame(world);
-            Thread.Sleep(FrameDelayMs);
+            RenderFrame(world, context);
+            Thread.Sleep(300 / (int)context.Settings.Speed);
         }
     }
 
@@ -74,14 +75,22 @@ public static class SimulationHost
         }
     }
 
-    private static void RenderFrame(GameWorld world)
+    private static void RenderFrame(GameWorld world, RuntimeContext context)
     {
         Console.SetCursorPosition(0, 0);
         Console.WriteLine($"Tick: {world.CurrentTick}    ");
         Console.WriteLine(
             world.State == WorldState.Paused
                 ? "PAUSED "
-                : "RUNNING");
+                : world.State == WorldState.Finished
+                    ? $"GAME OVER - Player {context.Victory.WinnerPlayerId} WINS!"
+                    : "RUNNING");
+        Console.WriteLine($"Speed: {(int)context.Settings.Speed}x | PopCap: {context.Settings.PopulationCap}    ");
+
+        foreach (var player in world.Players)
+        {
+            Console.WriteLine($"P{player.Id} Score: {player.Score}    ");
+        }
 
         ConsoleRenderer.Render(
             world,

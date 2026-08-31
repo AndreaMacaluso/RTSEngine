@@ -13,8 +13,8 @@ public sealed class Building : Entity
     public int ConstructionProgress { get; set; }
     public bool IsCompleted { get; set; }
     public ProductionState Production { get; } = new();
-    public override bool IsBlocking => !IsDead;
-    public override bool IsDead => Health.IsDead;
+    public override bool IsBlocking => IsCompleted && !IsDead;
+    public override bool IsDead => IsCompleted && Health.IsDead;
 
     public Building(
         int ownerId,

@@ -50,6 +50,15 @@ public class SimulationRunner
 
         ProductionSystem.Update(_context);
 
+        ScoreSystem.Update(_context.World);
+
+        _context.Victory.Check(_context.World.Players, _context.Settings.Victory);
+
+        if (_context.Victory.WinnerPlayerId.HasValue)
+        {
+            _context.World.Finish();
+        }
+
         RemoveDeadEntities(_context.World);
 
         _context.World.AdvanceTick();

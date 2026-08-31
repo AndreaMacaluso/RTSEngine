@@ -68,9 +68,12 @@ public static class PopulationActions
 
     public static void IncreaseCap(
         Player player,
-        int amount)
+        int amount,
+        int maxCapacity = int.MaxValue)
     {
-        player.Population.Capacity += amount;
+        player.Population.Capacity = Math.Min(
+            player.Population.Capacity + amount,
+            maxCapacity);
     }
 
     public static void DecreaseCap(

@@ -6,13 +6,15 @@ using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Settings;
 
 namespace RTSEngine.DebugClient.Bootstrap;
 
 public static class SimulationBootstrap
 {
-    public static RuntimeContext Create()
+    public static RuntimeContext Create(GameSettings? settings = null)
     {
+        settings ??= new GameSettings();
         var baseDirectory = AppContext.BaseDirectory;
 
         var mapPath = Path.Combine(
@@ -50,7 +52,8 @@ public static class SimulationBootstrap
             UnitRepository = unitRepository,
             BuildingRepository = buildingRepository,
             CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter())
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = settings
         };
     }
 

@@ -6,14 +6,15 @@ using RTSEngine.Core.Helpers;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Systems;
 
 namespace RTSEngine.Core.Actions;
 
 public static class ConstructionActions
 {
     public static bool BeginMoveToConstruction(
-    GameWorld world,
-    ICommandQueue commandQueue,
+    RuntimeContext context,
     Unit unit)
     {
         if (unit.Build.BuildingId is not int buildingId)
@@ -22,7 +23,7 @@ public static class ConstructionActions
         }
 
         Building? building =
-            world.Entities.GetBuildingById(buildingId);
+            context.World.Entities.GetBuildingById(buildingId);
 
         if (building == null)
         {
@@ -31,7 +32,7 @@ public static class ConstructionActions
 
         GridPosition? target =
             WorldQueries.FindClosestAdjacentWalkableTile(
-                world,
+                context.World,
                 unit.Position,
                 building.Position);
 
@@ -40,11 +41,7 @@ public static class ConstructionActions
             return false;
         }
 
-        commandQueue.Enqueue(new MoveCommand
-        {
-            UnitIds = [unit.Id],
-            Target = destination
-        });
+        CommandSystem.AssignMoveTarget(unit, destination, context);
 
         return true;
     }
@@ -73,8 +70,9 @@ public static class ConstructionActions
     }
 
     public static void CompleteConstruction(
-        GameWorld world,
-        Unit unit)
+    GameWorld world,
+    Unit unit,
+    int maxPopulationCapacity = int.MaxValue)
     {
         if (unit.Build.BuildingId is not int buildingId)
         {
@@ -106,7 +104,8 @@ public static class ConstructionActions
         
         PopulationActions.IncreaseCap(
             player,
-            building.Definition.PopulationBonus);
+            building.Definition.PopulationBonus,
+            maxPopulationCapacity);
 
         if (building.Definition.Produces.Count > 0)
         {

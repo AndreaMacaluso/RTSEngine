@@ -31,7 +31,7 @@ public static class GatherSystem
             switch(unit.Gather.Phase)
             {
                 case GatherPhase.MovingToResource:
-                    HandleMovingToResource(world, commandQueue, unit);
+                    HandleMovingToResource(context, commandQueue, unit);
                     break;
 
                 case GatherPhase.Gathering:
@@ -39,11 +39,11 @@ public static class GatherSystem
                     break;
 
                 case GatherPhase.MovingToDeposit:
-                    HandleMovingToDeposit(world, commandQueue, unit);
+                    HandleMovingToDeposit(context, commandQueue, unit);
                     break;
 
                 case GatherPhase.WaitingForDeposit:
-                    HandleWaitingForDeposit(world, commandQueue, unit);
+                    HandleWaitingForDeposit(context, commandQueue, unit);
                     break;
 
                 case GatherPhase.Depositing:
@@ -70,7 +70,7 @@ public static class GatherSystem
         }
     }
     private static void HandleMovingToResource(
-    GameWorld world,
+    RuntimeContext context,
     ICommandQueue commandQueue,
     Unit unit)
     {   
@@ -79,14 +79,14 @@ public static class GatherSystem
         {
             unit.Movement.NeedsRepath = false;
 
-            if (!GatherActions.BeginMoveToResource(world, commandQueue, unit))
+            if (!GatherActions.BeginMoveToResource(context, unit))
             {
                 GatherActions.StopGathering(unit);
             }
 
             return;
         }
-        if (!GatherActions.CanContinueGathering(world, unit))
+        if (!GatherActions.CanContinueGathering(context.World, unit))
         {
             GatherActions.StopGathering(unit);
             return;
@@ -97,7 +97,7 @@ public static class GatherSystem
             return;
         }
 
-        var resource = world.Entities.GetResourceById(resourceId);
+        var resource = context.World.Entities.GetResourceById(resourceId);
 
         if (resource == null)
         {
@@ -127,7 +127,7 @@ public static class GatherSystem
 
                 unit.Gather.Phase = GatherPhase.MovingToDeposit;
 
-                if (!GatherActions.BeginMoveToDeposit(world, commandQueue, unit))
+                if (!GatherActions.BeginMoveToDeposit(context, unit))
                 {
                     unit.Gather.Phase = GatherPhase.WaitingForDeposit;
                     unit.Gather.WaitingForDepositTicks = 0;
@@ -145,7 +145,7 @@ public static class GatherSystem
 
                 unit.Gather.Phase = GatherPhase.MovingToDeposit;
 
-                if (!GatherActions.BeginMoveToDeposit(world, commandQueue, unit))
+                if (!GatherActions.BeginMoveToDeposit(context, unit))
                 {
                     unit.Gather.Phase = GatherPhase.WaitingForDeposit;
                     unit.Gather.WaitingForDepositTicks = 0;
@@ -161,7 +161,7 @@ public static class GatherSystem
         }
     }
     private static void HandleMovingToDeposit(
-    GameWorld world,
+    RuntimeContext context,
     ICommandQueue commandQueue,
     Unit unit)
     {   
@@ -169,7 +169,7 @@ public static class GatherSystem
         {
             unit.Movement.NeedsRepath = false;
 
-            if (!GatherActions.BeginMoveToDeposit(world, commandQueue, unit))
+            if (!GatherActions.BeginMoveToDeposit(context, unit))
             {
                 unit.Gather.Phase = GatherPhase.WaitingForDeposit;
                 unit.Gather.WaitingForDepositTicks = 0;
@@ -204,7 +204,7 @@ public static class GatherSystem
         unit.Gather.Phase = GatherPhase.Depositing;
     }
     private static void HandleWaitingForDeposit(
-    GameWorld world,
+    RuntimeContext context,
     ICommandQueue commandQueue,
     Unit unit)
     {
@@ -212,7 +212,7 @@ public static class GatherSystem
 
         if (unit.Gather.WaitingForDepositTicks % RetryInterval == 0)
         {
-            if (GatherActions.BeginMoveToDeposit(world, commandQueue, unit))
+            if (GatherActions.BeginMoveToDeposit(context, unit))
             {
                 unit.Gather.Phase = GatherPhase.MovingToDeposit;
                 unit.Gather.WaitingForDepositTicks = 0;
@@ -236,14 +236,14 @@ public static class GatherSystem
        if (GatherActions.CanContinueGathering(world, unit))
         {
             unit.Gather.Phase = GatherPhase.MovingToResource;
-            GatherActions.BeginMoveToResource(world, commandQueue, unit);
+            GatherActions.BeginMoveToResource(context, unit);
             return;
         }
 
         if (GatherActions.TryRetargetResource(context, unit))
         {
             unit.Gather.Phase = GatherPhase.MovingToResource;
-            GatherActions.BeginMoveToResource(world, commandQueue, unit);
+            GatherActions.BeginMoveToResource(context, unit);
             return;
         }
 

@@ -38,7 +38,8 @@ class Program
 
             SimulationHost.Run(
                 context.World,
-                simulation);
+                simulation,
+                context);
         }
         catch (Exception ex)
         {

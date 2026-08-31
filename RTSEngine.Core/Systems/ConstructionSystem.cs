@@ -16,7 +16,6 @@ public static class ConstructionSystem
     { 
 
         var world = context.World;
-        var commandQueue = context.CommandQueue;
         foreach (var unit in world.Entities.Units.Values) {
             
             if(!unit.Definition.CanBuild )
@@ -26,11 +25,11 @@ public static class ConstructionSystem
             switch(unit.Build.Phase)
             {
                 case BuildPhase.MovingToConstruction:
-                    HandleMovingToConstruction(world, commandQueue, unit);
+                    HandleMovingToConstruction(context, unit);
                     break;
 
                 case BuildPhase.Constructing:
-                    HandleConstructing(world, unit);
+                    HandleConstructing(context, unit);
                     break;
             }
         }
@@ -38,8 +37,7 @@ public static class ConstructionSystem
 
     
     private static void HandleMovingToConstruction(
-    GameWorld world,
-    ICommandQueue commandQueue,
+    RuntimeContext context,
     Unit unit)
     {   
         if (unit.Movement.NeedsRepath)
@@ -47,8 +45,7 @@ public static class ConstructionSystem
             unit.Movement.NeedsRepath = false;
 
             if (!ConstructionActions.BeginMoveToConstruction(
-                world,
-                commandQueue,
+                context,
                 unit))
             {
                 ConstructionActions.StopBuilding(unit);
@@ -61,9 +58,10 @@ public static class ConstructionSystem
                 return;
             }
 
-        var building = world.Entities.GetBuildingById(buildingId);
+        var building = context.World.Entities.GetBuildingById(buildingId);
         if (building is null)
             {
+                ConstructionActions.StopBuilding(unit);
                 return;
             }
 
@@ -76,7 +74,7 @@ public static class ConstructionSystem
     }
 
     private static void HandleConstructing(
-    GameWorld world,
+    RuntimeContext context,
     Unit unit)
     {
         if (unit.Build.BuildingId is not int buildingId)
@@ -85,7 +83,7 @@ public static class ConstructionSystem
             return;
         }
 
-        var building = world.Entities.GetBuildingById(buildingId);
+        var building = context.World.Entities.GetBuildingById(buildingId);
 
         if (building == null || building.IsCompleted)
         {
@@ -93,14 +91,15 @@ public static class ConstructionSystem
             return;
         }
 
-        if (!ConstructionActions.BuildOneTick(world, unit))
+        if (!ConstructionActions.BuildOneTick(context.World, unit))
         {
             return;
         }
 
         ConstructionActions.CompleteConstruction(
-            world,
-            unit);
+            context.World,
+            unit,
+            context.Settings.PopulationCap);
 
         ConstructionActions.StopBuilding(unit);
     }

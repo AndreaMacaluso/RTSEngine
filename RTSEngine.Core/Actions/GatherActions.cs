@@ -15,11 +15,10 @@ namespace RTSEngine.Core.Actions;
 public static class GatherActions
 {
     public static bool BeginMoveToResource(
-    GameWorld world,
-    ICommandQueue commandQueue,
+    RuntimeContext context,
     Unit unit)
     {
-        var resource = GetTargetResource(world, unit);
+        var resource = GetTargetResource(context.World, unit);
 
         if (resource == null)
         {
@@ -30,7 +29,7 @@ public static class GatherActions
 
         GridPosition? target =
             WorldQueries.FindClosestAdjacentWalkableTile(
-                world,
+                context.World,
                 unit.Position,
                 resource.Position);
 
@@ -39,17 +38,13 @@ public static class GatherActions
             return false;
         }
 
-        QueueMoveCommand(
-            commandQueue,
-            [unit.Id],
-            destination);
+        CommandSystem.AssignMoveTarget(unit, destination, context);
 
         return true;
     }
 
     public static bool BeginMoveToDeposit(
-    GameWorld world,
-    ICommandQueue commandQueue,
+    RuntimeContext context,
     Unit unit)
     {
 
@@ -66,8 +61,8 @@ public static class GatherActions
         }
 
         var deposit = WorldQueries.FindClosestDeposit(
-            world,
-            world.GetPlayerById(unit.OwnerId)!,
+            context.World,
+            context.World.GetPlayerById(unit.OwnerId)!,
             unit.Position,
             resourceType);
         DebugSession.Log.Info(
@@ -84,7 +79,7 @@ public static class GatherActions
         unit.Gather.DepositPosition = deposit.Position;
 
         var target = WorldQueries.FindClosestAdjacentWalkableTile(
-            world,
+            context.World,
             unit.Position,
             deposit.Position);
 
@@ -93,7 +88,7 @@ public static class GatherActions
             return false;
         }
 
-        QueueMoveCommand(commandQueue, [unit.Id], destination);
+        CommandSystem.AssignMoveTarget(unit, destination, context);
         return true;
     }
 
@@ -224,18 +219,6 @@ public static class GatherActions
         unit.Gather.DepositPosition = null;
         unit.Gather.Phase = GatherPhase.None;
         unit.CurrentTask = UnitTask.Idle;
-    }
-
-    private static void QueueMoveCommand(
-    ICommandQueue commandQueue,
-    List<int> unitIds,
-    GridPosition destination)
-    {  
-        commandQueue.Enqueue(new MoveCommand
-        {
-            UnitIds = unitIds,
-            Target = destination
-        });
     }
 
     private static ResourceNode? GetTargetResource(

@@ -1,6 +1,7 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
@@ -138,10 +139,7 @@ public static class CommandSystem
                 continue;
             }
 
-            if (unit.CurrentTask == UnitTask.Idle)
-            {
-                unit.CurrentTask = UnitTask.Moving;
-            }
+            unit.CurrentTask = UnitTask.Moving;
 
             AssignMoveTarget(unit, command.Target, context);
         }
@@ -235,6 +233,11 @@ public static class CommandSystem
             var target = world.Entities.GetEntityById(command.TargetEntityId);
 
             if (target == null)
+            {
+                continue;
+            }
+
+            if (target is not Unit and not Building)
             {
                 continue;
             }

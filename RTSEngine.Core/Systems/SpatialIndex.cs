@@ -37,6 +37,8 @@ public class SpatialIndex
 
         foreach (var building in buildings)
         {
+            if (building.IsDead) continue;
+
             if (building.IsBlocking)
             {
                 foreach (var tile in BuildingQueries.GetOccupiedTiles(building))

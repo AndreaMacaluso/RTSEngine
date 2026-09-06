@@ -4,15 +4,19 @@
     "name": "Villager",
     "maxHealth": 50,
     "movementSpeed": 1.0,
-    "costs":[
-    {
-      "Type": "Food",
-      "Amount": 50
-    }
-    ],
+    "category": "Villager",
+    "meleeAttack": 3,
+    "rangedAttack": 0,
+    "attackRange": 1,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "bonusVs": null,
+    "bonusDamage": 0,
+    "costs": [],
     "productionTimeTicks": 15,
     "gatherCapacity": 20,
-    "buildableBuildings":[
+    "buildableBuildings": [
       "towncenter",
       "house"
     ]
@@ -22,19 +26,176 @@
     "name": "Militia",
     "maxHealth": 60,
     "movementSpeed": 1.1,
-    "attackDamage": 6,
+    "category": "Infantry",
+    "meleeAttack": 6,
+    "rangedAttack": 0,
     "attackRange": 1,
     "attackCooldownTicks": 4,
-    "costs":[
-    {
-      "Type": "Food",
-      "Amount": 50
-    },
-    {
-      "Type": "Gold",
-      "Amount": 30
-    }  
+    "meleeArmor": 1,
+    "rangedArmor": 0,
+    "bonusVs": "Infantry",
+    "bonusDamage": 2,
+    "costs": [
+      { "Type": "Food", "Amount": 60 },
+      { "Type": "Gold", "Amount": 20 }
     ],
     "productionTimeTicks": 20
+  },
+  {
+    "id": "swordsman",
+    "name": "Swordsman",
+    "maxHealth": 70,
+    "movementSpeed": 1.1,
+    "category": "Infantry",
+    "meleeAttack": 8,
+    "rangedAttack": 0,
+    "attackRange": 1,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 3,
+    "rangedArmor": 0,
+    "bonusVs": "Infantry",
+    "bonusDamage": 4,
+    "costs": [
+      { "Type": "Food", "Amount": 90 },
+      { "Type": "Gold", "Amount": 30 }
+    ],
+    "productionTimeTicks": 25
+  },
+  {
+    "id": "spearman",
+    "name": "Spearman",
+    "maxHealth": 55,
+    "movementSpeed": 1.1,
+    "category": "Infantry",
+    "meleeAttack": 4,
+    "rangedAttack": 0,
+    "attackRange": 1,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 2,
+    "rangedArmor": 0,
+    "bonusVs": "Cavalry",
+    "bonusDamage": 12,
+    "costs": [
+      { "Type": "Wood", "Amount": 35 }
+    ],
+    "productionTimeTicks": 15
+  },
+  {
+    "id": "archer",
+    "name": "Archer",
+    "maxHealth": 40,
+    "movementSpeed": 1.0,
+    "category": "Ranged",
+    "meleeAttack": 0,
+    "rangedAttack": 5,
+    "attackRange": 4,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 0,
+    "rangedArmor": 1,
+    "bonusVs": "Infantry",
+    "bonusDamage": 3,
+    "costs": [
+      { "Type": "Wood", "Amount": 25 },
+      { "Type": "Gold", "Amount": 45 }
+    ],
+    "productionTimeTicks": 20
+  },
+  {
+    "id": "javelineer",
+    "name": "Javelineer",
+    "maxHealth": 45,
+    "movementSpeed": 1.0,
+    "category": "Ranged",
+    "meleeAttack": 0,
+    "rangedAttack": 4,
+    "attackRange": 4,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 0,
+    "rangedArmor": 2,
+    "bonusVs": "Ranged",
+    "bonusDamage": 6,
+    "costs": [
+      { "Type": "Wood", "Amount": 35 },
+      { "Type": "Gold", "Amount": 45 }
+    ],
+    "productionTimeTicks": 20
+  },
+  {
+    "id": "scout",
+    "name": "Scout",
+    "maxHealth": 45,
+    "movementSpeed": 1.8,
+    "category": "Cavalry",
+    "meleeAttack": 3,
+    "rangedAttack": 0,
+    "attackRange": 1,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "bonusVs": "Ranged",
+    "bonusDamage": 3,
+    "costs": [
+      { "Type": "Food", "Amount": 30 }
+    ],
+    "productionTimeTicks": 15
+  },
+  {
+    "id": "knight",
+    "name": "Knight",
+    "maxHealth": 100,
+    "movementSpeed": 1.4,
+    "category": "Cavalry",
+    "meleeAttack": 10,
+    "rangedAttack": 0,
+    "attackRange": 1,
+    "attackCooldownTicks": 4,
+    "meleeArmor": 4,
+    "rangedArmor": 0,
+    "bonusVs": "Ranged",
+    "bonusDamage": 4,
+    "costs": [
+      { "Type": "Food", "Amount": 60 },
+      { "Type": "Gold", "Amount": 75 }
+    ],
+    "productionTimeTicks": 30
+  },
+  {
+    "id": "ram",
+    "name": "Ram",
+    "maxHealth": 150,
+    "movementSpeed": 0.5,
+    "category": "Siege",
+    "meleeAttack": 2,
+    "rangedAttack": 0,
+    "attackRange": 1,
+    "attackCooldownTicks": 6,
+    "meleeArmor": 2,
+    "rangedArmor": 0,
+    "bonusVs": "Building",
+    "bonusDamage": 100,
+    "costs": [
+      { "Type": "Wood", "Amount": 150 }
+    ],
+    "productionTimeTicks": 30
+  },
+  {
+    "id": "catapult",
+    "name": "Catapult",
+    "maxHealth": 60,
+    "movementSpeed": 0.6,
+    "category": "Siege",
+    "meleeAttack": 0,
+    "rangedAttack": 40,
+    "attackRange": 6,
+    "attackCooldownTicks": 8,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "bonusVs": "Building",
+    "bonusDamage": 60,
+    "costs": [
+      { "Type": "Wood", "Amount": 150 },
+      { "Type": "Gold", "Amount": 100 }
+    ],
+    "productionTimeTicks": 40
   }
 ]

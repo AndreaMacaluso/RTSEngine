@@ -5,26 +5,16 @@
     "maxHealth": 1000,
     "width": 3,
     "height": 3,
+    "meleeArmor": 6,
+    "rangedArmor": 6,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
     "populationBonus": 5,
-    "costs":[
-      {
-        "Type": "Wood",
-        "Amount": 50
-      }
-    ],
+    "costs": [],
     "buildTimeTicks": 100,
-    "produces":
-    [
-        "villager"
-    ],
-    "acceptedResources":
-    [
-        "Wood",
-        "Food",
-        "Gold",
-        "Stone"
-    ]
-   
+    "produces": ["villager"],
+    "acceptedResources": ["Wood", "Food", "Gold", "Stone"]
   },
   {
     "id": "house",
@@ -32,68 +22,13 @@
     "maxHealth": 200,
     "width": 1,
     "height": 1,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
     "populationBonus": 5,
-    "costs":[
-      {
-        "Type": "Wood",
-        "Amount": 50
-      }
-    ],
-    "buildTimeTicks": 10
-  },
-  {
-    "id": "lumbercamp",
-    "name": "Lumber Camp",
-    "maxHealth": 200,
-    "width": 2,
-    "height": 2,
-    "costs":[
-      {
-        "Type": "Wood",
-        "Amount": 50
-      }
-    ],
-    "acceptedResources":
-    [
-        "Wood"
-    ],
-    "buildTimeTicks": 10
-  },
-  {
-    "id": "minecamp",
-    "name": "Mine Camp",
-    "maxHealth": 200,
-    "width": 2,
-    "height": 2,
-    "costs":[
-      {
-        "Type": "Wood",
-        "Amount": 50
-      }
-    ],
-    "acceptedResources":
-    [
-        "Gold",
-        "Stone"
-    ],
-    "buildTimeTicks": 10
-  },
-  {
-    "id": "mill",
-    "name": "Mill",
-    "maxHealth": 200,
-    "width": 2,
-    "height": 2,
-    "costs":[
-      {
-        "Type": "Wood",
-        "Amount": 50
-      }
-    ],
-    "acceptedResources":
-    [
-        "Food"
-    ],
+    "costs": [{ "Type": "Wood", "Amount": 50 }],
     "buildTimeTicks": 10
   },
   {
@@ -102,16 +37,123 @@
     "maxHealth": 200,
     "width": 2,
     "height": 2,
-    "costs":[
-      {
-        "Type": "Wood",
-        "Amount": 50
-      }
-    ],
-    "produces":
-    [
-        "militia"
-    ],
+    "meleeArmor": 3,
+    "rangedArmor": 3,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [{ "Type": "Wood", "Amount": 100 }],
+    "produces": ["militia", "swordsman", "spearman"],
     "buildTimeTicks": 15
-}
+  },
+  {
+    "id": "lumber_camp",
+    "name": "Lumber Camp",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [{ "Type": "Wood", "Amount": 100 }],
+    "acceptedResources": ["Wood"],
+    "buildTimeTicks": 10
+  },
+  {
+    "id": "mine_camp",
+    "name": "Mine Camp",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [{ "Type": "Wood", "Amount": 100 }],
+    "acceptedResources": ["Gold", "Stone"],
+    "buildTimeTicks": 10
+  },
+  {
+    "id": "mill",
+    "name": "Mill",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "meleeArmor": 0,
+    "rangedArmor": 0,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [{ "Type": "Wood", "Amount": 100 }],
+    "acceptedResources": ["Food"],
+    "buildTimeTicks": 10
+  },
+  {
+    "id": "archery_range",
+    "name": "Archery Range",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "meleeArmor": 3,
+    "rangedArmor": 3,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [{ "Type": "Wood", "Amount": 100 }],
+    "produces": ["archer", "javelineer"],
+    "buildTimeTicks": 15
+  },
+  {
+    "id": "stable",
+    "name": "Stable",
+    "maxHealth": 200,
+    "width": 2,
+    "height": 2,
+    "meleeArmor": 3,
+    "rangedArmor": 3,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [{ "Type": "Wood", "Amount": 100 }],
+    "produces": ["scout", "knight"],
+    "buildTimeTicks": 15
+  },
+  {
+    "id": "siege_workshop",
+    "name": "Siege Workshop",
+    "maxHealth": 200,
+    "width": 3,
+    "height": 3,
+    "meleeArmor": 3,
+    "rangedArmor": 3,
+    "attack": 0,
+    "attackRange": 0,
+    "attackCooldownTicks": 0,
+    "costs": [
+      { "Type": "Wood", "Amount": 150 },
+      { "Type": "Gold", "Amount": 100 }
+    ],
+    "produces": ["ram", "catapult"],
+    "buildTimeTicks": 20
+  },
+  {
+    "id": "watch_tower",
+    "name": "Watch Tower",
+    "maxHealth": 500,
+    "width": 1,
+    "height": 1,
+    "meleeArmor": 4,
+    "rangedArmor": 4,
+    "attack": 6,
+    "attackRange": 5,
+    "attackCooldownTicks": 2,
+    "costs": [
+      { "Type": "Wood", "Amount": 100 },
+      { "Type": "Stone", "Amount": 50 }
+    ],
+    "buildTimeTicks": 20
+  }
 ]

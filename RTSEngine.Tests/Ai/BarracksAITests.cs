@@ -329,7 +329,7 @@ public class MilitiaCombatAIFullLoopTests
         new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Attacking, militia.CurrentTask);
+        Assert.Equal(EntityState.Attacking, militia.CurrentTask);
         Assert.Equal(enemy.Id, militia.Combat.TargetEntityId);
     }
 
@@ -342,7 +342,7 @@ public class MilitiaCombatAIFullLoopTests
             TestDefinitionFactory.CreateMilitiaWithCombatStats(),
             _player.Id,
             new GridPosition(5, 5));
-        militia.CurrentTask = UnitTask.Gathering;
+        militia.CurrentTask = EntityState.Gathering;
 
         var enemy = UnitFactory.Create(
             TestDefinitionFactory.CreateVillager(),
@@ -355,7 +355,7 @@ public class MilitiaCombatAIFullLoopTests
         new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Gathering, militia.CurrentTask);
+        Assert.Equal(EntityState.Gathering, militia.CurrentTask);
     }
 
     [Fact]
@@ -381,13 +381,13 @@ public class MilitiaCombatAIFullLoopTests
         new CombatBrain().Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Attacking, militia.CurrentTask);
+        Assert.Equal(EntityState.Attacking, militia.CurrentTask);
 
         CombatSystem.Update(_context);
         CombatSystem.Update(_context);
         CombatSystem.Update(_context);
 
         Assert.True(enemy.IsDead);
-        Assert.Equal(UnitTask.Idle, militia.CurrentTask);
+        Assert.Equal(EntityState.Idle, militia.CurrentTask);
     }
 }

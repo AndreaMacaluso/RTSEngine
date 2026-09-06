@@ -37,7 +37,7 @@ public static class TestDefinitionFactory
 
     public static UnitDefinition CreateMilitiaWithCombatStats(
         float movementSpeed = 1f,
-        int attackDamage = 6,
+        int meleeAttack = 6,
         int attackRange = 1,
         int attackCooldownTicks = 4)
     {
@@ -47,7 +47,7 @@ public static class TestDefinitionFactory
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = movementSpeed,
-            AttackDamage = attackDamage,
+            MeleeAttack = meleeAttack,
             AttackRange = attackRange,
             AttackCooldownTicks = attackCooldownTicks,
             Costs = [new(ResourceType.Food, 50)]

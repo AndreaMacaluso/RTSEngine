@@ -201,7 +201,7 @@ public class GatherActionsTests
             1,
             new GridPosition(5, 5));
 
-        unit.CurrentTask = UnitTask.Gathering;
+        unit.CurrentTask = EntityState.Gathering;
 
         unit.Gather.CurrentLoad = 10;
         unit.Gather.TargetResourceId = 5;
@@ -210,7 +210,7 @@ public class GatherActionsTests
 
         GatherActions.StopGathering(unit);
 
-        Assert.Equal(UnitTask.Idle, unit.CurrentTask);
+        Assert.Equal(EntityState.Idle, unit.CurrentTask);
         Assert.Equal(10, unit.Gather.CurrentLoad);//Stop gathering does not reset the load
         Assert.Null(unit.Gather.TargetResourceId);
         Assert.Equal(GatherPhase.None, unit.Gather.Phase);

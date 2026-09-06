@@ -71,7 +71,7 @@ public class GatherBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.NotNull(villager.Gather.TargetResourceId);
     }
 
@@ -89,7 +89,7 @@ public class GatherBrainTests
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(5, 5));
-        villager.CurrentTask = UnitTask.Gathering;
+        villager.CurrentTask = EntityState.Gathering;
         _world.Entities.Add(villager, _player);
 
         _world.Entities.Add(new Tree(new GridPosition(10, 5)));
@@ -97,7 +97,7 @@ public class GatherBrainTests
         var brain = new GatherBrain();
         brain.Execute(_context, _player);
 
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
     }
 
     [Fact]
@@ -114,7 +114,7 @@ public class GatherBrainTests
             TestDefinitionFactory.CreateVillager(),
             _player.Id,
             new GridPosition(5, 5));
-        villager.CurrentTask = UnitTask.Gathering;
+        villager.CurrentTask = EntityState.Gathering;
         _world.Entities.Add(villager, _player);
 
         var brain = new GatherBrain();
@@ -143,7 +143,7 @@ public class GatherBrainTests
         var brain = new GatherBrain();
         brain.Execute(_context, _player);
 
-        Assert.Equal(UnitTask.Idle, villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, villager.CurrentTask);
     }
 
     [Fact]
@@ -173,8 +173,8 @@ public class GatherBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
-        Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager1.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager2.CurrentTask);
         Assert.NotNull(villager1.Gather.TargetResourceId);
         Assert.NotNull(villager2.Gather.TargetResourceId);
     }

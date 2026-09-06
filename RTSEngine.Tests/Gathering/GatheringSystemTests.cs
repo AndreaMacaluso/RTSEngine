@@ -73,13 +73,13 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering")]
     public void Update_ShouldStopGathering_WhenResourceDoesNotExist()
     {
-        _villager.CurrentTask = UnitTask.Gathering;
+        _villager.CurrentTask = EntityState.Gathering;
         _villager.Gather.Phase = GatherPhase.MovingToResource;
         _villager.Gather.TargetResourceId = 999;
 
         GatherSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, _villager.CurrentTask);
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
     }
 
@@ -147,7 +147,7 @@ public class GatheringSystemTests
         _villager.Gather.CarriedResource = ResourceType.Wood;
         _villager.Gather.CurrentLoad = 10;
         _villager.Gather.Phase = GatherPhase.Depositing;
-        _villager.CurrentTask = UnitTask.Gathering;
+        _villager.CurrentTask = EntityState.Gathering;
         GatherSystem.Update(_context);
 
         Assert.Equal(GatherPhase.MovingToResource, _villager.Gather.Phase);
@@ -163,11 +163,11 @@ public class GatheringSystemTests
 
         _villager.Gather.TargetResourceId = _tree.Id;
         _villager.Gather.Phase = GatherPhase.Depositing;
-        _villager.CurrentTask = UnitTask.Gathering;
+        _villager.CurrentTask = EntityState.Gathering;
 
         GatherSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, _villager.CurrentTask);
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
     }
 
@@ -236,7 +236,7 @@ public class GatheringSystemTests
 
         SimulationTestHelper.RunTicks(_world, 1, _context);
 
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
         Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
         Assert.NotEmpty(villager.Movement.PathQueue);
@@ -244,7 +244,7 @@ public class GatheringSystemTests
         Assert.Equal(ResourceType.Wood, villager.Gather.CarriedResource);
 
         SimulationTestHelper.RunTicks(_world, 3, _context);
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Gathering, villager.Gather.Phase);
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
         Assert.Equal(1, villager.Gather.CurrentLoad);
@@ -252,18 +252,18 @@ public class GatheringSystemTests
         SimulationTestHelper.RunTicks(_world, 19, _context);
         Assert.Equal(20, villager.Gather.CurrentLoad);
         Assert.NotNull(villager.Gather.DepositPosition);
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToDeposit, villager.Gather.Phase);
 
         SimulationTestHelper.RunTicks(_world, 3, _context);
         Assert.Equal(20, villager.Gather.CurrentLoad);
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Depositing, villager.Gather.Phase);
         Assert.Equal(tree.Id, villager.Gather.TargetResourceId);
 
         SimulationTestHelper.RunTicks(_world, 1, _context);
         Assert.Equal(0, villager.Gather.CurrentLoad);
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.MovingToResource, villager.Gather.Phase);
 
         Assert.Equal(20, player.Economy.Get(ResourceType.Wood));
@@ -317,7 +317,7 @@ public class GatheringSystemTests
         Assert.Equal(tree2.Id, villager.Gather.TargetResourceId);
 
         SimulationTestHelper.RunTicks(_world, 5, _context);
-        Assert.Equal(UnitTask.Gathering, villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager.CurrentTask);
         Assert.Equal(GatherPhase.Gathering, villager.Gather.Phase);
         Assert.Equal(tree2.Id, villager.Gather.TargetResourceId);
     }
@@ -370,8 +370,8 @@ public class GatheringSystemTests
 
         SimulationTestHelper.RunTicks(_world, 20, _context);
 
-        Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
-        Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager1.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager2.CurrentTask);
         Assert.Equal(tree.Id, villager1.Gather.TargetResourceId);
         Assert.Equal(tree.Id, villager2.Gather.TargetResourceId);
         Assert.Equal(GatherPhase.Gathering, villager2.Gather.Phase);
@@ -438,8 +438,8 @@ public class GatheringSystemTests
 
         SimulationTestHelper.RunTicks(_world, 20, _context);
 
-        Assert.Equal(UnitTask.Gathering, villager1.CurrentTask);
-        Assert.Equal(UnitTask.Gathering, villager2.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager1.CurrentTask);
+        Assert.Equal(EntityState.Gathering, villager2.CurrentTask);
         Assert.Equal(tree.Id, villager1.Gather.TargetResourceId);
         Assert.Equal(tree.Id, villager2.Gather.TargetResourceId);
         Assert.Equal(GatherPhase.Gathering, villager1.Gather.Phase);
@@ -456,7 +456,7 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering.WaitingForDeposit")]
     public void WaitingForDeposit_ShouldPreserveResources_WhenBeginMoveToDepositFails()
     {
-        _villager.CurrentTask = UnitTask.Gathering;
+        _villager.CurrentTask = EntityState.Gathering;
         _villager.Gather.TargetResourceId = _tree.Id;
         _villager.Gather.Phase = GatherPhase.Gathering;
         _villager.Gather.CurrentLoad = 20;
@@ -467,7 +467,7 @@ public class GatheringSystemTests
         Assert.Equal(GatherPhase.WaitingForDeposit, _villager.Gather.Phase);
         Assert.Equal(20, _villager.Gather.CurrentLoad);
         Assert.Equal(ResourceType.Wood, _villager.Gather.CarriedResource);
-        Assert.Equal(UnitTask.Gathering, _villager.CurrentTask);
+        Assert.Equal(EntityState.Gathering, _villager.CurrentTask);
     }
 
     [Fact]
@@ -511,7 +511,7 @@ public class GatheringSystemTests
         }
 
         Assert.Equal(GatherPhase.None, _villager.Gather.Phase);
-        Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, _villager.CurrentTask);
         Assert.Equal(20, _villager.Gather.CurrentLoad);
         Assert.Equal(ResourceType.Wood, _villager.Gather.CarriedResource);
     }
@@ -522,7 +522,7 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering.WaitingForDeposit")]
     public void WaitingForDeposit_ShouldTransitionToMovingToDeposit_WhenDepositBecomesAvailable()
     {
-        _villager.CurrentTask = UnitTask.Gathering;
+        _villager.CurrentTask = EntityState.Gathering;
         _villager.Gather.TargetResourceId = _tree.Id;
         _villager.Gather.Phase = GatherPhase.Gathering;
         _villager.Gather.CurrentLoad = 20;
@@ -546,7 +546,7 @@ public class GatheringSystemTests
     [Trait("Category", "Gathering.WaitingForDeposit")]
     public void MovingToDeposit_ShouldTransitionToWaitingForDeposit_WhenStuck()
     {
-        _villager.CurrentTask = UnitTask.Gathering;
+        _villager.CurrentTask = EntityState.Gathering;
         _villager.Gather.Phase = GatherPhase.MovingToDeposit;
         _villager.Gather.DepositPosition = new GridPosition(8, 8);
         _villager.Gather.CurrentLoad = 20;

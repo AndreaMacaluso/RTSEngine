@@ -61,7 +61,7 @@ public class GatherCommandTests
         CommandSystem.Update(_context);
 
         Assert.Equal(
-            UnitTask.Gathering,
+            EntityState.Gathering,
             unit.CurrentTask);
 
         Assert.Equal(

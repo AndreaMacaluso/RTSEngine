@@ -170,9 +170,9 @@ public class MovementSystemTests
 
     [Theory]
     [Trait("Category", "Movement")]
-    [InlineData(UnitTask.Moving)]
-    [InlineData(UnitTask.Gathering)]
-    public void Repath_ShouldRecomputePath_WhenBlocked(UnitTask initialTask)
+    [InlineData(EntityState.Moving)]
+    [InlineData(EntityState.Gathering)]
+    public void Repath_ShouldRecomputePath_WhenBlocked(EntityState initialTask)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = new RuntimeContext
@@ -206,7 +206,7 @@ public class MovementSystemTests
 
         MovementSystem.Update(context);
 
-        if (initialTask == UnitTask.Moving)
+        if (initialTask == EntityState.Moving)
         {
             Assert.False(villager.Movement.NeedsRepath);
         }
@@ -218,9 +218,9 @@ public class MovementSystemTests
 
     [Theory]
     [Trait("Category", "Movement")]
-    [InlineData(UnitTask.Moving)]
-    [InlineData(UnitTask.Gathering)]
-    public void MoveCommand_ShouldSetTaskToMoving(UnitTask initialTask)
+    [InlineData(EntityState.Moving)]
+    [InlineData(EntityState.Gathering)]
+    public void MoveCommand_ShouldSetTaskToMoving(EntityState initialTask)
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
@@ -260,7 +260,7 @@ public class MovementSystemTests
                 Settings = new GameSettings()
             });
 
-        Assert.Equal(UnitTask.Moving, villager.CurrentTask);
+        Assert.Equal(EntityState.Moving, villager.CurrentTask);
     }
 
     [Fact]
@@ -292,7 +292,7 @@ public class MovementSystemTests
             1,
             new GridPosition(2, 2));
 
-        villager.CurrentTask = UnitTask.Moving;
+        villager.CurrentTask = EntityState.Moving;
 
         world.Entities.Add(villager, player);
 
@@ -306,6 +306,96 @@ public class MovementSystemTests
             MovementSystem.Update(context);
         }
 
-        Assert.Equal(UnitTask.Idle, villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, villager.CurrentTask);
+    }
+
+    [Fact]
+    [Trait("Category", "Movement")]
+    public void HighSpeed_ShouldMoveMultipleTilesPerTick()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers(width: 20, height: 20);
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
+        };
+        var player = world.GetPlayerById(1)!;
+
+        var scoutDef = new UnitDefinition
+        {
+            Id = "scout",
+            Name = "Scout",
+            MaxHealth = 45,
+            MovementSpeed = 1.8f
+        };
+
+        var scout = UnitFactory.Create(
+            scoutDef,
+            1,
+            new GridPosition(2, 2));
+
+        world.Entities.Add(scout, player);
+
+        CommandSystem.AssignMoveTarget(
+            scout,
+            new GridPosition(18, 2),
+            context);
+
+        for (int i = 0; i < 5; i++)
+        {
+            MovementSystem.Update(context);
+        }
+
+        Assert.True(scout.Position.X > 7,
+            $"Scout with speed 1.8 should move ~9 tiles in 5 ticks, was at X={scout.Position.X}");
+    }
+
+    [Fact]
+    [Trait("Category", "Movement")]
+    public void fractionalSpeed_ShouldNotLoseProgress()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = new RuntimeContext
+        {
+            World = world,
+            UnitRepository = new UnitDefinitionRepository([]),
+            BuildingRepository = new BuildingDefinitionRepository([]),
+            CommandQueue = new CommandQueue(),
+            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
+            Settings = new GameSettings()
+        };
+        var player = world.GetPlayerById(1)!;
+
+        var def = new UnitDefinition
+        {
+            Id = "unit",
+            Name = "Unit",
+            MaxHealth = 50,
+            MovementSpeed = 0.6f
+        };
+
+        var unit = UnitFactory.Create(
+            def,
+            1,
+            new GridPosition(0, 0));
+
+        world.Entities.Add(unit, player);
+
+        CommandSystem.AssignMoveTarget(
+            unit,
+            new GridPosition(9, 0),
+            context);
+
+        for (int i = 0; i < 10; i++)
+        {
+            MovementSystem.Update(context);
+        }
+
+        Assert.Equal(6, unit.Position.X);
+        Assert.Equal(0, unit.Position.Y);
     }
 }

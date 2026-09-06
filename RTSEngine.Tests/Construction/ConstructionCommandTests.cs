@@ -73,7 +73,7 @@ public class ConstructionCommandTests
         CommandSystem.Update(_context);
 
         Assert.Equal(
-            UnitTask.Building,
+            EntityState.Building,
             unit.CurrentTask);
 
         Assert.Equal(

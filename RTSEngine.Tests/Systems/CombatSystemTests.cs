@@ -43,7 +43,7 @@ public class CombatSystemTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 6,
+            MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 1
         };
@@ -54,7 +54,7 @@ public class CombatSystemTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 6
+            MeleeAttack = 6
         };
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
@@ -65,7 +65,7 @@ public class CombatSystemTests
 
         CombatSystem.BeginAttack(world, attacker, target.Id);
 
-        Assert.Equal(UnitTask.Attacking, attacker.CurrentTask);
+        Assert.Equal(EntityState.Attacking, attacker.CurrentTask);
 
         for (int i = 0; i < 10; i++)
         {
@@ -91,7 +91,7 @@ public class CombatSystemTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 10,
+            MeleeAttack = 10,
             AttackRange = 1,
             AttackCooldownTicks = 4
         };
@@ -136,7 +136,6 @@ public class CombatSystemTests
     [Trait("Category", "Combat")]
     public void Attack_ShouldStop_WhenTargetIsGone()
     {
-        // Scenario 1: target dies during attack
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
@@ -148,7 +147,7 @@ public class CombatSystemTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 30,
+            MeleeAttack = 30,
             AttackRange = 1,
             AttackCooldownTicks = 1
         };
@@ -176,9 +175,8 @@ public class CombatSystemTests
         }
 
         Assert.True(target.IsDead);
-        Assert.Equal(UnitTask.Idle, attacker.CurrentTask);
+        Assert.Equal(EntityState.Idle, attacker.CurrentTask);
 
-        // Scenario 2: target does not exist
         var world2 = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context2 = CreateContext(world2);
         var player1_2 = world2.GetPlayerById(1)!;
@@ -189,7 +187,7 @@ public class CombatSystemTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 6,
+            MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 1
         };
@@ -206,7 +204,7 @@ public class CombatSystemTests
             CombatSystem.Update(context2);
         }
 
-        Assert.Equal(UnitTask.Idle, attacker2.CurrentTask);
+        Assert.Equal(EntityState.Idle, attacker2.CurrentTask);
     }
 
     [Fact]
@@ -224,7 +222,7 @@ public class CombatSystemTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 6,
+            MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
         };
@@ -254,14 +252,13 @@ public class CombatSystemTests
             CombatSystem.Update(context);
         }
 
-        Assert.Equal(UnitTask.Attacking, attacker.CurrentTask);
+        Assert.Equal(EntityState.Attacking, attacker.CurrentTask);
     }
 
     [Fact]
     [Trait("Category", "Combat")]
     public void Unit_ShouldDie_AndReleaseTile_WhenHealthReachesZero()
     {
-        // Unit dies when health reaches zero
         var def = new UnitDefinition
         {
             Id = "villager",
@@ -280,7 +277,6 @@ public class CombatSystemTests
         Assert.True(unit.IsDead);
         Assert.Equal(0, unit.Health.CurrentHealth);
 
-        // Dead unit does not block tile
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var player = world.GetPlayerById(1)!;
 

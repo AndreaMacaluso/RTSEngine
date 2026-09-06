@@ -82,7 +82,7 @@ public class ConstructionSystemTests
         SimulationTestHelper.RunTicks(_world, 10);
 
         Assert.True(building.IsCompleted);
-        Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, _villager.CurrentTask);
         Assert.Equal(BuildPhase.None, _villager.Build.Phase);
     }
 
@@ -108,7 +108,7 @@ public class ConstructionSystemTests
 
         SimulationTestHelper.RunTicks(_world, 50, _context);
 
-        Assert.Equal(UnitTask.Idle, _villager.CurrentTask);
+        Assert.Equal(EntityState.Idle, _villager.CurrentTask);
         Assert.Equal(BuildPhase.None, _villager.Build.Phase);
         Assert.Null(_villager.Build.BuildingId);
         Assert.True(building.IsCompleted);

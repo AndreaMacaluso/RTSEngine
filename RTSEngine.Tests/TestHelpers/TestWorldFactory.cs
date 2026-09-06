@@ -28,10 +28,8 @@ public static class TestWorldFactory
         return new GameWorld(map);
     }
 
-    public static GameWorld CreateWorldWithTwoPlayers( TileType tileType = TileType.Grass )
+    public static GameWorld CreateWorldWithTwoPlayers( TileType tileType = TileType.Grass, int width = 10, int height = 10 )
     {
-        int width = 10;
-        int height = 10;
         var map = new TileMap(width, height);
 
         for (int y = 0; y < height; y++)

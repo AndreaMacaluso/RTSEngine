@@ -185,7 +185,7 @@ public sealed class ResourceTests
 
         tree.Gather(tree.Amount);
 
-        ResourceCleanupSystem.Update(world);
+        CleanupSystem.Update(world);
 
         Assert.Single(world.Entities.Resources.Values);
         Assert.Contains(world.Entities.Resources.Values, r => r.Id == goldMine.Id);
@@ -201,7 +201,7 @@ public sealed class ResourceTests
         var tree = new Tree(new GridPosition(1, 1));
         world.Entities.Add(tree);
 
-        ResourceCleanupSystem.Update(world);
+        CleanupSystem.Update(world);
 
         Assert.Single(world.Entities.Resources.Values);
     }
@@ -225,7 +225,7 @@ public sealed class ResourceTests
         tree1.Gather(tree1.Amount);
         tree3.Gather(tree3.Amount);
 
-        ResourceCleanupSystem.Update(world);
+        CleanupSystem.Update(world);
 
         Assert.Single(world.Entities.Resources.Values);
         Assert.Contains(world.Entities.Resources.Values, r => r.Id == tree2.Id);

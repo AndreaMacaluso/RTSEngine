@@ -67,7 +67,7 @@ public class CombatBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Attacking, militia.CurrentTask);
+        Assert.Equal(EntityState.Attacking, militia.CurrentTask);
         Assert.Equal(enemy.Id, militia.Combat.TargetEntityId);
     }
 
@@ -93,7 +93,7 @@ public class CombatBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Idle, militia.CurrentTask);
+        Assert.Equal(EntityState.Idle, militia.CurrentTask);
     }
 
     [Fact]
@@ -121,7 +121,7 @@ public class CombatBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Moving, militia.CurrentTask);
+        Assert.Equal(EntityState.Moving, militia.CurrentTask);
     }
 
     [Fact]
@@ -146,7 +146,7 @@ public class CombatBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Idle, militia.CurrentTask);
+        Assert.Equal(EntityState.Idle, militia.CurrentTask);
     }
 
     [Fact]
@@ -165,7 +165,7 @@ public class CombatBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Idle, militia.CurrentTask);
+        Assert.Equal(EntityState.Idle, militia.CurrentTask);
     }
 
     [Fact]
@@ -177,7 +177,7 @@ public class CombatBrainTests
             TestDefinitionFactory.CreateMilitiaWithCombatStats(),
             _player.Id,
             new GridPosition(5, 5));
-        militia.CurrentTask = UnitTask.Gathering;
+        militia.CurrentTask = EntityState.Gathering;
 
         var enemy = UnitFactory.Create(
             TestDefinitionFactory.CreateMilitiaWithCombatStats(),
@@ -191,6 +191,6 @@ public class CombatBrainTests
         brain.Execute(_context, _player);
         CommandSystem.Update(_context);
 
-        Assert.Equal(UnitTask.Gathering, militia.CurrentTask);
+        Assert.Equal(EntityState.Gathering, militia.CurrentTask);
     }
 }

@@ -94,7 +94,7 @@ public class ConstructionAIActionsTests
 
         // Assert
         Assert.Equal(
-            UnitTask.Building,
+            EntityState.Building,
             villager.CurrentTask);
 
         Assert.NotNull(villager.Build.BuildingId);

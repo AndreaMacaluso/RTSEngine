@@ -82,7 +82,7 @@ public class CommandSystemTests
         CommandSystem.Update(_context);
 
         Assert.Equal(
-            UnitTask.Gathering,
+            EntityState.Gathering,
             unit.CurrentTask);
     }
 
@@ -166,7 +166,7 @@ public class CommandSystemTests
         CommandSystem.Update(_context);
 
         Assert.Equal(
-            UnitTask.Idle,
+            EntityState.Idle,
             unit.CurrentTask);
     }
 

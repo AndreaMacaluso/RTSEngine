@@ -74,12 +74,13 @@ public class UnitProductionFlowTests
 
 
         _context.CommandQueue.Enqueue(
-            new QueueProductionCommand
-            (
-                building.Id,
-                1,
-               "villager"
-            ));
+            new ProductionCommand
+            {
+                PlayerId = 1,
+                BuildingId = building.Id,
+                Action = ProductionActionType.QueueUnit,
+                ProductId = "villager"
+            });
 
 
         CommandSystem.Update(_context);
@@ -113,7 +114,7 @@ public class UnitProductionFlowTests
         Assert.True(result);
         var pending = _context.CommandQueue.Pending.ToArray();
         Assert.Single(pending);
-        Assert.IsType<QueueProductionCommand>(pending[0]);
+        Assert.IsType<ProductionCommand>(pending[0]);
         Assert.Equal(0, player.Economy.Get(ResourceType.Food));
         Assert.Equal(1, player.Population.Reserved);
     }

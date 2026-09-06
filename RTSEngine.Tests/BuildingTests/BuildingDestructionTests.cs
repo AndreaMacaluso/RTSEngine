@@ -89,7 +89,7 @@ public class BuildingDestructionTests
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
                 PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings()
+                Settings = new GameSettings { DecayTicks = 0 }
             });
 
         building.Health.TakeDamage(1);
@@ -118,7 +118,7 @@ public class BuildingDestructionTests
             TestDefinitionFactory.CreateVillager(),
             ownerId: 1,
             position: new GridPosition(7, 7));
-        builder.CurrentTask = UnitTask.Building;
+        builder.CurrentTask = EntityState.Building;
         builder.Build.BuildingId = building.Id;
         builder.Build.Phase = BuildPhase.Constructing;
 
@@ -133,14 +133,14 @@ public class BuildingDestructionTests
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
                 PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings()
+                Settings = new GameSettings { DecayTicks = 0 }
             });
 
         building.Health.TakeDamage(1);
 
         simulation.Step();
 
-        Assert.Equal(UnitTask.Idle, builder.CurrentTask);
+        Assert.Equal(EntityState.Idle, builder.CurrentTask);
         Assert.Null(builder.Build.BuildingId);
     }
 
@@ -173,7 +173,7 @@ public class BuildingDestructionTests
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
                 PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings()
+                Settings = new GameSettings { DecayTicks = 0 }
             });
 
         building.Health.TakeDamage(1);
@@ -206,7 +206,7 @@ public class BuildingDestructionTests
             Name = "Militia",
             MaxHealth = 60,
             MovementSpeed = 1f,
-            AttackDamage = 30,
+            MeleeAttack = 30,
             AttackRange = 1,
             AttackCooldownTicks = 1
         };
@@ -233,7 +233,7 @@ public class BuildingDestructionTests
         }
 
         Assert.True(building.IsDead);
-        Assert.Equal(UnitTask.Idle, militia.CurrentTask);
+        Assert.Equal(EntityState.Idle, militia.CurrentTask);
     }
 
     [Fact]
@@ -319,7 +319,7 @@ public class BuildingRefundTests
                 BuildingRepository = new([]),
                 CommandQueue = new CommandQueue(),
                 PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings()
+                Settings = new GameSettings { DecayTicks = 0 }
             });
 
         building.Health.TakeDamage(1);
@@ -369,6 +369,6 @@ public class UnitDeathPopulationTests
         simulation.Step();
 
         Assert.Equal(popBefore - 1, player.Population.Current);
-        Assert.DoesNotContain(unit, world.Entities.Units.Values.ToList());
+        Assert.Equal(EntityState.Decaying, unit.CurrentTask);
     }
 }

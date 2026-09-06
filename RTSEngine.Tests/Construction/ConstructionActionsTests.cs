@@ -79,13 +79,13 @@ public class ConstructionActionsTests
 
         unit.Build.BuildingId = 10;
         unit.Build.Phase = BuildPhase.Constructing;
-        unit.CurrentTask = UnitTask.Building;
+        unit.CurrentTask = EntityState.Building;
 
         ConstructionActions.StopBuilding(unit);
 
         Assert.Null(unit.Build.BuildingId);
         Assert.Equal(BuildPhase.None, unit.Build.Phase);
-        Assert.Equal(UnitTask.Idle, unit.CurrentTask);
+        Assert.Equal(EntityState.Idle, unit.CurrentTask);
     }
 
     [Fact]

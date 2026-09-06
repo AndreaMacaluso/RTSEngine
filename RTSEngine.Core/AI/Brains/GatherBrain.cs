@@ -108,7 +108,7 @@ public class GatherBrain : AIBrain
 
             if (target is not GridPosition destination) continue;
 
-            villager.CurrentTask = UnitTask.Gathering;
+            villager.CurrentTask = EntityState.Gathering;
             villager.Gather.Phase = GatherPhase.MovingToDeposit;
             villager.Gather.DepositPosition = deposit.Position;
             CommandSystem.AssignMoveTarget(villager, destination, context);

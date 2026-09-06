@@ -256,7 +256,7 @@ public static class ConsoleRenderer
 
             int economic = units.Count(u => !u.Definition.CanAttack);
             int military = units.Count(u => u.Definition.CanAttack);
-            int idle = units.Count(u => u.CurrentTask == UnitTask.Idle);
+            int idle = units.Count(u => u.CurrentTask == EntityState.Idle);
 
             Console.WriteLine(
                 $"P{player.Id} {player.Name} | " +

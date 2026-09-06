@@ -205,7 +205,7 @@ public static class GatherActions
         }
 
         unit.Gather.TargetResourceId = nextResource.Id;
-        unit.CurrentTask = UnitTask.Gathering;
+        unit.CurrentTask = EntityState.Gathering;
         unit.Gather.Phase = GatherPhase.MovingToResource;
         unit.Gather.CarriedResource = resourceType;
         CommandSystem.AssignMoveTarget(unit, target.Value, context);
@@ -218,7 +218,7 @@ public static class GatherActions
         unit.Gather.TargetResourceId = null;
         unit.Gather.DepositPosition = null;
         unit.Gather.Phase = GatherPhase.None;
-        unit.CurrentTask = UnitTask.Idle;
+        unit.CurrentTask = EntityState.Idle;
     }
 
     private static ResourceNode? GetTargetResource(

@@ -15,7 +15,7 @@ public static class UnitQueries
         Player player)
     {
         return world.Entities.GetUnits(player)
-            .Where(unit => unit.CurrentTask == UnitTask.Idle);
+            .Where(unit => unit.CurrentTask == EntityState.Idle);
     }
 
     public static int CountUnits(
@@ -36,14 +36,14 @@ public static class UnitQueries
     {
         return world.Entities.GetUnits(player)
             .Count(u =>
-                u.CurrentTask == UnitTask.Gathering &&
+                u.CurrentTask == EntityState.Gathering &&
                 u.Gather.CarriedResource == resourceType);
     }
 
     public static List<Unit> FindDeadUnits(GameWorld world)
     {
         return world.Entities.Units.Values
-            .Where(u => u.IsDead)
+            .Where(u => u.IsDead && u.CurrentTask != EntityState.Decaying)
             .ToList();
     }
 
@@ -55,7 +55,7 @@ public static class UnitQueries
             .Where(u =>
                 !u.IsDead
                 && u.Definition.CanAttack
-                && u.CurrentTask == UnitTask.Idle)
+                && u.CurrentTask == EntityState.Idle)
             .ToList();
     }
 }

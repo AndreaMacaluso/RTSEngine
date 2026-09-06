@@ -133,7 +133,7 @@ public static class ConstructionActions
     public static void StopBuilding(
         Unit unit)
     {
-        unit.CurrentTask = UnitTask.Idle;
+        unit.CurrentTask = EntityState.Idle;
 
         unit.Build.BuildingId = null;
         unit.Build.Phase = BuildPhase.None;

@@ -1,10 +1,14 @@
 namespace RTSEngine.Core.State;
-public enum UnitTask
+
+public enum EntityState
 {
     Idle,
     Moving,
     Gathering,
     Depositing,
     Building,
-    Attacking
+    Producing,
+    Attacking,
+    Decaying,
+    Dead
 }

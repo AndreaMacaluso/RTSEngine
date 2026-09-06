@@ -98,7 +98,7 @@ public static class ConstructionAIActions
                 ("VillagerId", builder.Id)
             ]);
 
-        builder.CurrentTask = UnitTask.Building;
+        builder.CurrentTask = EntityState.Building;
 
         commandQueue.Enqueue(new BuildCommand
         {

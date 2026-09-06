@@ -1,4 +1,5 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace RTSEngine.Core.Entities.Loaders;
 
@@ -10,7 +11,8 @@ public static class DefinitionLoader<T>
 
         var options = new JsonSerializerOptions
         {
-            PropertyNameCaseInsensitive = true
+            PropertyNameCaseInsensitive = true,
+            Converters = { new JsonStringEnumConverter() }
         };
 
         return JsonSerializer.Deserialize<List<T>>(json, options)

@@ -3,9 +3,9 @@ namespace RTSEngine.Core.Entities.States;
 
 public sealed class ProductionState
 {
-    // No queue size limit by design
     private readonly Queue<ProductionTask> _queue = new();
     public GridPosition? SpawnPoint { get; set; }
+    public GridPosition? RallyPoint { get; set; }
 
     public bool IsProducing => Current != null;
     public ProductionTask? Current =>
@@ -13,13 +13,10 @@ public sealed class ProductionState
         ? _queue.Peek()
         : null;
 
-
-    public void Add(
-        ProductionTask task)
+    public void Add(ProductionTask task)
     {
         _queue.Enqueue(task);
     }
-
 
     public void RemoveCurrent()
     {

@@ -9,6 +9,7 @@ using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
+using RTSEngine.Core.Systems;
 namespace RTSEngine.Core.Actions;
 
 public static class ProductionActions
@@ -46,6 +47,8 @@ public static class ProductionActions
     {
         var definition =
             context.UnitRepository.Get(task.ProductId);
+
+        WorldQueries.EnsureSpawnPoint(context.World, building);
 
         var spawnPosition = building.Production.SpawnPoint;
 
@@ -93,6 +96,13 @@ public static class ProductionActions
                 ("Position", position)
             ]);
 
+        if (building.Production.RallyPoint.HasValue)
+        {
+            var rallyPoint = building.Production.RallyPoint.Value;
+            unit.CurrentTask = EntityState.Moving;
+            CommandSystem.AssignMoveTarget(unit, rallyPoint, context);
+        }
+
         CompleteUnitSpawned(context, building);
     }
 
@@ -102,12 +112,13 @@ public static class ProductionActions
     UnitDefinition unitDefinition)
     {
         context.CommandQueue.Enqueue(
-            new QueueProductionCommand
-            (
-                building.OwnerId,
-                building.Id,
-                unitDefinition.Id
-        ));
+            new ProductionCommand
+            {
+                PlayerId = building.OwnerId,
+                BuildingId = building.Id,
+                Action = ProductionActionType.QueueUnit,
+                ProductId = unitDefinition.Id
+            });
 
         return true;
     }

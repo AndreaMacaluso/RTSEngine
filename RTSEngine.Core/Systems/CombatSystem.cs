@@ -55,7 +55,7 @@ public static class CombatSystem
 
                 case CombatPhase.Idle:
                     if (unit.Definition.CanAttack
-                        && unit.Definition.Category != UnitCategory.Villager)
+                        && unit.Definition.Category != EntityCategory.Villager)
                     {
                         HandleAutoAttack(world, unit);
                     }
@@ -315,8 +315,8 @@ public static class CombatSystem
                 target.Position,
                 DamageCalculator.CalculateDamage(unit.Combat, target),
                 GetProjectileSpeed(unit),
-                isSingleTarget: unit.Definition.Category != UnitCategory.Siege,
-                splashRadius: unit.Definition.Category == UnitCategory.Siege ? FixedPoint.FromFloat(1.5f) : default);
+                isSingleTarget: unit.Definition.Category != EntityCategory.Siege,
+                splashRadius: unit.Definition.Category == EntityCategory.Siege ? FixedPoint.FromFloat(1.5f) : default);
         }
         else
         {
@@ -356,7 +356,7 @@ public static class CombatSystem
     {
         return unit.Definition.Category switch
         {
-            UnitCategory.Siege => FixedPoint.FromFloat(0.8f),
+            EntityCategory.Siege => FixedPoint.FromFloat(0.8f),
             _ => FixedPoint.FromFloat(2.0f)
         };
     }

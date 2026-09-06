@@ -21,4 +21,6 @@ public sealed class RuntimeContext
     public required GameSettings Settings { get; init; }
 
     public VictoryState Victory { get; } = new();
+
+    public ProjectileState Projectiles { get; } = new();
 }

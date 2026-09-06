@@ -13,7 +13,7 @@ public class UnitDefinition
     public int GatherCapacity { get; set; }
     public List<string> BuildableBuildings { get; set; } = [];
 
-    public UnitCategory Category { get; set; } = UnitCategory.Infantry;
+    public EntityCategory Category { get; set; } = EntityCategory.Infantry;
 
     public int MeleeAttack { get; set; }
     public int RangedAttack { get; set; }

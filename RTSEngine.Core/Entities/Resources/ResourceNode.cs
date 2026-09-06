@@ -10,8 +10,6 @@ public abstract class ResourceNode : Entity
 
     public override bool IsBlocking => !IsDepleted;
 
-    public override bool IsDead => false;
-
     protected ResourceNode(
         GridPosition position,
         int amount,

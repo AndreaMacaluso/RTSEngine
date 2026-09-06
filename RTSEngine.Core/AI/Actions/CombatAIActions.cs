@@ -14,6 +14,7 @@ public static class CombatAIActions
         commandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [unit.Id],
+            Mode = AttackMode.Entity,
             TargetEntityId = targetEntityId
         });
     }

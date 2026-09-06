@@ -1,12 +1,6 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Core.Entities.Runtime;
-using RTSEngine.Core.Entities.Units;
-using RTSEngine.Core.Entities.Buildings;
-using RTSEngine.Core.Entities.States;
-using RTSEngine.Core.Actions;
-using RTSEngine.Core.Helpers;
-using RTSEngine.Core.Players;
 
 namespace RTSEngine.Core.Simulation;
 
@@ -42,9 +36,9 @@ public class SimulationRunner
 
         CombatSystem.Update(_context);
 
-        GatherSystem.Update(_context);
+        ProjectileSystem.Update(_context);
 
-        ResourceCleanupSystem.Update(_context.World);
+        GatherSystem.Update(_context);
 
         ConstructionSystem.Update(_context);
 
@@ -59,70 +53,8 @@ public class SimulationRunner
             _context.World.Finish();
         }
 
-        RemoveDeadEntities(_context.World);
+        CleanupSystem.Update(_context.World);
 
         _context.World.AdvanceTick();
-    }
-
-    private static void RemoveDeadEntities(GameWorld world)
-    {
-        var deadUnits = UnitQueries.FindDeadUnits(world);
-
-        foreach (var unit in deadUnits)
-        {
-            ReleaseUnitPopulation(world, unit);
-            var unitPlayer = world.GetPlayerById(unit.OwnerId) as Player;
-            if (unitPlayer is not null)
-            {
-                world.Entities.Remove(unit, unitPlayer);
-            }
-        }
-
-        var deadBuildings = WorldQueries.FindDeadBuildings(world);
-
-        foreach (var building in deadBuildings)
-        {
-            ReleasePopulation(world, building);
-            var buildingPlayer = world.GetPlayerById(building.OwnerId) as Player;
-            if (buildingPlayer is not null)
-            {
-                world.Entities.Remove(building, buildingPlayer);
-            }
-        }
-    }
-
-    private static void ReleasePopulation(
-        GameWorld world,
-        Building building)
-    {
-        if (building.Definition.PopulationBonus <= 0)
-        {
-            return;
-        }
-
-        var owner = world.GetPlayerById(building.OwnerId);
-
-        if (owner is not Player player)
-        {
-            return;
-        }
-
-        PopulationActions.DecreaseCap(
-            player,
-            building.Definition.PopulationBonus);
-    }
-
-    private static void ReleaseUnitPopulation(
-        GameWorld world,
-        Unit unit)
-    {
-        var owner = world.GetPlayerById(unit.OwnerId);
-
-        if (owner is not Player player)
-        {
-            return;
-        }
-
-        PopulationActions.RemovePopulation(player, 1);
     }
 }

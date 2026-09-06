@@ -41,7 +41,19 @@ public static class WorldQueries
         GameWorld world,
         GridPosition center)
     {
-        foreach (var direction in Directions)
+        GridPosition[] clockwiseFromBottomRight =
+        [
+            new( 1,  1),
+            new( 1,  0),
+            new( 1, -1),
+            new( 0, -1),
+            new(-1, -1),
+            new(-1,  0),
+            new(-1,  1),
+            new( 0,  1)
+        ];
+
+        foreach (var direction in clockwiseFromBottomRight)
         {
             var candidate = new GridPosition(
                 center.X + direction.X,
@@ -362,19 +374,62 @@ public static class WorldQueries
         GameWorld world,
         Building building)
     {
-        if (building.Production.SpawnPoint is not null)
-        {
-            return;
-        }
-
         var center = new GridPosition(
             building.Position.X + building.Definition.Width / 2,
             building.Position.Y + building.Definition.Height / 2);
 
-        building.Production.SpawnPoint =
-            FindAdjacentWalkableTile(world, center)
-            ?? new GridPosition(
-                building.Position.X + building.Definition.Width,
-                building.Position.Y);
+        if (building.Production.RallyPoint is GridPosition rallyPoint)
+        {
+            building.Production.SpawnPoint =
+                FindClosestAdjacentTile(world, center, rallyPoint)
+                ?? FindAdjacentWalkableTile(world, center)
+                ?? new GridPosition(
+                    building.Position.X + building.Definition.Width,
+                    building.Position.Y);
+        }
+        else if (building.Production.SpawnPoint is null)
+        {
+            building.Production.SpawnPoint =
+                FindAdjacentWalkableTile(world, center)
+                ?? new GridPosition(
+                    building.Position.X + building.Definition.Width,
+                    building.Position.Y);
+        }
+    }
+
+    public static GridPosition? FindClosestAdjacentTile(
+        GameWorld world,
+        GridPosition center,
+        GridPosition target)
+    {
+        GridPosition? best = null;
+        int bestDistance = int.MaxValue;
+
+        foreach (var direction in Directions)
+        {
+            var candidate = new GridPosition(
+                center.X + direction.X,
+                center.Y + direction.Y);
+
+            if (!IsInsideBounds(world, candidate.X, candidate.Y))
+            {
+                continue;
+            }
+
+            if (IsTileBlocked(world, candidate.X, candidate.Y))
+            {
+                continue;
+            }
+
+            int distance = DistanceSquared(candidate, target);
+
+            if (distance < bestDistance)
+            {
+                bestDistance = distance;
+                best = candidate;
+            }
+        }
+
+        return best;
     }
 }

@@ -1,5 +1,6 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.State;
+using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Map.Runtime;
@@ -38,11 +39,14 @@ public static class CommandSystem
             case BuildCommand buildCommand:
                 HandleBuild(context, buildCommand);
                 break;
-            case QueueProductionCommand productionCommand:
+            case ProductionCommand productionCommand:
                 HandleProduction(context, productionCommand);
                 break;
             case AttackCommand attackCommand:
-                HandleAttack(context.World, attackCommand);
+                HandleAttack(context, attackCommand);
+                break;
+            case StopCommand stopCommand:
+                HandleStop(context.World, stopCommand);
                 break;
         }
     }
@@ -62,7 +66,7 @@ public static class CommandSystem
 
             if (building == null)
             {
-                unit.CurrentTask = UnitTask.Idle;
+                unit.CurrentTask = EntityState.Idle;
                 continue;
             }
            
@@ -73,12 +77,12 @@ public static class CommandSystem
            
             if (target == null)
             {
-                unit.CurrentTask = UnitTask.Idle;
+                unit.CurrentTask = EntityState.Idle;
                 unit.Build.BuildingId = null;
                 continue;
             }
 
-            unit.CurrentTask = UnitTask.Building;
+            unit.CurrentTask = EntityState.Building;
             unit.Build.BuildingId = building.Id;
             unit.Build.Phase = BuildPhase.MovingToConstruction;
             AssignMoveTarget(unit, target.Value, context);
@@ -100,7 +104,7 @@ public static class CommandSystem
 
             if (resource == null)
             {
-                unit.CurrentTask = UnitTask.Idle;
+                unit.CurrentTask = EntityState.Idle;
                 unit.Gather.TargetResourceId = null;
                 continue;
             }
@@ -112,12 +116,12 @@ public static class CommandSystem
 
             if (target == null)
             {
-                unit.CurrentTask = UnitTask.Idle;
+                unit.CurrentTask = EntityState.Idle;
                 unit.Gather.TargetResourceId = null;
                 continue;
             }
 
-            unit.CurrentTask = UnitTask.Gathering;
+            unit.CurrentTask = EntityState.Gathering;
             unit.Gather.TargetResourceId = command.ResourceId;
             unit.Gather.Phase = GatherPhase.MovingToResource;
             unit.Gather.CarriedResource = resource.ResourceType;
@@ -139,7 +143,7 @@ public static class CommandSystem
                 continue;
             }
 
-            unit.CurrentTask = UnitTask.Moving;
+            unit.CurrentTask = EntityState.Moving;
 
             AssignMoveTarget(unit, command.Target, context);
         }
@@ -175,10 +179,9 @@ public static class CommandSystem
     }
 
     private static void HandleProduction(
-    RuntimeContext context,
-    QueueProductionCommand command)
+        RuntimeContext context,
+        ProductionCommand command)
     {
-
         GameWorld world = context.World;
 
         var building = world.Entities.GetBuildingById(command.BuildingId);
@@ -193,14 +196,37 @@ public static class CommandSystem
             return;
         }
 
-        var player =world.GetPlayerById(command.PlayerId);
+        switch (command.Action)
+        {
+            case ProductionActionType.QueueUnit:
+                HandleQueueUnit(context, building, command);
+                break;
+
+            case ProductionActionType.SetSpawnPoint:
+                HandleSetSpawnPoint(building, command);
+                break;
+
+            case ProductionActionType.SetRallyPoint:
+                HandleSetRallyPoint(building, command);
+                break;
+        }
+    }
+
+    private static void HandleQueueUnit(
+        RuntimeContext context,
+        Building building,
+        ProductionCommand command)
+    {
+        GameWorld world = context.World;
+
+        var player = world.GetPlayerById(command.PlayerId);
 
         if (player == null)
         {
             return;
         }
 
-        var productionDefinition = context.UnitRepository.Get(command.ProductId);
+        var productionDefinition = context.UnitRepository.Get(command.ProductId!);
 
         if (!building.Definition.Produces.Contains(productionDefinition.Id))
         {
@@ -213,13 +239,105 @@ public static class CommandSystem
         }
 
         building.Production.Add(
-            new ProductionTask(productionDefinition.Id,productionDefinition.ProductionTimeTicks)
+            new ProductionTask(productionDefinition.Id, productionDefinition.ProductionTimeTicks)
         );
     }
 
+    private static void HandleSetSpawnPoint(
+        Building building,
+        ProductionCommand command)
+    {
+        if (command.Target is not GridPosition target)
+        {
+            return;
+        }
+
+        building.Production.SpawnPoint = target;
+    }
+
+    private static void HandleSetRallyPoint(
+        Building building,
+        ProductionCommand command)
+    {
+        if (command.Target is not GridPosition target)
+        {
+            return;
+        }
+
+        building.Production.RallyPoint = target;
+    }
+
     private static void HandleAttack(
-    GameWorld world,
-    AttackCommand command)
+        RuntimeContext context,
+        AttackCommand command)
+    {
+        GameWorld world = context.World;
+
+        foreach (var unitId in command.UnitIds)
+        {
+            var unit = world.Entities.GetUnitById(unitId);
+
+            if (unit == null || unit.IsDead)
+            {
+                continue;
+            }
+
+            switch (command.Mode)
+            {
+                case AttackMode.Entity:
+                    HandleAttackEntity(world, unit, command.TargetEntityId!.Value);
+                    break;
+
+                case AttackMode.Guard:
+                    unit.CurrentTask = EntityState.Attacking;
+                    unit.Combat.Clear();
+                    unit.Combat.Phase = CombatPhase.Guarding;
+                    unit.Movement.PathQueue.Clear();
+                    unit.Movement.CurrentStep = null;
+                    break;
+
+                case AttackMode.AttackMove:
+                    unit.CurrentTask = EntityState.Attacking;
+                    unit.Combat.Clear();
+                    unit.Combat.Phase = CombatPhase.AttackMoving;
+                    AssignMoveTarget(unit, command.TargetPosition!.Value, context);
+                    break;
+
+                case AttackMode.Ground:
+                    if (unit.Definition.Category != EntityCategory.Siege)
+                    {
+                        continue;
+                    }
+                    unit.CurrentTask = EntityState.Attacking;
+                    unit.Combat.Clear();
+                    unit.Combat.TargetGroundPosition = command.TargetPosition!.Value;
+                    unit.Combat.Phase = CombatPhase.MovingToTarget;
+                    break;
+            }
+        }
+    }
+
+    private static void HandleAttackEntity(
+        GameWorld world,
+        Unit unit,
+        int targetEntityId)
+    {
+        var target = world.Entities.GetEntityById(targetEntityId);
+
+        if (target == null)
+        {
+            return;
+        }
+
+        if (target is not IHittable)
+        {
+            return;
+        }
+
+        CombatSystem.BeginAttack(world, unit, targetEntityId);
+    }
+
+    private static void HandleStop(GameWorld world, StopCommand command)
     {
         foreach (var unitId in command.UnitIds)
         {
@@ -230,22 +348,11 @@ public static class CommandSystem
                 continue;
             }
 
-            var target = world.Entities.GetEntityById(command.TargetEntityId);
-
-            if (target == null)
-            {
-                continue;
-            }
-
-            if (target is not Unit and not Building)
-            {
-                continue;
-            }
-
-            CombatSystem.BeginAttack(
-                world,
-                unit,
-                command.TargetEntityId);
+            unit.CurrentTask = EntityState.Idle;
+            unit.Combat.Clear();
+            unit.Movement.PathQueue.Clear();
+            unit.Movement.CurrentStep = null;
         }
     }
+
 }

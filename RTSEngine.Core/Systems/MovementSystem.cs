@@ -17,9 +17,14 @@ public static class MovementSystem
         
         foreach (var unit in world.Entities.Units.Values)
         {
+            if (unit.CurrentTask == EntityState.Decaying
+                || unit.CurrentTask == EntityState.Dead)
+            {
+                continue;
+            }
 
             if (unit.Movement.NeedsRepath
-                && unit.CurrentTask == UnitTask.Moving)
+                && unit.CurrentTask == EntityState.Moving)
             {
                 unit.Movement.NeedsRepath = false;
 
@@ -38,9 +43,9 @@ public static class MovementSystem
             {
                 if (unit.Movement.PathQueue.Count == 0)
                 {
-                    if (unit.CurrentTask == UnitTask.Moving)
+                    if (unit.CurrentTask == EntityState.Moving)
                     {
-                        unit.CurrentTask = UnitTask.Idle;
+                        unit.CurrentTask = EntityState.Idle;
                     }
 
                     continue;
@@ -57,19 +62,33 @@ public static class MovementSystem
                 continue;
             }
 
-            unit.Movement.Progress = 0f;
-            if (unit.Movement.CurrentStep is not GridPosition currentStep)
+            while (unit.Movement.Progress >= 1f)
             {
-                continue;
-            }
-            
-            bool moved = TryMove(
-                world,
-                unit,
-                currentStep);
-            if (moved)
-            {
+                if (unit.Movement.CurrentStep is not GridPosition currentStep)
+                {
+                    break;
+                }
+
+                bool moved = TryMove(
+                    world,
+                    unit,
+                    currentStep);
+
+                if (!moved)
+                {
+                    break;
+                }
+
+                unit.Movement.Progress -= 1f;
                 unit.Movement.CurrentStep = null;
+
+                if (unit.Movement.PathQueue.Count == 0)
+                {
+                    break;
+                }
+
+                unit.Movement.CurrentStep =
+                    unit.Movement.PathQueue.Dequeue();
             }
             
         }
@@ -95,7 +114,7 @@ public static class MovementSystem
                 unit.Movement.NeedsRepath = false;
                 unit.Movement.PathQueue.Clear();
                 unit.Movement.CurrentStep = null;
-                unit.CurrentTask = UnitTask.Idle;
+                unit.CurrentTask = EntityState.Idle;
                 return false;
             }
 

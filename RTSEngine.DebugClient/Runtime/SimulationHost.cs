@@ -85,12 +85,6 @@ public static class SimulationHost
                 : world.State == WorldState.Finished
                     ? $"GAME OVER - Player {context.Victory.WinnerPlayerId} WINS!"
                     : "RUNNING");
-        Console.WriteLine($"Speed: {(int)context.Settings.Speed}x | PopCap: {context.Settings.PopulationCap}    ");
-
-        foreach (var player in world.Players)
-        {
-            Console.WriteLine($"P{player.Id} Score: {player.Score}    ");
-        }
 
         ConsoleRenderer.Render(
             world,

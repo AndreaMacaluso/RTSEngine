@@ -1,5 +1,6 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Entities.Runtime;
@@ -24,7 +25,8 @@ public static class MovementSystem
             }
 
             if (unit.Movement.NeedsRepath
-                && unit.CurrentTask == EntityState.Moving)
+                && (unit.CurrentTask == EntityState.Moving
+                    || unit.CurrentTask == EntityState.Attacking))
             {
                 unit.Movement.NeedsRepath = false;
 
@@ -46,6 +48,13 @@ public static class MovementSystem
                     if (unit.CurrentTask == EntityState.Moving)
                     {
                         unit.CurrentTask = EntityState.Idle;
+                    }
+                    else if (unit.CurrentTask == EntityState.Attacking
+                        && !unit.Combat.TargetEntityId.HasValue
+                        && unit.Combat.Phase == CombatPhase.AttackMoving)
+                    {
+                        unit.CurrentTask = EntityState.Idle;
+                        unit.Combat.Phase = CombatPhase.Idle;
                     }
 
                     continue;

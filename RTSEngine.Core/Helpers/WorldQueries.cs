@@ -283,7 +283,7 @@ public static class WorldQueries
 
         var tile = world.Map.GetTile(x, y);
 
-        if (!TileRules.IsWalkable(tile))
+        if (tile != null && !TileRules.IsWalkable(tile))
         {
             return true;
         }

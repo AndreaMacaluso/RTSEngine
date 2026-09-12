@@ -1,3 +1,4 @@
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 
@@ -43,6 +44,16 @@ public class AStarPathFinder : IPathFinder
         _closed.Clear();
         _gScore.Clear();
         _cameFrom.Clear();
+
+        if (!_filter.CanPass(world, target))
+        {
+            var nearestWalkable = WorldQueries.FindAdjacentWalkableTile(world, target);
+            if (nearestWalkable.HasValue)
+            {
+                return FindPath(world, start, nearestWalkable.Value);
+            }
+            return [];
+        }
 
         _gScore[start] = 0.0f;
         _open.Enqueue(start, OctileDistance(start, target));

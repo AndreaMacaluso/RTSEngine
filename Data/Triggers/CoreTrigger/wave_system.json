@@ -1,0 +1,64 @@
+{
+  "MissionId": "wave_system",
+  "Name": "Wave System",
+  "Triggers": [
+    {
+      "TriggerName": "wave_spawn_militia",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 10, "Time": 15 }
+      ],
+      "Effects": [
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 10, "LocationY": 10 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 30, "LocationY": 30 }
+      ]
+    },
+    {
+      "TriggerName": "wave_spawn_archer",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 10, "Time": 15 }
+      ],
+      "Effects": [
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 12, "LocationY": 10 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 28, "LocationY": 30 }
+      ]
+    },
+    {
+      "TriggerName": "wave_spawn_cavalry",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 10, "Time": 15 }
+      ],
+      "Effects": [
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 14, "LocationY": 10 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 26, "LocationY": 30 }
+      ]
+    },
+    {
+      "TriggerName": "attack_move_player1",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 10, "Time": 15 }
+      ],
+      "Effects": [
+        { "EffectType": 28, "PlayerId": 1, "LocationX": 30, "LocationY": 30 }
+      ]
+    },
+    {
+      "TriggerName": "attack_move_player2",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 10, "Time": 15 }
+      ],
+      "Effects": [
+        { "EffectType": 28, "PlayerId": 2, "LocationX": 10, "LocationY": 10 }
+      ]
+    }
+  ]
+}

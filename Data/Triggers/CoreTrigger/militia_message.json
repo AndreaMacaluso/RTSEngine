@@ -1,0 +1,26 @@
+{
+  "MissionId": "core_militia_message",
+  "Name": "Militia Message",
+  "Triggers": [
+    {
+      "TriggerName": "5_militia_message",
+      "Enabled": 1,
+      "Looping": 0,
+      "Conditions": [
+        {
+          "ConditionType": 3,
+          "PlayerId": 1,
+          "ObjectTypeId": "militia",
+          "Quantity": 5
+        }
+      ],
+      "Effects": [
+        {
+          "EffectType": 5,
+          "PlayerId": 1,
+          "Message": "5 militia reached"
+        }
+      ]
+    }
+  ]
+}

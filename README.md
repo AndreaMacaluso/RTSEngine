@@ -107,6 +107,7 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Resource placement validation
 - [x] Spawn validation rules
 - [x] Procedural map generation
+- [x] Symmetric procedural map generation
 
 ---
 
@@ -149,77 +150,25 @@ Build a deterministic, renderer-independent RTS simulation core.
 ### Pathfinding
 - [x] Basic path generation pipeline
 - [x] Command-to-path integration
-- [x] True BFS pathfinding
-- [x] Path reconstruction from BFS search
+- [x] A* pathfinding with Octile heuristic
+- [x] Path reconstruction from search
 - [x] Unreachable target handling
 - [x] Dynamic collision handling
 - [x] Path replanning / blocked path recovery
-
 ---
-## Gameplay Loops
 
-### Economy Loop
+### Trigger System
 
-- [x] Gather command
-- [x] Resource targeting loop
-- [x] Unit gather runtime state
-- [x] Gather execution system
-- [x] Carry capacity loop
-- [x] Deposit / drop-off loop
-- [x] Resource retargeting
-- [x] Continuous gathering
-- [x] Resource cleanup
-- [x] Gather state machine
-- [x] End-to-end villager gather cycle
-- [x] Gather interruption handling
-- [x] Dynamic deposit selection
-
-### Production Loop
-
-- [x] Building production queue
-- [x] Unit training command
-- [x] Training progress system
-- [x] Unit spawn from building
-- [x] End-to-end production cycle
-- [x] Resource payment validation
-- [x] Resource payment on production command
-- [ ] Production cancellation / refund
-
-### Construction Loop
-
-- [x] Build command
-- [x] Foundation
-- [x] Move to construction
-- [x] Construction state machine
-- [x] Construction progress
-- [x] Completion
-- [x] Rendering
-
-- [ ] Multiple builders
-- [ ] Repair
-- [x] Cancel construction
-
-## Runtime Gameplay Loop
-
-- [x] Initial economy
-- [x] Initial town center
-- [x] Villager spawn
-- [x] Gather loop
-- [x] Construction loop
-- [x] Production loop
-- [x] Combat loop
-- [x] Military unit production
-- [x] Barracks AI integration
-- [x] Building destruction
-
-## World Queries
-
-- [x] Adjacent tile queries
-- [x] Adjacent walkable tile search
-- [x] Closest adjacent walkable tile
-- [x] Closest resource search
-- [x] Nearby resources search
-- [x] Closest deposit search
+- [x] Data-driven trigger loading from JSON
+- [x] MissionLoader (PropertyNameCaseInsensitive + JsonStringEnumConverter)
+- [x] Condition types: OwnObjects, Timer (with StartTick)
+- [x] Effect types: CreateObject, SendChat, TaskMovementObject, AttackMove
+- [x] TriggerHandler — condition-driven evaluation (AND logic)
+- [x] TriggerFactory / ConditionFactory / EffectFactory
+- [x] A* blocked target handling (nearest walkable fallback)
+- [ ] More condition types (PlayerDefeated, ObjectsInArea)
+- [ ] More effect types (DeclareVictory)
+- [ ] Event-driven triggers (via EventBus)
 
 ---
 
@@ -277,6 +226,17 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Production system tests
 - [x] Production command tests
 - [x] End-to-end unit production tests
+- [x] Projectile system tests
+- [x] Score system tests
+- [x] Victory state tests
+- [x] Watch tower tests
+- [x] Ground attack tests
+- [x] Guard and stop tests
+- [x] Rally point tests
+- [x] Unit queries tests
+- [x] World queries tests
+- [x] Spatial index tests
+- [x] Symmetric map generator tests
 
 ## Debug Client
 
@@ -285,117 +245,168 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] World initialization pipeline
 - [x] Movement demonstration scenario
 - [x] AI player integration
+- [x] Scenario selection
 - [ ] Interactive unit selection
 - [ ] Runtime command issuing
-- [ ] Scenario selection
 
 ---
 
 # Phase 2 — Gameplay Systems
 
-## Economy
+## Game Loop Core
 
+- Economy Loop
+- Construction Loop
+- Production Loop
+- Combat Loop
+- Trade Loop
+
+---
+
+## Game Loop Details
+
+### Economy
+
+- [x] Gather command
+- [x] Resource targeting loop
+- [x] Unit gather runtime state
+- [x] Gather execution system
+- [x] Carry capacity loop
+- [x] Deposit / drop-off loop
+- [x] Resource retargeting
+- [x] Continuous gathering
+- [x] Resource cleanup
+- [x] Gather state machine
+- [x] End-to-end villager gather cycle
+- [x] Gather interruption handling
+- [x] Dynamic deposit selection
 - [x] Resource stockpile
 - [x] Resource payment
-- [x] Gathering
-- [x] Deposit
-- [x] Automatic retargeting
 - [x] Multiple resource gathering
-
 - [x] Resource depletion cleanup
 - [ ] Search radius
-- [x] Gather interruption
-- [x] Dynamic deposit selection
 - [ ] Resource balancing
 
----
+### Construction
 
-## Buildings
-
-- [x] Runtime building entities
-- [x] Town Center
-- [x] Building factory
-- [x] Foundation placement
-- [x] Building placement validation
-- [x] Resource payment
-- [x] Tile occupation
 - [x] Build command
+- [x] Foundation placement
+- [x] Move to construction
 - [x] Construction state machine
 - [x] Construction progress
-- [x] Building completion
-- [x] Barracks
-
+- [x] Completion
+- [x] Rendering
 - [x] Multi-tile structures
-- [x] Building cancellation
-- [x] Building refund
+- [x] Cancel construction
+- [x] Building cancellation / refund
+- [ ] Multiple builders
 - [ ] Repair system
-- [x] Building destruction
-- [x] Production buildings
 - [ ] Drop-off buildings
+- [ ] Garrison system
 
----
+### Production
 
-## Combat
+- [x] Building production queue
+- [x] Unit training command
+- [x] Training progress system
+- [x] Unit spawn from building
+- [x] End-to-end production cycle
+- [x] Resource payment validation
+- [x] Resource payment on production command
+- [x] Production cancellation / refund
+- [ ] Parallel build queue (multiple buildings)
 
-- [x] Combat system
-- [x] Health and damage
-- [x] Attack cooldown system
+### Combat
+
 - [x] Target selection system
+- [x] Attack cooldown system
 - [x] Melee combat
-- [x] Combat chase behavior
-- [x] Combat stop on target death
+- [x] Ranged combat
+- [x] Chase behavior
+- [x] Stop on target death
+- [x] Health and damage
+- [x] Projectile system (single-target + splash)
+- [x] Damage calculator with category bonuses
 - [x] Combat decision (AI auto-attack)
 - [x] Enemy building targeting
 - [x] Militia base-attack AI (move toward enemy TC)
 - [x] All idle military units act
+- [x] Defensive buildings (Watch Tower)
+- [x] Building combat (tower defense)
+- [ ] Formation system
+- [ ] Guard behavior
+- [ ] Patrol loop
+
+### Trade
+
+- [ ] Trade route system
+- [ ] Merchant units
+- [ ] Resource exchange
+- [ ] Trade income
+- [ ] Trade route protection
 
 ---
 
-## Vision
+## Gameplay Systems
+
+### Population
+
+- [x] Player economy
+- [x] Population
+- [x] Population cap
+- [x] Population management (reserve/release)
+- [x] AI players
+
+### Score & Victory
+
+- [x] Score system
+- [x] Victory condition (Conquest + Score Limit)
+
+### Vision
 
 - [ ] Fog of war
 - [ ] Vision memory
 - [ ] Visibility updates
 
+### Progression
 
-## Gameplay
-
-- [x] Player economy
-- [x] Population
-- [x] Population cap
-- [x] AI players
-
-- [x] Unit production
-- [x] Militia production
 - [ ] Tech tree
 
 ---
 
 # Phase 3 — AI Systems
 
-The current AI uses a rule-based brain system. This is a temporary implementation to validate game mechanics. 
-The AI will be rewritten in Lua scripting once the architecture is stable.
+> **Note:** Current AI is rule-based scaffolding to validate game mechanics.
+> Will be replaced by Lua scripting in Phase 7. Treat this code as temporary/disposable.
+
+## Core
 
 - [x] AI player controller
 - [x] AI update system
 - [x] AI decision interval
 - [x] Runtime AI state
+- [ ] AI command system
+
+## Decisions
+
 - [x] Gather decision
 - [x] Construction decision
+- [x] Production decision
+- [x] Combat decision (auto-attack idle military)
+- [ ] Exploration decision
+- [ ] Economy management AI
+- [ ] Scout system
+
+## Actions
+
 - [x] Gather AI actions
 - [x] Construction AI actions
-- [x] Production decision
-- [ ] Exploration decision
 - [x] Production AI actions
 - [x] Combat AI actions
-- [x] Combat decision (auto-attack idle military)
 - [x] Barracks construction decision (pop >= 15)
 - [x] Militia training from barracks
-- [ ] AI command system
 - [ ] Build order execution
 - [ ] Reactive AI behaviors
-- [ ] Scout system
-- [ ] Economy management AI
 
 ---
 
@@ -406,8 +417,9 @@ The AI will be rewritten in Lua scripting once the architecture is stable.
 - [ ] Map editor
 - [x] Colored debug visualization
 - [x] Runtime debug controls
-- [ ] Debug visualization improvements
+- [x] Debug visualization improvements
 - [ ] Unity integration layer
+- [ ] GUI (non-console renderer)
 
 ---
 
@@ -440,6 +452,15 @@ Goal: clean up architecture, fix known issues, prepare for Lua integration.
 - [x] ConstructionSystem — BuildPosition redundant field removed
 - [x] TileType — Forest mapped in TileTypeMapper
 - [x] ProductionSystem — .ToList() allocation removed
+- [x] Trigger system — TriggerHandler ordering (moved before CommandSystem)
+- [x] A* pathfinding — blocked target handling (finds nearest walkable tile)
+- [x] MovementSystem — Attacking units with empty path go to Idle
+- [x] MovementSystem — NeedRepath extended to Attacking units
+- [x] CreateObjectEffect — spawn position validation (uses FindAdjacentWalkableTile)
+- [x] AttackMoveEffect — filter military units only (uses UnitQueries.FindIdleMilitary)
+- [x] TimerCondition — added StartTick field
+- [x] EffectType — removed unimplemented types
+- [x] TaskObjectEffect — renamed to TaskMovementObjectEffect
 - [ ] CombatSystem — re-path when target moves out of range (deferred)
 - [ ] BasicAi — brain instantiation optimization (deferred)
 
@@ -457,6 +478,8 @@ Goal: clean up architecture, fix known issues, prepare for Lua integration.
 - [x] MovementState — PathQueue setter removed (get-only)
 - [x] Building — PopulationBonus dead field removed
 - [x] LogScope — IDisposable removed
+- [x] IsTileBlocked — null tile handling
+- [x] TriggerSystemTests — updated to project standards
 - [ ] Rename remaining test files (Test → Tests suffix)
 - [ ] Clean up hardcoded config values (move to settings)
 
@@ -468,13 +491,22 @@ Goal: clean up architecture, fix known issues, prepare for Lua integration.
 
 ---
 
-# Phase 6 — Visibility & Fog of War (planned)
+# Phase 6 — Core Systems
 
-- [ ] Tile visibility system (Hidden / Fog / Visible)
-- [ ] Sight range per unit and building
-- [ ] Visibility updates per tick
-- [ ] Integrate with pathfinding and combat
-- [ ] Restrict AI knowledge to visible area
+Goal: complete core infrastructure before plugins.
+
+## Event System
+
+- [ ] Event bus (publish/subscribe)
+- [ ] Event types (UnitSpawned, BuildingCompleted, etc.)
+- [ ] Event registry (event → trigger mapping)
+- [ ] Trigger interface (Evaluate + Execute)
+
+## Determinism
+
+- [ ] Fixed-point math verification
+- [ ] Seeded RNG
+- [ ] Determinism test suite
 
 ---
 
@@ -490,12 +522,20 @@ Goal: replace hardcoded AI with data-driven Lua scripts.
 
 ---
 
-# Phase 8 — Tooling & Integration (future)
+# Phase 8 — Multiplayer
 
-- [ ] Replay system
-- [ ] Save/load system
-- [ ] Map editor
-- [ ] Unity integration layer
-- [ ] GUI (non-console renderer)
+Goal: online multiplayer with lockstep synchronization.
+
+## Networking Core
+
+- [ ] Network manager
+- [ ] Lockstep sync
+- [ ] Host/Client architecture
+
+## Command Sync
+
+- [ ] Command serializer
+- [ ] Command log per tick
+- [ ] Server-side validation
 
 ---

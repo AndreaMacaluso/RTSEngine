@@ -1,6 +1,7 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Map.Loading;
+using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Loaders;
 using RTSEngine.Core.Entities.Definitions;
@@ -19,12 +20,6 @@ public static class SimulationBootstrap
         settings ??= new GameSettings();
         var baseDirectory = AppContext.BaseDirectory;
 
-        var mapPath = Path.Combine(
-            baseDirectory,
-            "Data",
-            "Maps",
-            "map_00.json");
-
         var unitsPath = Path.Combine(
             baseDirectory,
             "Data",
@@ -37,7 +32,9 @@ public static class SimulationBootstrap
             "Buildings",
             "buildings.json");
 
-        var world = LoadWorld(mapPath);
+        var world = string.IsNullOrEmpty(settings.MapPath)
+            ? CreateEmptyMap(settings.Width, settings.Height)
+            : LoadWorld(Path.Combine(baseDirectory, settings.MapPath));
 
         foreach (var spawn in world.Spawns)
         {
@@ -60,6 +57,21 @@ public static class SimulationBootstrap
             Settings = settings,
             TriggerHandler = triggerHandler
         };
+    }
+
+    private static GameWorld CreateEmptyMap(int width, int height)
+    {
+        var map = new TileMap(width, height);
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                map.SetTile(x, y, new Tile { TerrainType = TileType.Grass });
+            }
+        }
+
+        return new GameWorld(map);
     }
 
     private static GameWorld LoadWorld(string mapPath)

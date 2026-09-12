@@ -22,7 +22,7 @@ public static class CombatSystem
             if (unit.IsDead && unit.CurrentTask != EntityState.Decaying)
             {
                 unit.CurrentTask = EntityState.Decaying;
-                unit.DecayTicksRemaining = context.Settings.DecayTicks;
+                unit.DecayTicksRemaining = context.Engine.DecayTicks;
                 unit.Combat.Clear();
                 unit.Movement.PathQueue.Clear();
                 unit.Movement.CurrentStep = null;
@@ -82,7 +82,7 @@ public static class CombatSystem
             if (building.IsDead && building.CurrentTask != EntityState.Decaying)
             {
                 building.CurrentTask = EntityState.Decaying;
-                building.DecayTicksRemaining = context.Settings.DecayTicks;
+                building.DecayTicksRemaining = context.Engine.DecayTicks;
                 building.Combat.Clear();
             }
         }

@@ -23,7 +23,7 @@ class Program
 
         var context = SimulationBootstrap.Create();
 
-        var logger = new Logger(context.Settings.DebugMode);
+        var logger = new Logger(context.Engine.DebugMode);
         logger.AddSink(new FileLogSink(logPath));
         DebugSession.Initialize(logger);
 

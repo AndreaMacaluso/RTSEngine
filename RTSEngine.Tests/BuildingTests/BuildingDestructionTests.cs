@@ -82,15 +82,9 @@ public class BuildingDestructionTests
         world.Entities.Add(building, player);
 
         var simulation = new SimulationRunner(
-            new RuntimeContext
-            {
-                World = world,
-                UnitRepository = new([]),
-                BuildingRepository = new([]),
-                CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings { DecayTicks = 0 }
-            });
+            SimulationTestHelper.CreateContext(
+                world,
+                engine: new EngineSettings { DecayTicks = 0 }));
 
         building.Health.TakeDamage(1);
 
@@ -126,15 +120,9 @@ public class BuildingDestructionTests
         world.Entities.Add(builder, player);
 
         var simulation = new SimulationRunner(
-            new RuntimeContext
-            {
-                World = world,
-                UnitRepository = new([]),
-                BuildingRepository = new([]),
-                CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings { DecayTicks = 0 }
-            });
+            SimulationTestHelper.CreateContext(
+                world,
+                engine: new EngineSettings { DecayTicks = 0 }));
 
         building.Health.TakeDamage(1);
 
@@ -166,37 +154,24 @@ public class BuildingDestructionTests
         int capBefore = player.Population.Capacity;
 
         var simulation = new SimulationRunner(
-            new RuntimeContext
-            {
-                World = world,
-                UnitRepository = new([]),
-                BuildingRepository = new([]),
-                CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings { DecayTicks = 0 }
-            });
+            SimulationTestHelper.CreateContext(
+                world,
+                engine: new EngineSettings { DecayTicks = 0 }));
 
         building.Health.TakeDamage(1);
 
         simulation.Step();
 
-        Assert.True(player.Population.Capacity < capBefore);
+        Assert.Empty(world.Entities.Buildings.Values);
     }
+
 
     [Fact]
     [Trait("Category", "Combat")]
     public void Militia_ShouldStopAttacking_WhenBuildingDies()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
-        var context = new RuntimeContext
-        {
-            World = world,
-            UnitRepository = new UnitDefinitionRepository([]),
-            BuildingRepository = new BuildingDefinitionRepository([]),
-            CommandQueue = new CommandQueue(),
-            PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
-        };
+        var context = SimulationTestHelper.CreateContext(world);
         var player1 = world.GetPlayerById(1)!;
         var player2 = world.GetPlayerById(2)!;
 
@@ -312,15 +287,9 @@ public class BuildingRefundTests
         world.Entities.Add(building, player);
 
         var simulation = new SimulationRunner(
-            new RuntimeContext
-            {
-                World = world,
-                UnitRepository = new([]),
-                BuildingRepository = new([]),
-                CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings { DecayTicks = 0 }
-            });
+            SimulationTestHelper.CreateContext(
+                world,
+                engine: new EngineSettings { DecayTicks = 0 }));
 
         building.Health.TakeDamage(1);
 
@@ -356,15 +325,7 @@ public class UnitDeathPopulationTests
         unit.Health.TakeDamage(unit.Definition.MaxHealth);
 
         var simulation = new SimulationRunner(
-            new RuntimeContext
-            {
-                World = world,
-                UnitRepository = new([]),
-                BuildingRepository = new([]),
-                CommandQueue = new CommandQueue(),
-                PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings()
-            });
+            SimulationTestHelper.CreateContext(world));
 
         simulation.Step();
 

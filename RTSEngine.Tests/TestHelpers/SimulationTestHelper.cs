@@ -10,20 +10,29 @@ namespace RTSEngine.Tests.TestHelpers;
 
 public static class SimulationTestHelper
 {
-    public static void RunTicks(
+    public static RuntimeContext CreateContext(
         GameWorld world,
-        int ticks,
-        RuntimeContext? context = null)
+        GameSettings? settings = null,
+        EngineSettings? engine = null)
     {
-        context ??= new RuntimeContext
+        return new RuntimeContext
         {
             World = world,
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = settings ?? new GameSettings(),
+            Engine = engine ?? new EngineSettings()
         };
+    }
+
+    public static void RunTicks(
+        GameWorld world,
+        int ticks,
+        RuntimeContext? context = null)
+    {
+        context ??= CreateContext(world);
         var simulation = new SimulationRunner(context);
 
         for (int i = 0; i < ticks; i++)

@@ -24,6 +24,8 @@ public sealed class RuntimeContext
 
     public required GameSettings Settings { get; init; }
 
+    public EngineSettings Engine { get; init; } = new();
+
     public TriggerHandler TriggerHandler { get; init; } = new();
 
     public VictoryState Victory { get; } = new();

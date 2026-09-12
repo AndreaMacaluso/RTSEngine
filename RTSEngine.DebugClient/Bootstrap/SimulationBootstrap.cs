@@ -1,4 +1,5 @@
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Loaders;
@@ -7,6 +8,7 @@ using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Core.Settings;
+using RTSEngine.Core.Triggers;
 
 namespace RTSEngine.DebugClient.Bootstrap;
 
@@ -46,6 +48,8 @@ public static class SimulationBootstrap
         var unitRepository = LoadUnitRepository(unitsPath);
         var buildingRepository = LoadBuildingRepository(buildingsPath);
 
+        var triggerHandler = LoadTriggers(baseDirectory);
+
         return new RuntimeContext
         {
             World = world,
@@ -53,7 +57,8 @@ public static class SimulationBootstrap
             BuildingRepository = buildingRepository,
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = settings
+            Settings = settings,
+            TriggerHandler = triggerHandler
         };
     }
 
@@ -79,5 +84,38 @@ public static class SimulationBootstrap
         var definitions = DefinitionLoader<BuildingDefinition>.Load(buildingsPath);
 
         return new BuildingDefinitionRepository(definitions);
+    }
+
+    private static TriggerHandler LoadTriggers(string baseDirectory)
+    {
+        var triggerHandler = new TriggerHandler();
+
+        var triggerFiles = new[]
+        {
+            Path.Combine(baseDirectory, "Data", "Triggers", "CoreTrigger", "wave_system.json")
+        };
+
+        foreach (var triggerPath in triggerFiles)
+        {
+            DebugSession.Log.Debug($"[TriggerLoader] Looking for: {triggerPath}");
+            DebugSession.Log.Debug($"[TriggerLoader] File exists: {File.Exists(triggerPath)}");
+
+            if (File.Exists(triggerPath))
+            {
+                var mission = MissionLoader.Load(triggerPath);
+                DebugSession.Log.Debug($"[TriggerLoader] Mission deserialized: {mission != null}");
+                DebugSession.Log.Debug($"[TriggerLoader] Triggers count: {mission.Triggers.Count}");
+
+                foreach (var triggerDef in mission.Triggers)
+                {
+                    DebugSession.Log.Debug($"[TriggerLoader] Creating trigger: {triggerDef.TriggerName}");
+                    var trigger = TriggerFactory.Create(triggerDef);
+                    triggerHandler.RegisterTrigger(trigger);
+                    DebugSession.Log.Debug($"[TriggerLoader] Trigger registered: {trigger.Id}");
+                }
+            }
+        }
+
+        return triggerHandler;
     }
 }

@@ -28,6 +28,8 @@ public class SimulationRunner
     {
         _context.World.Entities.RebuildSpatialIndex();
 
+        _context.TriggerHandler.Update(_context);
+
         CommandSystem.Update(_context);
 
         AISystem.Update(_context);

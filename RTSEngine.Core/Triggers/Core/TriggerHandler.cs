@@ -7,6 +7,8 @@ public sealed class TriggerHandler
 {
     private readonly Dictionary<string, ITrigger> _triggers = new();
 
+    public int TriggerCount => _triggers.Count;
+
     public void RegisterTrigger(ITrigger trigger)
     {
         _triggers[trigger.Id] = trigger;
@@ -42,8 +44,9 @@ public sealed class TriggerHandler
                 trigger.HasExecuted = true;
             }
             catch (Exception ex)
-            {
+            {   
                 DebugSession.Log.Error($"Trigger {trigger.Id} failed: {ex.Message}");
+                DebugSession.Log.Debug($"Trigger {trigger.Id} failed: {ex}");
             }
         }
     }

@@ -12,4 +12,5 @@ public sealed class ConditionDefinition
     public int? AreaX2 { get; set; }
     public int? AreaY2 { get; set; }
     public int? Time { get; set; }
+    public int? StartTick { get; set; }
 }

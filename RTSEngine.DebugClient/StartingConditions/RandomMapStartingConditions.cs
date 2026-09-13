@@ -5,10 +5,9 @@ using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.DebugClient.StartingConditions;
 
-public static class MatchStartingConditions
+public static class RandomMapStartingConditions
 {
-    public static void CreateStandard(
-        RuntimeContext context)
+    public static void Create(RuntimeContext context)
     {
         foreach (var player in context.World.Players)
         {

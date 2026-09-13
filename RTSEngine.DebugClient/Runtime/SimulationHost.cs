@@ -83,7 +83,7 @@ public static class SimulationHost
             world.State == WorldState.Paused
                 ? "PAUSED "
                 : world.State == WorldState.Finished
-                    ? $"GAME OVER - Player {context.Victory.WinnerPlayerId} WINS!"
+                    ? "GAME OVER"
                     : "RUNNING");
 
         ConsoleRenderer.Render(

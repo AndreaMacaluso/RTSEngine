@@ -16,9 +16,8 @@ namespace RTSEngine.DebugClient.Bootstrap;
 
 public static class SimulationBootstrap
 {
-    public static RuntimeContext Create(GameSettings? settings = null)
+    public static RuntimeContext Create(GameSettings settings)
     {
-        settings ??= new GameSettings();
         var baseDirectory = AppContext.BaseDirectory;
 
         var unitsPath = Path.Combine(
@@ -46,7 +45,7 @@ public static class SimulationBootstrap
         var unitRepository = LoadUnitRepository(unitsPath);
         var buildingRepository = LoadBuildingRepository(buildingsPath);
 
-        var triggerHandler = LoadTriggers(baseDirectory);
+        var triggerHandler = LoadTriggers(baseDirectory, settings.Mode, settings.Victory);
 
         return new RuntimeContext
         {
@@ -128,14 +127,11 @@ public static class SimulationBootstrap
         return new BuildingDefinitionRepository(definitions);
     }
 
-    private static TriggerHandler LoadTriggers(string baseDirectory)
+    private static TriggerHandler LoadTriggers(string baseDirectory, GameMode mode, VictoryType victory)
     {
         var triggerHandler = new TriggerHandler();
 
-        var triggerFiles = new[]
-        {
-            Path.Combine(baseDirectory, "Data", "Triggers", "CoreTrigger", "wave_system.json")
-        };
+        var triggerFiles = GetTriggerFiles(baseDirectory, mode, victory);
 
         foreach (var triggerPath in triggerFiles)
         {
@@ -159,5 +155,32 @@ public static class SimulationBootstrap
         }
 
         return triggerHandler;
+    }
+
+    private static List<string> GetTriggerFiles(string baseDirectory, GameMode mode, VictoryType victory)
+    {
+        var files = new List<string>();
+
+        switch (mode)
+        {
+            
+            case GameMode.Wave:
+                files.Add(Path.Combine(baseDirectory, "Data", "Triggers", "CoreTrigger", "wave_system.json"));
+                break;
+            case GameMode.RandomMap:
+                break;
+        }
+
+        switch (victory)
+        {
+            case VictoryType.Conquest:
+                files.Add(Path.Combine(baseDirectory, "Data", "Triggers", "CoreTrigger", "victory_conquest.json"));
+                break;
+            case VictoryType.Score:
+                files.Add(Path.Combine(baseDirectory, "Data", "Triggers", "CoreTrigger", "victory_score.json"));
+                break;
+        }
+
+        return files;
     }
 }

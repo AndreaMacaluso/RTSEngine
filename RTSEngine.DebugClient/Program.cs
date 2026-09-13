@@ -21,7 +21,9 @@ class Program
             logsDirectory,
             $"session_{DateTime.Now:yyyyMMdd_HHmmss}.log");
 
-        var context = SimulationBootstrap.Create();
+        var context = SimulationBootstrap.Create(MatchPresets.WaveBattle);
+
+        // var context = SimulationBootstrap.Create(MatchPresets.RandomMapConquest);
 
         var logger = new Logger(context.Engine.DebugMode);
         logger.AddSink(new FileLogSink(logPath));

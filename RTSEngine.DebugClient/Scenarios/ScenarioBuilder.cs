@@ -3,6 +3,7 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Settings;
 using RTSEngine.DebugClient.StartingConditions;
 
 
@@ -13,7 +14,17 @@ public static class ScenarioBuilder
     public static void CreateStartingBaseScenario(
         RuntimeContext context)
     {
-        MatchStartingConditions.CreateStandard(context);
+        switch (context.Settings.Mode)
+        {
+            case GameMode.Wave:
+                WaveStartingConditions.Create(context);
+                break;
+
+            case GameMode.RandomMap:
+            default:
+                RandomMapStartingConditions.Create(context);
+                break;
+        }
     }
 
     // for the time being this will help with testing but the concept of scenario 

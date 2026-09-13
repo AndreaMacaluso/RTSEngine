@@ -3,7 +3,7 @@ using RTSEngine.Core.Map.Rules;
 
 namespace RTSEngine.Tests.Map;
 
-public class TileRulesTest
+public class TileRulesTests
 {
     [Theory]
     [InlineData(TileType.Grass, true)]

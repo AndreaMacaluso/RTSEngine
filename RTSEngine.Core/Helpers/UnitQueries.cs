@@ -55,6 +55,7 @@ public static class UnitQueries
             .Where(u =>
                 !u.IsDead
                 && u.Definition.CanAttack
+                && u.Definition.Category != EntityCategory.Villager
                 && u.CurrentTask == EntityState.Idle)
             .ToList();
     }

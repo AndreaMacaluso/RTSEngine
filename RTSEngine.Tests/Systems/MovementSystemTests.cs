@@ -356,7 +356,7 @@ public class MovementSystemTests
 
     [Fact]
     [Trait("Category", "Movement")]
-    public void fractionalSpeed_ShouldNotLoseProgress()
+    public void FractionalSpeed_ShouldNotLoseProgress()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
         var context = new RuntimeContext

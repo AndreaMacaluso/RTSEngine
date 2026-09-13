@@ -248,7 +248,7 @@ public class TriggerSystemTests
         Assert.NotNull(mission);
         Assert.Equal("wave_system", mission.MissionId);
         Assert.Equal("Wave System", mission.Name);
-        Assert.Equal(5, mission.Triggers.Count);
+        Assert.Equal(3, mission.Triggers.Count);
     }
 
     [Fact]
@@ -265,7 +265,7 @@ public class TriggerSystemTests
             handler.RegisterTrigger(trigger);
         }
 
-        Assert.Equal(5, handler.TriggerCount);
+        Assert.Equal(3, handler.TriggerCount);
     }
 
     [Fact]
@@ -284,7 +284,7 @@ public class TriggerSystemTests
 
         Assert.Equal("wave_system", missionId);
         Assert.Equal("Wave System", name);
-        Assert.Equal(5, triggers.GetArrayLength());
+        Assert.Equal(3, triggers.GetArrayLength());
 
         var firstTrigger = triggers[0];
         var triggerName = firstTrigger.GetProperty("TriggerName").GetString();
@@ -296,5 +296,124 @@ public class TriggerSystemTests
         var firstCondition = conditions[0];
         var conditionType = firstCondition.GetProperty("ConditionType").GetInt32();
         Assert.Equal(10, conditionType);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void LastWithBuildingsCondition_ShouldReturnTrue_WhenOnePlayerHasBuildings()
+    {
+        var player1 = _world.GetPlayerById(1)!;
+        var player2 = _world.GetPlayerById(2)!;
+
+        var buildingDef = TestDefinitionFactory.CreateTownCenter();
+        var building = BuildingFactory.Create(buildingDef, 1, new GridPosition(5, 5));
+        building.IsCompleted = true;
+        _world.Entities.Add(building, player1);
+
+        var condition = new LastWithBuildingsCondition();
+        var result = condition.Evaluate(_context);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void LastWithBuildingsCondition_ShouldReturnFalse_WhenMultiplePlayersHaveBuildings()
+    {
+        var player1 = _world.GetPlayerById(1)!;
+        var player2 = _world.GetPlayerById(2)!;
+
+        var buildingDef = TestDefinitionFactory.CreateTownCenter();
+        var building1 = BuildingFactory.Create(buildingDef, 1, new GridPosition(5, 5));
+        building1.IsCompleted = true;
+        _world.Entities.Add(building1, player1);
+
+        var building2 = BuildingFactory.Create(buildingDef, 2, new GridPosition(35, 35));
+        building2.IsCompleted = true;
+        _world.Entities.Add(building2, player2);
+
+        var condition = new LastWithBuildingsCondition();
+        var result = condition.Evaluate(_context);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void ScoreReachedCondition_ShouldReturnTrue_WhenScoreReached()
+    {
+        _player.Score = 1000;
+
+        var condition = new ScoreReachedCondition(1, 1000);
+        var result = condition.Evaluate(_context);
+
+        Assert.True(result);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void ScoreReachedCondition_ShouldReturnFalse_WhenScoreNotReached()
+    {
+        _player.Score = 500;
+
+        var condition = new ScoreReachedCondition(1, 1000);
+        var result = condition.Evaluate(_context);
+
+        Assert.False(result);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void EndGameEffect_ShouldFinishWorld()
+    {
+        var effect = new EndGameEffect();
+
+        effect.Execute(_context);
+
+        Assert.Equal(WorldState.Finished, _world.State);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void ConditionFactory_ShouldCreateLastWithBuildingsCondition_WhenValidDefinition()
+    {
+        var definition = new ConditionDefinition
+        {
+            ConditionType = 20
+        };
+
+        var condition = ConditionFactory.Create(definition);
+
+        Assert.IsType<LastWithBuildingsCondition>(condition);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void ConditionFactory_ShouldCreateScoreReachedCondition_WhenValidDefinition()
+    {
+        var definition = new ConditionDefinition
+        {
+            ConditionType = 21,
+            PlayerId = 1,
+            ScoreTarget = 1000
+        };
+
+        var condition = ConditionFactory.Create(definition);
+
+        Assert.IsType<ScoreReachedCondition>(condition);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void EffectFactory_ShouldCreateEndGameEffect_WhenValidDefinition()
+    {
+        var definition = new EffectDefinition
+        {
+            EffectType = 99
+        };
+
+        var effect = EffectFactory.Create(definition);
+
+        Assert.IsType<EndGameEffect>(effect);
     }
 }

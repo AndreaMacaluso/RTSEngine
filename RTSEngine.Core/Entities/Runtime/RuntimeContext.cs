@@ -9,8 +9,6 @@ namespace RTSEngine.Core.Entities.Runtime;
 
 public sealed class RuntimeContext
 {
-    //@ToDo VictoryState ProjectileState move in game world or other class
-    //VictoryState is a game state rework in game world state machine
     //PathFinder rewiew patfinder if needed there or can be in another class
     public required GameWorld World { get; init; }
 
@@ -27,6 +25,4 @@ public sealed class RuntimeContext
     public EngineSettings Engine { get; init; } = new();
 
     public TriggerHandler TriggerHandler { get; init; } = new();
-
-    public VictoryState Victory { get; } = new();
 }

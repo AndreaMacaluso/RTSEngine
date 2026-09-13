@@ -1,7 +1,7 @@
 namespace RTSEngine.Core.Settings;
 
-public enum VictoryConditionType
+public enum VictoryType
 {
     Conquest,
-    ScoreLimit
+    Score
 }

@@ -76,7 +76,7 @@ public class WatchTowerTests
 
         CombatSystem.Update(context);
 
-        Assert.Single(context.Projectiles.Projectiles);
+        Assert.Single(context.World.Projectiles.All);
         Assert.Equal(60, enemy.Health.CurrentHealth);
     }
 
@@ -129,7 +129,7 @@ public class WatchTowerTests
 
         CombatSystem.Update(context);
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
         Assert.Equal(60, enemy.Health.CurrentHealth);
     }
 
@@ -181,14 +181,14 @@ public class WatchTowerTests
         world.Entities.Add(enemy, player2);
 
         CombatSystem.Update(context);
-        Assert.Single(context.Projectiles.Projectiles);
+        Assert.Single(context.World.Projectiles.All);
 
         world.AdvanceTick();
         CombatSystem.Update(context);
-        Assert.Single(context.Projectiles.Projectiles);
+        Assert.Single(context.World.Projectiles.All);
 
         world.AdvanceTick();
         CombatSystem.Update(context);
-        Assert.Equal(2, context.Projectiles.Projectiles.Count);
+        Assert.Equal(2, context.World.Projectiles.All.Count);
     }
 }

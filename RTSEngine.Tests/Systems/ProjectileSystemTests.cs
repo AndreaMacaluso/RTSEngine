@@ -120,7 +120,7 @@ public class ProjectileSystemTests
         world.Entities.Add(target, player2);
 
         ProjectileSystem.SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             ownerId: 1,
             originX: 5.5f,
             originY: 5.5f,
@@ -131,7 +131,7 @@ public class ProjectileSystemTests
             speed: 2.0f,
             isSingleTarget: true);
 
-        Assert.Single(context.Projectiles.Projectiles);
+        Assert.Single(context.World.Projectiles.All);
 
         target.Position = new GridPosition(12, 5);
 
@@ -140,7 +140,7 @@ public class ProjectileSystemTests
             ProjectileSystem.Update(context);
         }
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
     }
 
     [Fact]
@@ -170,7 +170,7 @@ public class ProjectileSystemTests
         world.Entities.Add(target, player2);
 
         ProjectileSystem.SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             ownerId: 1,
             originX: 5.5f,
             originY: 5.5f,
@@ -183,7 +183,7 @@ public class ProjectileSystemTests
 
         ProjectileSystem.Update(context);
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
         Assert.Equal(55, target.Health.CurrentHealth);
     }
 
@@ -214,7 +214,7 @@ public class ProjectileSystemTests
         world.Entities.Add(target, player2);
 
         ProjectileSystem.SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             ownerId: 1,
             originX: 5.5f,
             originY: 5.5f,
@@ -229,8 +229,8 @@ public class ProjectileSystemTests
 
         ProjectileSystem.Update(context);
 
-        Assert.Single(context.Projectiles.Projectiles);
-        Assert.Equal(10.5f, context.Projectiles.Projectiles[0].TargetX);
+        Assert.Single(context.World.Projectiles.All);
+        Assert.Equal(10.5f, context.World.Projectiles.All[0].TargetX);
         Assert.True(target.IsDead);
     }
 
@@ -242,7 +242,7 @@ public class ProjectileSystemTests
         var context = CreateContext(world);
 
         ProjectileSystem.SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             ownerId: 1,
             originX: 0f,
             originY: 0f,
@@ -252,11 +252,11 @@ public class ProjectileSystemTests
             damage: 10,
             speed: 2.0f);
 
-        context.Projectiles.Projectiles[0].IsActive = false;
+        context.World.Projectiles.All[0].IsActive = false;
 
         ProjectileSystem.Update(context);
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
     }
 
     [Fact]
@@ -276,7 +276,7 @@ public class ProjectileSystemTests
         world.Entities.Add(building, player2);
 
         ProjectileSystem.SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             ownerId: 1,
             originX: 5.5f,
             originY: 5.5f,
@@ -289,7 +289,7 @@ public class ProjectileSystemTests
 
         ProjectileSystem.Update(context);
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
         Assert.Equal(960, building.Health.CurrentHealth);
     }
 
@@ -327,7 +327,7 @@ public class ProjectileSystemTests
         world.Entities.Add(target3, player2);
 
         ProjectileSystem.SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             ownerId: 1,
             originX: 5.5f,
             originY: 5.5f,
@@ -341,7 +341,7 @@ public class ProjectileSystemTests
 
         ProjectileSystem.Update(context);
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
         Assert.Equal(20, target1.Health.CurrentHealth);
         Assert.Equal(40, target2.Health.CurrentHealth);
         Assert.Equal(60, target3.Health.CurrentHealth);

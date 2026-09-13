@@ -107,9 +107,9 @@ public class GroundAttackTests
 
         CombatSystem.Update(context);
 
-        Assert.Single(context.Projectiles.Projectiles);
-        Assert.False(context.Projectiles.Projectiles[0].IsSingleTarget);
-        Assert.Equal(1.5f, context.Projectiles.Projectiles[0].SplashRadius);
+        Assert.Single(context.World.Projectiles.All);
+        Assert.False(context.World.Projectiles.All[0].IsSingleTarget);
+        Assert.Equal(1.5f, context.World.Projectiles.All[0].SplashRadius);
     }
 
     [Fact]
@@ -166,14 +166,14 @@ public class GroundAttackTests
 
         CombatSystem.Update(context);
 
-        Assert.Single(context.Projectiles.Projectiles);
+        Assert.Single(context.World.Projectiles.All);
 
         for (int i = 0; i < 10; i++)
         {
             ProjectileSystem.Update(context);
         }
 
-        Assert.Empty(context.Projectiles.Projectiles);
+        Assert.Empty(context.World.Projectiles.All);
         Assert.Equal(20, target1.Health.CurrentHealth);
         Assert.Equal(40, target2.Health.CurrentHealth);
     }

@@ -16,6 +16,10 @@ public static class ConditionFactory
             (int)ConditionType.Timer => new TimerCondition(
                 definition.Time ?? throw new ArgumentException("Time is required for Timer"),
                 definition.StartTick ?? 0),
+            (int)ConditionType.LastWithBuildings => new LastWithBuildingsCondition(),
+            (int)ConditionType.ScoreReached => new ScoreReachedCondition(
+                definition.PlayerId ?? throw new ArgumentException("PlayerId is required for ScoreReached"),
+                definition.ScoreTarget ?? throw new ArgumentException("ScoreTarget is required for ScoreReached")),
             _ => throw new NotSupportedException($"Condition type {definition.ConditionType} not supported")
         };
     }

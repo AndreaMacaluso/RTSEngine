@@ -6,5 +6,6 @@ public enum EffectType
     CreateObject = 1,
     TaskMovementObject = 2,
     SendChat = 5,
+    EndGame = 99,
     AttackMove = 28
 }

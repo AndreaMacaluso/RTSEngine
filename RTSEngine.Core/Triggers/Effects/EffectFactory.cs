@@ -25,6 +25,7 @@ public static class EffectFactory
                 definition.PlayerId ?? throw new ArgumentException("PlayerId is required for AttackMove"),
                 definition.LocationX ?? throw new ArgumentException("LocationX is required for AttackMove"),
                 definition.LocationY ?? throw new ArgumentException("LocationY is required for AttackMove")),
+            (int)EffectType.EndGame => new EndGameEffect(),
             _ => throw new NotSupportedException($"Effect type {definition.EffectType} not supported")
         };
     }

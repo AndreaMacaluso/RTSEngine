@@ -1,0 +1,28 @@
+{
+  "MissionId": "victory_score",
+  "Name": "Victory Score",
+  "Triggers": [
+    {
+      "TriggerName": "victory_score_p1",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 21, "PlayerId": 1, "ScoreTarget": 1000 }
+      ],
+      "Effects": [
+        { "EffectType": 99 }
+      ]
+    },
+    {
+      "TriggerName": "victory_score_p2",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 21, "PlayerId": 2, "ScoreTarget": 1000 }
+      ],
+      "Effects": [
+        { "EffectType": 99 }
+      ]
+    }
+  ]
+}

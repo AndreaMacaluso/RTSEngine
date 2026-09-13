@@ -1,0 +1,17 @@
+{
+  "MissionId": "victory_conquest",
+  "Name": "Victory Conquest",
+  "Triggers": [
+    {
+      "TriggerName": "victory_conquest",
+      "Enabled": 1,
+      "Looping": 1,
+      "Conditions": [
+        { "ConditionType": 20 }
+      ],
+      "Effects": [
+        { "EffectType": 99 }
+      ]
+    }
+  ]
+}

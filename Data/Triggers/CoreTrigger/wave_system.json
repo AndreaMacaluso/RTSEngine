@@ -7,57 +7,125 @@
       "Enabled": 1,
       "Looping": 1,
       "Conditions": [
-        { "ConditionType": 10, "Time": 15 }
+        { "ConditionType": 10, "Time": 15, "StartTick": 0 }
       ],
       "Effects": [
-        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 10, "LocationY": 10 },
-        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 30, "LocationY": 30 }
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 7 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 9 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 11 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 13 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 14 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 17 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 19 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 21 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 23 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 24 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 27 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 29 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 31 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 33 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "militia", "LocationX": 31, "LocationY": 34 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 7 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 9 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 11 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 13 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 14 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 17 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 19 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 21 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 23 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 24 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 27 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 29 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 31 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 33 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "militia", "LocationX": 8, "LocationY": 34 },
+        { "EffectType": 28, "PlayerId": 1, "LocationX": 20, "LocationY": 20 },
+        { "EffectType": 28, "PlayerId": 2, "LocationX": 20, "LocationY": 20 }
       ]
     },
     {
-      "TriggerName": "wave_spawn_archer",
+      "TriggerName": "wave_spawn_knights",
       "Enabled": 1,
       "Looping": 1,
       "Conditions": [
-        { "ConditionType": 10, "Time": 15 }
+        { "ConditionType": 10, "Time": 20, "StartTick": 15 }
       ],
       "Effects": [
-        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 12, "LocationY": 10 },
-        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 28, "LocationY": 30 }
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 7 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 9 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 11 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 13 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 14 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 17 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 19 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 21 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 23 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 24 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 27 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 29 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 31 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 33 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 31, "LocationY": 34 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 7 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 9 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 11 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 13 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 14 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 17 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 19 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 21 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 23 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 24 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 27 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 29 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 31 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 33 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 8, "LocationY": 34 },
+        { "EffectType": 28, "PlayerId": 1, "LocationX": 20, "LocationY": 20 },
+        { "EffectType": 28, "PlayerId": 2, "LocationX": 20, "LocationY": 20 }
       ]
     },
     {
-      "TriggerName": "wave_spawn_cavalry",
+      "TriggerName": "wave_spawn_archers",
       "Enabled": 1,
       "Looping": 1,
       "Conditions": [
-        { "ConditionType": 10, "Time": 15 }
+        { "ConditionType": 10, "Time": 35, "StartTick": 30 }
       ],
       "Effects": [
-        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "knight", "LocationX": 14, "LocationY": 10 },
-        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "knight", "LocationX": 26, "LocationY": 30 }
-      ]
-    },
-    {
-      "TriggerName": "attack_move_player1",
-      "Enabled": 1,
-      "Looping": 1,
-      "Conditions": [
-        { "ConditionType": 10, "Time": 15 }
-      ],
-      "Effects": [
-        { "EffectType": 28, "PlayerId": 1, "LocationX": 30, "LocationY": 30 }
-      ]
-    },
-    {
-      "TriggerName": "attack_move_player2",
-      "Enabled": 1,
-      "Looping": 1,
-      "Conditions": [
-        { "ConditionType": 10, "Time": 15 }
-      ],
-      "Effects": [
-        { "EffectType": 28, "PlayerId": 2, "LocationX": 10, "LocationY": 10 }
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 7 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 9 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 11 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 13 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 14 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 17 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 19 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 21 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 23 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 24 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 27 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 29 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 31 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 33 },
+        { "EffectType": 1, "PlayerId": 1, "ObjectTypeId": "archer", "LocationX": 31, "LocationY": 34 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 7 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 9 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 11 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 13 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 14 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 17 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 19 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 21 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 23 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 24 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 27 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 29 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 31 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 33 },
+        { "EffectType": 1, "PlayerId": 2, "ObjectTypeId": "archer", "LocationX": 8, "LocationY": 34 },
+        { "EffectType": 28, "PlayerId": 1, "LocationX": 20, "LocationY": 20 },
+        { "EffectType": 28, "PlayerId": 2, "LocationX": 20, "LocationY": 20 }
       ]
     }
   ]

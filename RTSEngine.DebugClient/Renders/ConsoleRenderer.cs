@@ -1,3 +1,4 @@
+using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map;
@@ -5,6 +6,7 @@ using RTSEngine.Core.Map.Definitions;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Helpers;
 
 namespace RTSEngine.DebugClient.Renders;
@@ -82,6 +84,19 @@ public static class ConsoleRenderer
             return;
         }
 
+        var projectile = world.Projectiles.All
+            .FirstOrDefault(p =>
+                p.IsActive &&
+                p.X.Raw / 1000 == x &&
+                p.Y.Raw / 1000 == y);
+
+        if (projectile != null)
+        {
+            RenderProjectile(projectile);
+
+            return;
+        }
+
         RenderTerrain(tile.TerrainType, mode);
     }
 
@@ -112,15 +127,35 @@ public static class ConsoleRenderer
 
     private static void RenderUnit(Unit unit)
     {
+        if (unit.IsDead)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("x ");
+            return;
+        }
+
         Console.ForegroundColor = GetOwnerColor(unit.OwnerId);
 
-        string symbol = unit.Definition.Id switch
+        string symbol = unit.Definition.Category switch
         {
-            EntityIds.Villager => "● ",
+            EntityCategory.Villager => "● ",
+            EntityCategory.Infantry => "▲ ",
+            EntityCategory.Ranged => "* ",
+            EntityCategory.Cavalry => "♦ ",
+            EntityCategory.Siege => "⊕ ",
             _ => "? "
         };
 
         Console.Write(symbol);
+    }
+
+    private static void RenderProjectile(Projectile projectile)
+    {
+        Console.ForegroundColor = projectile.IsSingleTarget
+            ? ConsoleColor.Yellow
+            : ConsoleColor.Red;
+
+        Console.Write("· ");
     }
 
     private static void RenderBuilding(
@@ -153,6 +188,10 @@ public static class ConsoleRenderer
             EntityIds.MineCamp => "MC",
             EntityIds.Mill => "ML",
             EntityIds.Barracks => "BR",
+            EntityIds.ArcheryRange => "AR",
+            EntityIds.Stable => "SB",
+            EntityIds.SiegeWorkshop => "SW",
+            EntityIds.WatchTower => "WT",
             _ => "B "
         };
     }
@@ -256,18 +295,21 @@ public static class ConsoleRenderer
 
             int economic = units.Count(u => !u.Definition.CanAttack);
             int military = units.Count(u => u.Definition.CanAttack);
+            int alive = units.Count;
+            int dead = world.Entities.Units.Values
+                .Count(u => u.OwnerId == player.Id && u.IsDead);
             int idle = units.Count(u => u.CurrentTask == EntityState.Idle);
 
             Console.WriteLine(
                 $"P{player.Id} {player.Name} | " +
                 $"Pop {player.Population.Current}/{player.Population.Capacity} | " +
-                $"E {economic} | " +
-                $"M {military} | " +
+                $"U {alive} D {dead} | " +
                 $"I {idle} | " +
-                $"Wood {player.Economy.Get(ResourceType.Wood),-4} | " +
-                $"Food {player.Economy.Get(ResourceType.Food),-4} | " +
-                $"Gold {player.Economy.Get(ResourceType.Gold),-4} | " +
-                $"Stone {player.Economy.Get(ResourceType.Stone),-4}                                                                                           ");
+                $"W {player.Economy.Get(ResourceType.Wood),-4} " +
+                $"F {player.Economy.Get(ResourceType.Food),-4} " +
+                $"G {player.Economy.Get(ResourceType.Gold),-4} " +
+                $"S {player.Economy.Get(ResourceType.Stone),-4} " +
+                $"| {player.Score}pt                                                                                           ");
         }
 
         Console.ResetColor();

@@ -1,6 +1,7 @@
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
+using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Definitions;
 namespace RTSEngine.Core.State;
 
@@ -13,7 +14,8 @@ public class GameWorld
     private readonly List<SpawnPointDefinition> _spawns = [];
     private readonly List<Player> _players = [];
 
-    public Entities Entities { get; }
+    public RuntimeEntities Entities { get; }
+    public ProjectileState Projectiles { get; } = new();
     public IReadOnlyList<SpawnPointDefinition> Spawns => _spawns;
     public IReadOnlyList<Player> Players => _players;
     public GameWorld(
@@ -22,7 +24,7 @@ public class GameWorld
         List<SpawnPointDefinition>? spawns = null)
     {
         Map = map;
-        Entities = new Entities(_players);
+        Entities = new RuntimeEntities(_players);
 
         foreach (var resource in resources ?? [])
         {

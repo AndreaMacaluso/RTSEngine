@@ -7,7 +7,7 @@ using RTSEngine.Core.Systems;
 
 namespace RTSEngine.Core.State;
 
-public class Entities
+public class RuntimeEntities
 {
     private readonly Dictionary<int, Unit> _units = new();
     private readonly Dictionary<int, Building> _buildings = new();
@@ -22,7 +22,7 @@ public class Entities
     public IReadOnlyDictionary<int, ResourceNode> Resources => _resources;
     public SpatialIndex Spatial => EnsureSpatialIndex();
 
-    public Entities(List<Player> players)
+    public RuntimeEntities(List<Player> players)
     {
         _players = players;
     }

@@ -29,6 +29,4 @@ public sealed class RuntimeContext
     public TriggerHandler TriggerHandler { get; init; } = new();
 
     public VictoryState Victory { get; } = new();
-
-    public ProjectileState Projectiles { get; } = new();
 }

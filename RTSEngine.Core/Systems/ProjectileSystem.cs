@@ -41,11 +41,11 @@ public static class ProjectileSystem
     public static void Update(RuntimeContext context)
     {
         var world = context.World;
-        var state = context.Projectiles;
+        var state = context.World.Projectiles;
 
-        for (int i = state.Projectiles.Count - 1; i >= 0; i--)
+        for (int i = state.All.Count - 1; i >= 0; i--)
         {
-            var projectile = state.Projectiles[i];
+            var projectile = state.All[i];
 
             if (!projectile.IsActive)
             {

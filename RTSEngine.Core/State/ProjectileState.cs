@@ -1,13 +1,13 @@
 using RTSEngine.Core.Entities;
 
-namespace RTSEngine.Core.Entities.Runtime;
+namespace RTSEngine.Core.State;
 
 public class ProjectileState
 {
     private readonly List<Projectile> _projectiles = [];
     private int _nextProjectileId = 1;
 
-    public IReadOnlyList<Projectile> Projectiles => _projectiles;
+    public IReadOnlyList<Projectile> All => _projectiles;
 
     public int NextId() => _nextProjectileId++;
 

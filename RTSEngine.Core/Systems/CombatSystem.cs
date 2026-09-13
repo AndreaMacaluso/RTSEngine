@@ -145,7 +145,7 @@ public static class CombatSystem
                 if (!building.Combat.IsOnCooldown)
                 {
                     SpawnProjectile(
-                        context.Projectiles,
+                        context.World.Projectiles,
                         building.OwnerId,
                         building.Position,
                         target.Id,
@@ -169,7 +169,7 @@ public static class CombatSystem
                 building.CurrentTask = EntityState.Attacking;
 
                 SpawnProjectile(
-                    context.Projectiles,
+                    context.World.Projectiles,
                     building.OwnerId,
                     building.Position,
                     enemy.Id,
@@ -308,7 +308,7 @@ public static class CombatSystem
         if (unit.Combat.IsRanged)
         {
             SpawnProjectile(
-                context.Projectiles,
+                context.World.Projectiles,
                 unit.OwnerId,
                 unit.Position,
                 target.Id,
@@ -386,7 +386,7 @@ public static class CombatSystem
         }
 
         SpawnProjectile(
-            context.Projectiles,
+            context.World.Projectiles,
             unit.OwnerId,
             unit.Position,
             targetEntityId: null,

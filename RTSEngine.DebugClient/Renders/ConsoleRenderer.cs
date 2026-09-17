@@ -42,7 +42,7 @@ public static class ConsoleRenderer
 
         var position = new GridPosition(x, y);
 
-        var unit = world.Entities.Units.Values
+        var unit = world.Entities.Units
             .FirstOrDefault(entity => entity.Position == position);
 
         if (unit != null)
@@ -52,7 +52,7 @@ public static class ConsoleRenderer
             return;
         }
 
-        var building = world.Entities.Buildings.Values
+        var building = world.Entities.Buildings
             .FirstOrDefault(entity => BuildingQueries.OccupiesTile(entity, position));
 
         if (building != null)
@@ -62,7 +62,7 @@ public static class ConsoleRenderer
             return;
         }
 
-        var resource = world.Entities.Resources.Values
+        var resource = world.Entities.Resources
             .FirstOrDefault(r =>
                 r.Position.X == x &&
                 r.Position.Y == y);
@@ -289,14 +289,14 @@ public static class ConsoleRenderer
         {
             Console.ForegroundColor = GetOwnerColor(player.Id);
 
-            var units = world.Entities.Units.Values
+            var units = world.Entities.Units
                 .Where(u => u.OwnerId == player.Id && !u.IsDead)
                 .ToList();
 
             int economic = units.Count(u => !u.Definition.CanAttack);
             int military = units.Count(u => u.Definition.CanAttack);
             int alive = units.Count;
-            int dead = world.Entities.Units.Values
+            int dead = world.Entities.Units
                 .Count(u => u.OwnerId == player.Id && u.IsDead);
             int idle = units.Count(u => u.CurrentTask == EntityState.Idle);
 

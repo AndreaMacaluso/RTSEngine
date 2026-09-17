@@ -1,4 +1,5 @@
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Entities.Definitions;
 
@@ -7,7 +8,7 @@ public class UnitDefinition
     public string Id { get; set; } = "";
     public string Name { get; set; } = "";
     public int MaxHealth { get; set; }
-    public float MovementSpeed { get; set; }
+    public FixedPoint MovementSpeed { get; set; }
     public List<ResourceCost> Costs { get; init; } = [];
     public int ProductionTimeTicks { get; set; }
     public int GatherCapacity { get; set; }

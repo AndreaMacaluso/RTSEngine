@@ -7,6 +7,17 @@ using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.Core.Systems;
 
+/// <summary>
+/// Derived spatial lookup index for entities.
+///
+/// This is NOT a source of truth — it is rebuilt each tick from RuntimeEntities.
+/// Use this for spatial queries (e.g. "what is at tile (x, y)?").
+/// For iteration, use RuntimeEntities.Units/Buildings/Resources instead.
+///
+/// Coherence:
+///   - Rebuilt via RuntimeEntities.EnsureSpatialIndex().
+///   - Mark dirty via RuntimeEntities.MarkSpatialDirty() after position changes.
+/// </summary>
 public class SpatialIndex
 {
     private readonly Dictionary<GridPosition, List<Unit>> _units = new();

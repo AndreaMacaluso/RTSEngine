@@ -1,12 +1,13 @@
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 
 namespace RTSEngine.Core.Entities.States;
 public class MovementState
 {
-    public float Speed { get; set; }
+    public FixedPoint Speed { get; set; }
 
-    public float Progress { get; set; }
+    public FixedPoint Progress { get; set; }
 
     public GridPosition? Destination { get; set; }
 

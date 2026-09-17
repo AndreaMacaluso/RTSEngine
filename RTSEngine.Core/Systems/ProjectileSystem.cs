@@ -1,5 +1,6 @@
 using RTSEngine.Core.Entities;
 using RTSEngine.Core.State;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Helpers;
@@ -92,7 +93,7 @@ public static class ProjectileSystem
         int damage = projectile.Damage;
         int splashSq = projectile.SplashRadius.Raw * projectile.SplashRadius.Raw;
 
-        foreach (var unit in world.Entities.Units.Values)
+        foreach (var unit in world.Entities.Units)
         {
             if (unit.IsDead) continue;
 
@@ -104,7 +105,7 @@ public static class ProjectileSystem
             }
         }
 
-        foreach (var building in world.Entities.Buildings.Values)
+        foreach (var building in world.Entities.Buildings)
         {
             if (building.IsDead) continue;
 

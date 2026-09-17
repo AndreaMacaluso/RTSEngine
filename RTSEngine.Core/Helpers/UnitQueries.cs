@@ -42,7 +42,7 @@ public static class UnitQueries
 
     public static List<Unit> FindDeadUnits(GameWorld world)
     {
-        return world.Entities.Units.Values
+        return world.Entities.Units
             .Where(u => u.IsDead && u.CurrentTask != EntityState.Decaying)
             .ToList();
     }

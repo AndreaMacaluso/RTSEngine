@@ -21,7 +21,7 @@ public static class GatherSystem
         var world = context.World;
         var commandQueue = context.CommandQueue;
 
-        foreach (var unit in world.Entities.Units.Values)
+        foreach (var unit in world.Entities.Units)
         {
            
             if(!unit.Definition.CanGather )

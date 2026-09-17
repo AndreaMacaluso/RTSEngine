@@ -16,7 +16,7 @@ public sealed class TriggerHandler
 
     public void Update(RuntimeContext context)
     {
-        foreach (var trigger in _triggers.Values.ToList())
+        foreach (var trigger in _triggers.Values.OrderBy(t => t.Id).ToList())
         {
             try
             {

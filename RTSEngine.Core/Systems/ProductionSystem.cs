@@ -8,9 +8,7 @@ public static class ProductionSystem
     public static void Update(
         RuntimeContext context)
     {
-        var buildings = context.World.Entities.Buildings.Values.ToList();
-
-        foreach(var building in buildings)
+        foreach(var building in context.World.Entities.Buildings)
         {
             ProductionActions.ProduceOneTick(
                 context,

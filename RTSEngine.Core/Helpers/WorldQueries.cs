@@ -126,13 +126,13 @@ public static class WorldQueries
         ResourceNode? closest = null;
         int bestDist = int.MaxValue;
 
-        foreach (var r in world.Entities.Resources.Values)
+        foreach (var r in world.Entities.Resources)
         {
             if (r.IsDepleted) continue;
             if (resourceType.HasValue && r.ResourceType != resourceType.Value) continue;
 
             int dist = DistanceSquared(center, r.Position);
-            if (dist < bestDist)
+            if (dist < bestDist || (dist == bestDist && (closest is null || r.Id < closest.Id)))
             {
                 bestDist = dist;
                 closest = r;
@@ -143,7 +143,7 @@ public static class WorldQueries
 
     public static List<ResourceNode> FindDepletedResources(GameWorld world)
     {
-        return world.Entities.Resources.Values
+        return world.Entities.Resources
             .Where(r => r.IsDepleted)
             .ToList();
     }
@@ -246,7 +246,7 @@ public static class WorldQueries
 
     public static List<Building> FindDeadBuildings(GameWorld world)
     {
-        return world.Entities.Buildings.Values
+        return world.Entities.Buildings
             .Where(b => b.IsDead && b.IsCompleted)
             .ToList();
     }

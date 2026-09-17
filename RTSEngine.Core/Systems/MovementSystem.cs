@@ -15,8 +15,9 @@ public static class MovementSystem
     public static void Update(RuntimeContext context)
     {
         GameWorld world = context.World;
+        bool anyMoved = false;
         
-        foreach (var unit in world.Entities.Units.Values)
+        foreach (var unit in world.Entities.Units)
         {
             if (unit.CurrentTask == EntityState.Decaying
                 || unit.CurrentTask == EntityState.Dead)
@@ -66,12 +67,12 @@ public static class MovementSystem
 
             unit.Movement.Progress += unit.Movement.Speed;
 
-            if (unit.Movement.Progress < 1f)
+            if (unit.Movement.Progress < FixedPoint.One)
             {
                 continue;
             }
 
-            while (unit.Movement.Progress >= 1f)
+            while (unit.Movement.Progress >= FixedPoint.One)
             {
                 if (unit.Movement.CurrentStep is not GridPosition currentStep)
                 {
@@ -88,7 +89,8 @@ public static class MovementSystem
                     break;
                 }
 
-                unit.Movement.Progress -= 1f;
+                anyMoved = true;
+                unit.Movement.Progress -= FixedPoint.One;
                 unit.Movement.CurrentStep = null;
 
                 if (unit.Movement.PathQueue.Count == 0)
@@ -100,6 +102,11 @@ public static class MovementSystem
                     unit.Movement.PathQueue.Dequeue();
             }
             
+        }
+
+        if (anyMoved)
+        {
+            world.Entities.MarkSpatialDirty();
         }
     }
     private static bool TryMove(

@@ -1,7 +1,29 @@
 using System;
+using System.Text.Json.Serialization;
 
 namespace RTSEngine.Core.Helpers;
 
+/// <summary>
+/// Fixed-point arithmetic type for deterministic cross-platform calculations.
+///
+/// Replaces float/double to guarantee identical results across different CPUs,
+/// which is essential for lockstep multiplayer and replay determinism.
+///
+/// Representation: integer value * 1000 (Scale = 1000).
+/// Example: 1.5 → Raw = 1500, 0.25 → Raw = 250
+///
+/// Precision: 3 decimal places (1/1000 = 0.001).
+/// Range: ±2,147,483 (int.MaxValue / 1000).
+///
+/// Usage:
+///   FixedPoint speed = FixedPoint.FromFloat(0.25f);
+///   FixedPoint one = FixedPoint.One;           // 1.0
+///   FixedPoint distance = a + b;
+///   bool greater = a > b;
+///
+/// JSON serialization: handled by FixedPointJsonConverter (stores as float).
+/// </summary>
+[JsonConverter(typeof(FixedPointJsonConverter))]
 public readonly struct FixedPoint : IEquatable<FixedPoint>, IComparable<FixedPoint>
 {
     private const int Scale = 1000;
@@ -68,5 +90,5 @@ public readonly struct FixedPoint : IEquatable<FixedPoint>, IComparable<FixedPoi
     public static readonly FixedPoint Half = new(Scale / 2);
 
     public static implicit operator FixedPoint(int value) => new(value * Scale);
-    public static implicit operator FixedPoint(float value) => FromFloat(value);
+    public static explicit operator FixedPoint(float value) => FromFloat(value);
 }

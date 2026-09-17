@@ -1,6 +1,7 @@
 using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Map.Runtime;
@@ -16,7 +17,7 @@ public static class ConstructionSystem
     { 
 
         var world = context.World;
-        foreach (var unit in world.Entities.Units.Values) {
+        foreach (var unit in world.Entities.Units) {
             
             if(!unit.Definition.CanBuild )
             {
@@ -100,6 +101,15 @@ public static class ConstructionSystem
             context.World,
             unit,
             context.Settings.PopulationCap);
+
+        context.Events.Publish(new GameEvent
+        {
+            Tick = context.World.CurrentTick,
+            Type = (int)EventType.ConstructionCompleted,
+            EntityId = building.Id,
+            OwnerId = building.OwnerId,
+            Position = building.Position
+        });
 
         ConstructionActions.StopBuilding(unit);
     }

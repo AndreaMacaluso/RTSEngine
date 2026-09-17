@@ -3,6 +3,7 @@ using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Runtime;
@@ -17,7 +18,7 @@ public static class CombatSystem
     {
         GameWorld world = context.World;
 
-        foreach (var unit in world.Entities.Units.Values)
+        foreach (var unit in world.Entities.Units)
         {
             if (unit.IsDead && unit.CurrentTask != EntityState.Decaying)
             {
@@ -32,6 +33,15 @@ public static class CombatSystem
                 {
                     PopulationActions.RemovePopulation(player, 1);
                 }
+
+                context.Events.Publish(new GameEvent
+                {
+                    Tick = world.CurrentTick,
+                    Type = (int)EventType.UnitDied,
+                    EntityId = unit.Id,
+                    OwnerId = unit.OwnerId,
+                    Position = unit.Position
+                });
 
                 continue;
             }
@@ -77,13 +87,22 @@ public static class CombatSystem
 
     private static void HandleBuildingDeath(RuntimeContext context)
     {
-        foreach (var building in context.World.Entities.Buildings.Values)
+        foreach (var building in context.World.Entities.Buildings)
         {
             if (building.IsDead && building.CurrentTask != EntityState.Decaying)
             {
                 building.CurrentTask = EntityState.Decaying;
                 building.DecayTicksRemaining = context.Engine.DecayTicks;
                 building.Combat.Clear();
+
+                context.Events.Publish(new GameEvent
+                {
+                    Tick = context.World.CurrentTick,
+                    Type = (int)EventType.BuildingDied,
+                    EntityId = building.Id,
+                    OwnerId = building.OwnerId,
+                    Position = building.Position
+                });
             }
         }
     }
@@ -108,7 +127,7 @@ public static class CombatSystem
     {
         GameWorld world = context.World;
 
-        foreach (var building in world.Entities.Buildings.Values)
+        foreach (var building in world.Entities.Buildings)
         {
             if (building.IsDead || !building.IsCompleted)
                 continue;
@@ -320,7 +339,18 @@ public static class CombatSystem
         }
         else
         {
-            target.TakeDamage(DamageCalculator.CalculateDamage(unit.Combat, target));
+            int damage = DamageCalculator.CalculateDamage(unit.Combat, target);
+            target.TakeDamage(damage);
+
+            context.Events.Publish(new GameEvent
+            {
+                Tick = context.World.CurrentTick,
+                Type = (int)EventType.DamageDealt,
+                EntityId = target.Id,
+                OwnerId = unit.OwnerId,
+                Position = target.Position,
+                Payload = damage.ToString()
+            });
         }
 
         unit.Combat.ResetCooldown();

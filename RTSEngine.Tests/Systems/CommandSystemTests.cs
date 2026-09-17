@@ -25,7 +25,8 @@ public class CommandSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
 
         _world = _context.World;

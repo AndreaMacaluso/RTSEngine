@@ -2,117 +2,110 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Units;
+using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Helpers;
-using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
 
 namespace RTSEngine.Core.Systems;
 
 public static class CleanupSystem
 {
-    public static void Update(GameWorld world)
+    public static void Update(RuntimeContext context)
     {
-        TickDecay(world);
-        RemoveDeadUnits(world);
-        RemoveDeadBuildings(world);
-        CleanupResources(world);
+        TickDecay(context.World.Entities.Units);
+        TickDecay(context.World.Entities.Buildings);
+        RemoveDeadUnits(context);
+        RemoveDeadBuildings(context);
+        CleanupResources(context);
     }
 
-    private static void TickDecay(GameWorld world)
+    private static void TickDecay<T>(IReadOnlyList<T> entities) where T : Entity
     {
-        foreach (var unit in world.Entities.Units.Values)
+        foreach (var entity in entities)
         {
-            if (unit.CurrentTask == EntityState.Decaying)
+            if (entity.CurrentTask == EntityState.Decaying)
             {
-                unit.DecayTicksRemaining--;
+                entity.DecayTicksRemaining--;
 
-                if (unit.DecayTicksRemaining <= 0)
+                if (entity.DecayTicksRemaining <= 0)
                 {
-                    unit.CurrentTask = EntityState.Dead;
-                }
-            }
-        }
-
-        foreach (var building in world.Entities.Buildings.Values)
-        {
-            if (building.CurrentTask == EntityState.Decaying)
-            {
-                building.DecayTicksRemaining--;
-
-                if (building.DecayTicksRemaining <= 0)
-                {
-                    building.CurrentTask = EntityState.Dead;
+                    entity.CurrentTask = EntityState.Dead;
                 }
             }
         }
     }
 
-    private static void RemoveDeadUnits(GameWorld world)
+    private static void RemoveDeadUnits(RuntimeContext context)
     {
-        var removeIds = new List<int>();
+        var world = context.World;
+        var toRemove = new List<Unit>();
 
-        foreach (var unit in world.Entities.Units.Values)
+        foreach (var unit in world.Entities.Units)
         {
             if (unit.CurrentTask == EntityState.Dead)
             {
-                removeIds.Add(unit.Id);
+                toRemove.Add(unit);
             }
         }
 
-        foreach (var unitId in removeIds)
+        foreach (var unit in toRemove)
         {
-            var unit = world.Entities.GetUnitById(unitId);
-
-            if (unit == null)
-            {
-                continue;
-            }
-
-            var owner = world.GetPlayerById(unit.OwnerId);
-
-            if (owner is Player player)
+            var player = world.GetPlayerById(unit.OwnerId);
+            if (player != null)
             {
                 world.Entities.Remove(unit, player);
+
+                context.Events.Publish(new GameEvent
+                {
+                    Tick = world.CurrentTick,
+                    Type = (int)EventType.UnitRemoved,
+                    EntityId = unit.Id,
+                    OwnerId = unit.OwnerId,
+                    Position = unit.Position
+                });
             }
         }
     }
 
-    private static void RemoveDeadBuildings(GameWorld world)
+    private static void RemoveDeadBuildings(RuntimeContext context)
     {
-        var removeIds = new List<int>();
+        var world = context.World;
+        var toRemove = new List<Building>();
 
-        foreach (var building in world.Entities.Buildings.Values)
+        foreach (var building in world.Entities.Buildings)
         {
             if (building.CurrentTask == EntityState.Dead)
             {
                 ReleaseBuildingPopulation(world, building);
-                removeIds.Add(building.Id);
+                toRemove.Add(building);
             }
         }
 
-        foreach (var buildingId in removeIds)
+        foreach (var building in toRemove)
         {
-            var building = world.Entities.GetBuildingById(buildingId);
-
-            if (building == null)
-            {
-                continue;
-            }
-
-            var owner = world.GetPlayerById(building.OwnerId);
-
-            if (owner is Player player)
+            var player = world.GetPlayerById(building.OwnerId);
+            if (player != null)
             {
                 world.Entities.Remove(building, player);
+
+                context.Events.Publish(new GameEvent
+                {
+                    Tick = world.CurrentTick,
+                    Type = (int)EventType.BuildingRemoved,
+                    EntityId = building.Id,
+                    OwnerId = building.OwnerId,
+                    Position = building.Position
+                });
             }
         }
     }
 
-    private static void CleanupResources(GameWorld world)
+    private static void CleanupResources(RuntimeContext context)
     {
-        foreach (var resource in WorldQueries.FindDepletedResources(world))
+        foreach (var resource in WorldQueries.FindDepletedResources(context.World))
         {
-            world.Entities.Remove(resource);
+            context.World.Entities.Remove(resource);
         }
     }
 
@@ -125,9 +118,8 @@ public static class CleanupSystem
             return;
         }
 
-        var owner = world.GetPlayerById(building.OwnerId);
-
-        if (owner is not Player player)
+        var player = world.GetPlayerById(building.OwnerId);
+        if (player == null)
         {
             return;
         }

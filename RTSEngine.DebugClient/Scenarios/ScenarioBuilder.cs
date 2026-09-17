@@ -54,7 +54,7 @@ public static class ScenarioBuilder
             context.UnitRepository.Get(EntityIds.Villager);
         foreach (Player player in world.Players)
         {
-            var resource = world.Entities.Resources.Values.FirstOrDefault();
+            var resource = world.Entities.Resources.FirstOrDefault();
             if (resource == null)
             {
                   return;
@@ -65,7 +65,7 @@ public static class ScenarioBuilder
             villagerDefinition.Id,
             ownerId: player.Id,
             spawnPosition: new GridPosition(5, 12),
-            resourceId:resource.Id);            
+            resourceId:resource.Id);          
         }        
     }
     private static void SpawnUnitWithMoveCommand(

@@ -1,5 +1,6 @@
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Map.Definitions;
@@ -55,6 +56,7 @@ public static class SimulationBootstrap
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
             Settings = settings,
+            Events = new EventBus(),
             TriggerHandler = triggerHandler
         };
     }

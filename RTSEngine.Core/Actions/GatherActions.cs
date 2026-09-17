@@ -6,6 +6,7 @@ using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.States;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Diagnostics;
 using RTSEngine.Core.Entities.Runtime;
@@ -60,9 +61,15 @@ public static class GatherActions
             return false;
         }
 
+        var owner = context.World.GetPlayerById(unit.OwnerId);
+        if (owner == null)
+        {
+            return false;
+        }
+
         var deposit = WorldQueries.FindClosestDeposit(
             context.World,
-            context.World.GetPlayerById(unit.OwnerId)!,
+            owner,
             unit.Position,
             resourceType);
         DebugSession.Log.Debug(
@@ -173,9 +180,15 @@ public static class GatherActions
             return false;
         }
 
+        var owner = world.GetPlayerById(unit.OwnerId);
+        if (owner == null)
+        {
+            return false;
+        }
+
         var deposit = WorldQueries.FindClosestDeposit(
             world,
-            world.GetPlayerById(unit.OwnerId)!,
+            owner,
             unit.Position,
             resourceType);
 

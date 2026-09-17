@@ -1,3 +1,4 @@
+using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
@@ -13,21 +14,16 @@ public static class ScoreSystem
     private const int BuildingScore = 3;
     private const int ResourceDivisor = 10;
 
-    public static void Update(GameWorld world)
+    public static void Update(RuntimeContext context)
     {
-        if (world.CurrentTick % ScoreUpdateInterval != 0)
+        if (context.World.CurrentTick % ScoreUpdateInterval != 0)
         {
             return;
         }
 
-        foreach (var player in world.Players)
+        foreach (var player in context.World.Players)
         {
-            if (player is not Player p)
-            {
-                continue;
-            }
-
-            p.Score = CalculateScore(world, p);
+            player.Score = CalculateScore(context.World, player);
         }
     }
 

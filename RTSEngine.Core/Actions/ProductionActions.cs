@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
@@ -85,6 +86,15 @@ public static class ProductionActions
         if (unitPlayer is not null)
         {
             world.Entities.Add(unit, unitPlayer);
+
+            context.Events.Publish(new GameEvent
+            {
+                Tick = world.CurrentTick,
+                Type = (int)EventType.UnitSpawned,
+                EntityId = unit.Id,
+                OwnerId = building.OwnerId,
+                Position = unit.Position
+            });
         }
 
         DebugSession.Log.Debug(
@@ -135,7 +145,8 @@ public static class ProductionActions
         if (!building.Definition.Produces.Contains(unitId)) { return false; }
 
         var unitDefinition = context.UnitRepository.Get(unitId);
-        var player = context.World.GetPlayerById(building.OwnerId)!;
+        var player = context.World.GetPlayerById(building.OwnerId);
+        if (player == null) { return false; }
 
         foreach (var cost in unitDefinition.Costs)
             if (!player.Economy.Has(cost.Type, cost.Amount)) { return false; }
@@ -152,7 +163,8 @@ public static class ProductionActions
         RuntimeContext context,
         Building building)
     {
-        var player = context.World.GetPlayerById(building.OwnerId)!;
+        var player = context.World.GetPlayerById(building.OwnerId);
+        if (player == null) { return; }
         PopulationActions.CompleteReservedPopulation(player, 1);
     }
 }

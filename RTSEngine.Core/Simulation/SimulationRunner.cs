@@ -26,7 +26,7 @@ public class SimulationRunner
 
     public void Step()
     {
-        _context.World.Entities.RebuildSpatialIndex();
+        _context.World.Entities.EnsureSpatialIndex(forceRebuild: true);
 
         _context.TriggerHandler.Update(_context);
 
@@ -46,10 +46,11 @@ public class SimulationRunner
 
         ProductionSystem.Update(_context);
 
-        ScoreSystem.Update(_context.World);
+        ScoreSystem.Update(_context);
 
-        CleanupSystem.Update(_context.World);
+        CleanupSystem.Update(_context);
 
+        _context.Events.Flush();
         _context.World.AdvanceTick();
     }
 }

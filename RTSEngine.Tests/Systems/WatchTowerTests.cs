@@ -9,6 +9,7 @@ using RTSEngine.Core.Helpers;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Systems;
 
@@ -23,7 +24,8 @@ public class WatchTowerTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 
@@ -56,7 +58,7 @@ public class WatchTowerTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -109,7 +111,7 @@ public class WatchTowerTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -162,7 +164,7 @@ public class WatchTowerTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,

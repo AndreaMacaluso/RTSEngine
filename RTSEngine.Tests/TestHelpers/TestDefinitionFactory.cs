@@ -1,4 +1,5 @@
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 
 namespace RTSEngine.Tests.TestHelpers;
@@ -6,9 +7,11 @@ namespace RTSEngine.Tests.TestHelpers;
 public static class TestDefinitionFactory
 {
     public static UnitDefinition CreateVillager(
-        float movementSpeed = 1f,
+        FixedPoint movementSpeed = default,
         int gatherCapacity = 20)
     {
+        if (movementSpeed == default) movementSpeed = FixedPoint.One;
+
         return new UnitDefinition
         {
             Id = "villager",
@@ -24,8 +27,10 @@ public static class TestDefinitionFactory
         };
     }
      public static UnitDefinition CreateMilitia(
-        float movementSpeed = 1f)
+        FixedPoint movementSpeed = default)
     {
+        if (movementSpeed == default) movementSpeed = FixedPoint.One;
+
         return new UnitDefinition
         {
             Id = "militia",
@@ -36,11 +41,13 @@ public static class TestDefinitionFactory
     }
 
     public static UnitDefinition CreateMilitiaWithCombatStats(
-        float movementSpeed = 1f,
+        FixedPoint movementSpeed = default,
         int meleeAttack = 6,
         int attackRange = 1,
         int attackCooldownTicks = 4)
     {
+        if (movementSpeed == default) movementSpeed = FixedPoint.One;
+
         return new UnitDefinition
         {
             Id = "militia",

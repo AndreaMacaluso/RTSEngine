@@ -10,6 +10,7 @@ using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Systems;
 
@@ -24,7 +25,8 @@ public class CombatSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 
@@ -42,7 +44,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 1
@@ -53,7 +55,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6
         };
 
@@ -90,7 +92,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 10,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -101,7 +103,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 100,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
@@ -146,7 +148,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 30,
             AttackRange = 1,
             AttackCooldownTicks = 1
@@ -157,7 +159,7 @@ public class CombatSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(2, 2));
@@ -186,7 +188,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 1
@@ -221,7 +223,7 @@ public class CombatSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -232,7 +234,7 @@ public class CombatSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var attacker = UnitFactory.Create(attackerDef, 1, new GridPosition(1, 1));
@@ -264,7 +266,7 @@ public class CombatSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var unit = UnitFactory.Create(def, 1, new GridPosition(1, 1));
@@ -285,7 +287,7 @@ public class CombatSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var unit2 = UnitFactory.Create(def2, 1, new GridPosition(3, 3));
@@ -296,7 +298,7 @@ public class CombatSystemTests
         Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
 
         unit2.Health.TakeDamage(50);
-        world.Entities.RebuildSpatialIndex();
+        world.Entities.EnsureSpatialIndex(forceRebuild: true);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 3, 3));
     }

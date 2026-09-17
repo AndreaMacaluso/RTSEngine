@@ -10,6 +10,7 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Events;
 namespace RTSEngine.Tests.Production;
 
 public class ProductionSystemTests
@@ -49,7 +50,8 @@ public class ProductionSystemTests
             BuildingRepository = buildingRepository,
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 
@@ -104,7 +106,7 @@ public class ProductionSystemTests
         RunProductionTicks(3);
 
         var unit =
-            _world.Entities.Units.Values
+            _world.Entities.Units
             .Single();
 
         Assert.Equal(

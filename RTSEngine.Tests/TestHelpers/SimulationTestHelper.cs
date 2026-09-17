@@ -3,6 +3,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 
@@ -23,6 +24,7 @@ public static class SimulationTestHelper
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
             Settings = settings ?? new GameSettings(),
+            Events = new EventBus(),
             Engine = engine ?? new EngineSettings()
         };
     }

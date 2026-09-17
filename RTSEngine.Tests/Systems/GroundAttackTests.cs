@@ -11,6 +11,7 @@ using RTSEngine.Core.Helpers;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Systems;
 
@@ -31,7 +32,8 @@ public class GroundAttackTests
             ]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 
@@ -48,7 +50,7 @@ public class GroundAttackTests
             Id = "catapult",
             Name = "Catapult",
             MaxHealth = 60,
-            MovementSpeed = 0.6f,
+            MovementSpeed = (FixedPoint)0.6f,
             Category = EntityCategory.Siege,
             MeleeAttack = 0,
             RangedAttack = 40,
@@ -88,7 +90,7 @@ public class GroundAttackTests
             Id = "catapult",
             Name = "Catapult",
             MaxHealth = 60,
-            MovementSpeed = 0.6f,
+            MovementSpeed = (FixedPoint)0.6f,
             Category = EntityCategory.Siege,
             MeleeAttack = 0,
             RangedAttack = 40,
@@ -109,7 +111,7 @@ public class GroundAttackTests
 
         Assert.Single(context.World.Projectiles.All);
         Assert.False(context.World.Projectiles.All[0].IsSingleTarget);
-        Assert.Equal(1.5f, context.World.Projectiles.All[0].SplashRadius);
+        Assert.Equal((FixedPoint)1.5f, context.World.Projectiles.All[0].SplashRadius);
     }
 
     [Fact]
@@ -126,7 +128,7 @@ public class GroundAttackTests
             Id = "catapult",
             Name = "Catapult",
             MaxHealth = 60,
-            MovementSpeed = 0.6f,
+            MovementSpeed = (FixedPoint)0.6f,
             Category = EntityCategory.Siege,
             MeleeAttack = 0,
             RangedAttack = 40,
@@ -141,7 +143,7 @@ public class GroundAttackTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -191,7 +193,7 @@ public class GroundAttackTests
             Id = "catapult",
             Name = "Catapult",
             MaxHealth = 60,
-            MovementSpeed = 0.6f,
+            MovementSpeed = (FixedPoint)0.6f,
             Category = EntityCategory.Siege,
             MeleeAttack = 0,
             RangedAttack = 40,
@@ -230,7 +232,7 @@ public class GroundAttackTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,

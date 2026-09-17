@@ -10,6 +10,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.AI.Actions;
 
@@ -32,7 +33,8 @@ public class ConstructionAIActionsTests
             ]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
 
         _world = _context.World;
@@ -68,7 +70,7 @@ public class ConstructionAIActionsTests
         Assert.True(result);
 
         var foundation = Assert.Single(
-            _world.Entities.Buildings.Values,
+            _world.Entities.Buildings,
             building => !building.IsCompleted);
 
         Assert.Equal("house", foundation.Definition.Id);

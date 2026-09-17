@@ -12,6 +12,7 @@ using RTSEngine.Core.Actions;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Gathering;
 
@@ -51,7 +52,8 @@ public class GatheringSystemTests
             BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 

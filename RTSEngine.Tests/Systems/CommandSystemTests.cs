@@ -8,6 +8,7 @@ using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Systems;
 

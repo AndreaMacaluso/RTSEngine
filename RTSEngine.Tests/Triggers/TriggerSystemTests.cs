@@ -8,6 +8,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Core.Triggers;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Events;
 using System.Text.Json;
 
 namespace RTSEngine.Tests.Triggers;
@@ -35,7 +36,8 @@ public class TriggerSystemTests
             BuildingRepository = buildingRepository,
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 

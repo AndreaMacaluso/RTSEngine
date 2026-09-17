@@ -10,6 +10,7 @@ using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Actions;
 
@@ -45,7 +46,8 @@ public class GatherActionsTests
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
             UnitRepository = new UnitDefinitionRepository([]),
             BuildingRepository = new BuildingDefinitionRepository([]),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var result = GatherActions.BeginMoveToResource(context, unit);
 

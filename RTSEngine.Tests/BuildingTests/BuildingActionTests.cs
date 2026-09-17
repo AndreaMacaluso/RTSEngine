@@ -25,7 +25,7 @@ public class BuildingPlacementActionsTests
             new GridPosition(7, 7));
 
         Assert.NotNull(building);
-        Assert.Contains(building, world.Entities.Buildings.Values);
+        Assert.Contains(building, world.Entities.Buildings);
     }
 
     [Fact]

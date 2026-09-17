@@ -10,6 +10,7 @@ using RTSEngine.Core.Commands;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Systems;
 
@@ -24,7 +25,8 @@ public class ProjectileSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 
@@ -36,19 +38,19 @@ public class ProjectileSystemTests
         {
             Id = 1,
             OwnerId = 1,
-            X = 0f,
-            Y = 0f,
-            TargetX = 10f,
-            TargetY = 0f,
+            X = (FixedPoint)0f,
+            Y = (FixedPoint)0f,
+            TargetX = (FixedPoint)10f,
+            TargetY = (FixedPoint)0f,
             Damage = 10,
-            Speed = 2.0f,
+            Speed = (FixedPoint)2.0f,
             IsActive = true
         };
 
         projectile.MoveTowardsTarget();
 
-        Assert.Equal(2f, projectile.X);
-        Assert.Equal(0f, projectile.Y);
+        Assert.Equal((FixedPoint)2f, projectile.X);
+        Assert.Equal((FixedPoint)0f, projectile.Y);
         Assert.False(projectile.HasReachedTarget);
     }
 
@@ -60,19 +62,19 @@ public class ProjectileSystemTests
         {
             Id = 1,
             OwnerId = 1,
-            X = 0f,
-            Y = 0f,
-            TargetX = 1f,
-            TargetY = 0f,
+            X = (FixedPoint)0f,
+            Y = (FixedPoint)0f,
+            TargetX = (FixedPoint)1f,
+            TargetY = (FixedPoint)0f,
             Damage = 10,
-            Speed = 2.0f,
+            Speed = (FixedPoint)2.0f,
             IsActive = true
         };
 
         projectile.MoveTowardsTarget();
 
-        Assert.Equal(1f, projectile.X);
-        Assert.Equal(0f, projectile.Y);
+        Assert.Equal((FixedPoint)1f, projectile.X);
+        Assert.Equal((FixedPoint)0f, projectile.Y);
         Assert.True(projectile.HasReachedTarget);
     }
 
@@ -90,7 +92,7 @@ public class ProjectileSystemTests
             Id = "archer",
             Name = "Archer",
             MaxHealth = 40,
-            MovementSpeed = 1.0f,
+            MovementSpeed = (FixedPoint)1.0f,
             Category = EntityCategory.Ranged,
             MeleeAttack = 0,
             RangedAttack = 5,
@@ -105,7 +107,7 @@ public class ProjectileSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -122,13 +124,13 @@ public class ProjectileSystemTests
         ProjectileSystem.SpawnProjectile(
             context.World.Projectiles,
             ownerId: 1,
-            originX: 5.5f,
-            originY: 5.5f,
+            originX: (FixedPoint)5.5f,
+            originY: (FixedPoint)5.5f,
             targetEntityId: target.Id,
-            targetX: 10.5f,
-            targetY: 5.5f,
+            targetX: (FixedPoint)10.5f,
+            targetY: (FixedPoint)5.5f,
             damage: 5,
-            speed: 2.0f,
+            speed: (FixedPoint)2.0f,
             isSingleTarget: true);
 
         Assert.Single(context.World.Projectiles.All);
@@ -157,7 +159,7 @@ public class ProjectileSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -172,13 +174,13 @@ public class ProjectileSystemTests
         ProjectileSystem.SpawnProjectile(
             context.World.Projectiles,
             ownerId: 1,
-            originX: 5.5f,
-            originY: 5.5f,
+            originX: (FixedPoint)5.5f,
+            originY: (FixedPoint)5.5f,
             targetEntityId: target.Id,
-            targetX: 6.5f,
-            targetY: 5.5f,
+            targetX: (FixedPoint)6.5f,
+            targetY: (FixedPoint)5.5f,
             damage: 5,
-            speed: 2.0f,
+            speed: (FixedPoint)2.0f,
             isSingleTarget: true);
 
         ProjectileSystem.Update(context);
@@ -201,7 +203,7 @@ public class ProjectileSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -216,13 +218,13 @@ public class ProjectileSystemTests
         ProjectileSystem.SpawnProjectile(
             context.World.Projectiles,
             ownerId: 1,
-            originX: 5.5f,
-            originY: 5.5f,
+            originX: (FixedPoint)5.5f,
+            originY: (FixedPoint)5.5f,
             targetEntityId: target.Id,
-            targetX: 10.5f,
-            targetY: 5.5f,
+            targetX: (FixedPoint)10.5f,
+            targetY: (FixedPoint)5.5f,
             damage: 5,
-            speed: 2.0f,
+            speed: (FixedPoint)2.0f,
             isSingleTarget: true);
 
         target.Health.TakeDamage(1);
@@ -230,7 +232,7 @@ public class ProjectileSystemTests
         ProjectileSystem.Update(context);
 
         Assert.Single(context.World.Projectiles.All);
-        Assert.Equal(10.5f, context.World.Projectiles.All[0].TargetX);
+        Assert.Equal((FixedPoint)10.5f, context.World.Projectiles.All[0].TargetX);
         Assert.True(target.IsDead);
     }
 
@@ -244,13 +246,13 @@ public class ProjectileSystemTests
         ProjectileSystem.SpawnProjectile(
             context.World.Projectiles,
             ownerId: 1,
-            originX: 0f,
-            originY: 0f,
+            originX: (FixedPoint)0f,
+            originY: (FixedPoint)0f,
             targetEntityId: null,
-            targetX: 10f,
-            targetY: 0f,
+            targetX: (FixedPoint)10f,
+            targetY: (FixedPoint)0f,
             damage: 10,
-            speed: 2.0f);
+            speed: (FixedPoint)2.0f);
 
         context.World.Projectiles.All[0].IsActive = false;
 
@@ -278,13 +280,13 @@ public class ProjectileSystemTests
         ProjectileSystem.SpawnProjectile(
             context.World.Projectiles,
             ownerId: 1,
-            originX: 5.5f,
-            originY: 5.5f,
+            originX: (FixedPoint)5.5f,
+            originY: (FixedPoint)5.5f,
             targetEntityId: building.Id,
-            targetX: 6.5f,
-            targetY: 5.5f,
+            targetX: (FixedPoint)6.5f,
+            targetY: (FixedPoint)5.5f,
             damage: 40,
-            speed: 2.0f,
+            speed: (FixedPoint)2.0f,
             isSingleTarget: true);
 
         ProjectileSystem.Update(context);
@@ -306,7 +308,7 @@ public class ProjectileSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1.1f,
+            MovementSpeed = (FixedPoint)1.1f,
             Category = EntityCategory.Infantry,
             MeleeAttack = 6,
             AttackRange = 1,
@@ -329,15 +331,15 @@ public class ProjectileSystemTests
         ProjectileSystem.SpawnProjectile(
             context.World.Projectiles,
             ownerId: 1,
-            originX: 5.5f,
-            originY: 5.5f,
+            originX: (FixedPoint)5.5f,
+            originY: (FixedPoint)5.5f,
             targetEntityId: target1.Id,
-            targetX: 6.5f,
-            targetY: 5.5f,
+            targetX: (FixedPoint)6.5f,
+            targetY: (FixedPoint)5.5f,
             damage: 40,
-            speed: 1.0f,
+            speed: (FixedPoint)1.0f,
             isSingleTarget: false,
-            splashRadius: 1.5f);
+            splashRadius: (FixedPoint)1.5f);
 
         ProjectileSystem.Update(context);
 

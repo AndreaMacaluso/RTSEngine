@@ -59,7 +59,7 @@ public class BuildingDestructionTests
         Assert.True(WorldQueries.IsTileBlocked(world, 5, 5));
 
         building.Health.TakeDamage(building.Health.CurrentHealth);
-        world.Entities.RebuildSpatialIndex();
+        world.Entities.EnsureSpatialIndex(forceRebuild: true);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 5, 5));
     }
@@ -90,7 +90,7 @@ public class BuildingDestructionTests
 
         simulation.Step();
 
-        Assert.DoesNotContain(building, world.Entities.Buildings.Values.ToList());
+        Assert.DoesNotContain(building, world.Entities.Buildings.ToList());
     }
 
     [Fact]
@@ -162,7 +162,7 @@ public class BuildingDestructionTests
 
         simulation.Step();
 
-        Assert.Empty(world.Entities.Buildings.Values);
+        Assert.Empty(world.Entities.Buildings);
     }
 
 
@@ -180,7 +180,7 @@ public class BuildingDestructionTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 30,
             AttackRange = 1,
             AttackCooldownTicks = 1
@@ -295,7 +295,7 @@ public class BuildingRefundTests
 
         simulation.Step();
 
-        var buildings = world.Entities.Buildings.Values
+        var buildings = world.Entities.Buildings
             .Where(b => b.OwnerId == 1)
             .ToList();
 

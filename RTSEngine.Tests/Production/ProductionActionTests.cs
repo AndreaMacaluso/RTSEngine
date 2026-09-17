@@ -11,6 +11,7 @@ using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Production;
 
@@ -46,7 +47,8 @@ public class ProductionActionTests
             ]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
 
         _player = _world.GetPlayerById(1)!;
@@ -96,7 +98,7 @@ public class ProductionActionTests
             _townCenter);
 
         Assert.Empty(
-            _world.Entities.Units.Values);
+            _world.Entities.Units);
     }
 
 
@@ -118,7 +120,7 @@ public class ProductionActionTests
             _townCenter);
 
         var unit =
-            _world.Entities.Units.Values
+            _world.Entities.Units
             .FirstOrDefault();
 
         Assert.NotNull(unit);
@@ -160,7 +162,7 @@ public class ProductionActionTests
             _townCenter);
 
         Assert.Empty(
-            _world.Entities.Units.Values);
+            _world.Entities.Units);
     }
 
 

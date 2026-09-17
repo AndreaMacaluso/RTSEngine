@@ -33,7 +33,7 @@ public class GameWorldTests
         world.Entities.Add(tree);
 
         // Act
-        var resource = world.Entities.Resources.Values.FirstOrDefault(
+        var resource = world.Entities.Resources.FirstOrDefault(
             r => r.Position.X == 2 && r.Position.Y == 2);
 
         // Assert
@@ -48,7 +48,7 @@ public class GameWorldTests
         var world = TestWorldFactory.CreateWorld(TileType.Water);
 
         // Act & Assert
-        Assert.Empty(world.Entities.Units.Values);
+        Assert.Empty(world.Entities.Units);
     }
 
     [Fact]

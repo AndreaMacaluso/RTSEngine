@@ -10,6 +10,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Construction;
 
@@ -38,7 +39,8 @@ public class ConstructionSystemTests
             BuildingRepository = new RTSEngine.Core.Entities.Definitions.BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 

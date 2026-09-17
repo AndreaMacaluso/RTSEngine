@@ -10,6 +10,7 @@ using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Production;
 
@@ -53,7 +54,8 @@ public class UnitProductionFlowTests
             ]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 

@@ -9,6 +9,7 @@ using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Gathering;
 
@@ -26,7 +27,8 @@ public class GatherCommandTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
 
         _world = _context.World;

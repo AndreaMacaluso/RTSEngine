@@ -287,7 +287,7 @@ public class SpatialIndexTests
         Assert.True(WorldQueries.IsTileBlocked(world, 5, 5));
 
         building.Health.TakeDamage(building.Health.CurrentHealth);
-        world.Entities.RebuildSpatialIndex();
+        world.Entities.EnsureSpatialIndex(forceRebuild: true);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 5, 5));
     }
@@ -306,7 +306,7 @@ public class SpatialIndexTests
         Assert.True(WorldQueries.IsTileBlocked(world, 3, 3));
 
         unit.Health.TakeDamage(unit.Health.MaxHealth);
-        world.Entities.RebuildSpatialIndex();
+        world.Entities.EnsureSpatialIndex(forceRebuild: true);
 
         Assert.False(WorldQueries.IsTileBlocked(world, 3, 3));
     }
@@ -318,7 +318,7 @@ public class SpatialIndexTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
         return UnitFactory.Create(def, ownerId, position);
     }

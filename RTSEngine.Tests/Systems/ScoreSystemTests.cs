@@ -4,6 +4,7 @@ using RTSEngine.Core.Players;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Tests.TestHelpers;
 
 namespace RTSEngine.Tests.Systems;
@@ -22,7 +23,7 @@ public class ScoreSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             GatherCapacity = 20
         };
 
@@ -31,7 +32,8 @@ public class ScoreSystemTests
 
         world.AdvanceTick();
 
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(0, player.Score);
     }
@@ -48,7 +50,7 @@ public class ScoreSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             GatherCapacity = 20
         };
 
@@ -60,7 +62,8 @@ public class ScoreSystemTests
             world.AdvanceTick();
         }
 
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(1, player.Score);
     }
@@ -77,7 +80,7 @@ public class ScoreSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             GatherCapacity = 20
         };
 
@@ -88,7 +91,8 @@ public class ScoreSystemTests
         }
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(3, player.Score);
     }
@@ -105,7 +109,7 @@ public class ScoreSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         for (int i = 0; i < 2; i++)
@@ -115,7 +119,8 @@ public class ScoreSystemTests
         }
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(4, player.Score);
     }
@@ -145,7 +150,8 @@ public class ScoreSystemTests
         }
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(6, player.Score);
     }
@@ -161,7 +167,8 @@ public class ScoreSystemTests
         player.Economy.Add(ResourceType.Food, 20);
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(5, player.Score);
     }
@@ -178,7 +185,7 @@ public class ScoreSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             GatherCapacity = 20
         };
 
@@ -187,7 +194,8 @@ public class ScoreSystemTests
         villager.Health.TakeDamage(100);
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(0, player.Score);
     }
@@ -215,7 +223,8 @@ public class ScoreSystemTests
         building.Health.TakeDamage(200);
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         Assert.Equal(0, player.Score);
     }
@@ -232,7 +241,7 @@ public class ScoreSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             GatherCapacity = 20
         };
 
@@ -241,7 +250,7 @@ public class ScoreSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var buildingDef = new BuildingDefinition
@@ -267,7 +276,8 @@ public class ScoreSystemTests
         player.Economy.Add(ResourceType.Wood, 100);
 
         SetTickTo60(world);
-        ScoreSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        ScoreSystem.Update(context);
 
         int expected = 1 + 2 + 3 + 10;
         Assert.Equal(expected, player.Score);

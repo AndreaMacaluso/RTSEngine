@@ -8,16 +8,23 @@ using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Settings;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.Systems;
 
 public class CleanupSystemTests
 {
+    private RuntimeContext CreateContext(GameWorld world)
+    {
+        return SimulationTestHelper.CreateContext(world);
+    }
+
     [Fact]
     [Trait("Category", "Cleanup")]
     public void TickDecay_ShouldDecrementDecayTicks_WhenUnitIsDecaying()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -25,7 +32,7 @@ public class CleanupSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -38,7 +45,7 @@ public class CleanupSystemTests
         unit.CurrentTask = EntityState.Decaying;
         unit.DecayTicksRemaining = 5;
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
 
         Assert.Equal(4, unit.DecayTicksRemaining);
         Assert.Equal(EntityState.Decaying, unit.CurrentTask);
@@ -49,6 +56,7 @@ public class CleanupSystemTests
     public void TickDecay_ShouldSetDead_WhenDecayTicksReachesZero()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -56,7 +64,7 @@ public class CleanupSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -69,7 +77,7 @@ public class CleanupSystemTests
         unit.CurrentTask = EntityState.Decaying;
         unit.DecayTicksRemaining = 1;
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
 
         Assert.Equal(0, unit.DecayTicksRemaining);
         Assert.Equal(EntityState.Dead, unit.CurrentTask);
@@ -80,6 +88,7 @@ public class CleanupSystemTests
     public void RemoveDeadUnits_ShouldRemoveUnit_WhenCurrentTaskIsDead()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -87,7 +96,7 @@ public class CleanupSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -99,7 +108,7 @@ public class CleanupSystemTests
         unit.Health.TakeDamage(60);
         unit.CurrentTask = EntityState.Dead;
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
 
         Assert.Null(world.Entities.GetUnitById(unit.Id));
         Assert.DoesNotContain(unit.Id, player.UnitIds);
@@ -110,6 +119,7 @@ public class CleanupSystemTests
     public void RemoveDeadUnits_ShouldNotRemoveUnit_WhenDecaying()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -117,7 +127,7 @@ public class CleanupSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -130,7 +140,7 @@ public class CleanupSystemTests
         unit.CurrentTask = EntityState.Decaying;
         unit.DecayTicksRemaining = 3;
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
 
         Assert.NotNull(world.Entities.GetUnitById(unit.Id));
         Assert.Contains(unit.Id, player.UnitIds);
@@ -141,6 +151,7 @@ public class CleanupSystemTests
     public void FullDecayCycle_ShouldRemoveUnit_AfterDecayTicks()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -148,7 +159,7 @@ public class CleanupSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -161,19 +172,19 @@ public class CleanupSystemTests
         unit.CurrentTask = EntityState.Decaying;
         unit.DecayTicksRemaining = 3;
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
         Assert.Equal(2, unit.DecayTicksRemaining);
         Assert.NotNull(world.Entities.GetUnitById(unit.Id));
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
         Assert.Equal(1, unit.DecayTicksRemaining);
         Assert.NotNull(world.Entities.GetUnitById(unit.Id));
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
         Assert.Equal(0, unit.DecayTicksRemaining);
         Assert.Equal(EntityState.Dead, unit.CurrentTask);
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
         Assert.Null(world.Entities.GetUnitById(unit.Id));
         Assert.DoesNotContain(unit.Id, player.UnitIds);
     }
@@ -183,6 +194,7 @@ public class CleanupSystemTests
     public void RemoveDeadUnits_ShouldNotAffectAliveUnits()
     {
         var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
         var player = world.GetPlayerById(1)!;
 
         var def = new UnitDefinition
@@ -190,7 +202,7 @@ public class CleanupSystemTests
             Id = "militia",
             Name = "Militia",
             MaxHealth = 60,
-            MovementSpeed = 1f,
+            MovementSpeed = (FixedPoint)1f,
             MeleeAttack = 6,
             AttackRange = 1,
             AttackCooldownTicks = 4
@@ -204,7 +216,7 @@ public class CleanupSystemTests
         dead.Health.TakeDamage(60);
         dead.CurrentTask = EntityState.Dead;
 
-        CleanupSystem.Update(world);
+        CleanupSystem.Update(context);
 
         Assert.NotNull(world.Entities.GetUnitById(alive.Id));
         Assert.Null(world.Entities.GetUnitById(dead.Id));

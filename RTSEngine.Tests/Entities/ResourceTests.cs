@@ -5,6 +5,7 @@ using RTSEngine.Core.Map.Loading;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Systems;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Entities.Runtime;
 
 namespace RTSEngine.Tests.Resources;
 
@@ -185,10 +186,11 @@ public sealed class ResourceTests
 
         tree.Gather(tree.Amount);
 
-        CleanupSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        CleanupSystem.Update(context);
 
-        Assert.Single(world.Entities.Resources.Values);
-        Assert.Contains(world.Entities.Resources.Values, r => r.Id == goldMine.Id);
+        Assert.Single(world.Entities.Resources);
+        Assert.Contains(world.Entities.Resources, r => r.Id == goldMine.Id);
     }
 
     [Fact]
@@ -201,9 +203,10 @@ public sealed class ResourceTests
         var tree = new Tree(new GridPosition(1, 1));
         world.Entities.Add(tree);
 
-        CleanupSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        CleanupSystem.Update(context);
 
-        Assert.Single(world.Entities.Resources.Values);
+        Assert.Single(world.Entities.Resources);
     }
 
     [Fact]
@@ -225,10 +228,11 @@ public sealed class ResourceTests
         tree1.Gather(tree1.Amount);
         tree3.Gather(tree3.Amount);
 
-        CleanupSystem.Update(world);
+        var context = SimulationTestHelper.CreateContext(world);
+        CleanupSystem.Update(context);
 
-        Assert.Single(world.Entities.Resources.Values);
-        Assert.Contains(world.Entities.Resources.Values, r => r.Id == tree2.Id);
+        Assert.Single(world.Entities.Resources);
+        Assert.Contains(world.Entities.Resources, r => r.Id == tree2.Id);
     }
 
     [Fact]

@@ -5,6 +5,7 @@ using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Runtime;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Actions;
@@ -31,7 +32,8 @@ public class RallyPointTests
             ]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
     }
 

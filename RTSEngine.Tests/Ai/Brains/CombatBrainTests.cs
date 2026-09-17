@@ -12,6 +12,7 @@ using RTSEngine.Core.Systems;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Tests.TestHelpers;
+using RTSEngine.Core.Events;
 
 namespace RTSEngine.Tests.AI.Brains;
 
@@ -35,7 +36,8 @@ public class CombatBrainTests
             ]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
 
         _world = _context.World;

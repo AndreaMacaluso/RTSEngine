@@ -7,6 +7,8 @@ using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Commands;
 using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
+using RTSEngine.Core.Events;
+using RTSEngine.Core.Helpers;
 namespace RTSEngine.Tests.Systems.QueuedMovementTests;
 
 public class QueuedMovementTests
@@ -24,7 +26,8 @@ public class QueuedMovementTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -33,7 +36,7 @@ public class QueuedMovementTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 0.25f
+            MovementSpeed = (FixedPoint)0.25f
         };
 
         var villager = UnitFactory.Create(
@@ -79,7 +82,8 @@ public class QueuedMovementTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -96,7 +100,7 @@ public class QueuedMovementTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 0.25f
+            MovementSpeed = (FixedPoint)0.25f
         };
 
         var villager = UnitFactory.Create(

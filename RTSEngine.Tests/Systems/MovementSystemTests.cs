@@ -4,9 +4,11 @@ using RTSEngine.Core.Settings;
 using RTSEngine.Core.Systems.Pathfinding;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Commands;
+using RTSEngine.Core.Events;
 using RTSEngine.Tests.TestHelpers;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Entities.Definitions;
+using RTSEngine.Core.Helpers;
 namespace RTSEngine.Tests.Systems;
 
 public class MovementSystemTests
@@ -25,7 +27,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
@@ -33,7 +36,7 @@ public class MovementSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 0.25f
+            MovementSpeed = (FixedPoint)0.25f
         };
 
         var villager = UnitFactory.Create(
@@ -71,7 +74,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
         var villagerDefinition = new UnitDefinition
@@ -79,7 +83,7 @@ public class MovementSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 0.25f
+            MovementSpeed = (FixedPoint)0.25f
         };
 
         var villager = UnitFactory.Create(
@@ -132,7 +136,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -141,7 +146,7 @@ public class MovementSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 0.25f
+            MovementSpeed = (FixedPoint)0.25f
         };
 
         var villager = UnitFactory.Create(
@@ -182,7 +187,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -191,7 +197,7 @@ public class MovementSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var villager = UnitFactory.Create(
@@ -230,7 +236,7 @@ public class MovementSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var villager = UnitFactory.Create(
@@ -257,7 +263,8 @@ public class MovementSystemTests
                 BuildingRepository = new BuildingDefinitionRepository([]),
                 CommandQueue = queue,
                 PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-                Settings = new GameSettings()
+                Settings = new GameSettings(),
+                Events = new EventBus()
             });
 
         Assert.Equal(EntityState.Moving, villager.CurrentTask);
@@ -275,7 +282,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -284,7 +292,7 @@ public class MovementSystemTests
             Id = "villager",
             Name = "Villager",
             MaxHealth = 50,
-            MovementSpeed = 1f
+            MovementSpeed = (FixedPoint)1f
         };
 
         var villager = UnitFactory.Create(
@@ -321,7 +329,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -330,7 +339,7 @@ public class MovementSystemTests
             Id = "scout",
             Name = "Scout",
             MaxHealth = 45,
-            MovementSpeed = 1.8f
+            MovementSpeed = (FixedPoint)1.8f
         };
 
         var scout = UnitFactory.Create(
@@ -366,7 +375,8 @@ public class MovementSystemTests
             BuildingRepository = new BuildingDefinitionRepository([]),
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings()
+            Settings = new GameSettings(),
+            Events = new EventBus()
         };
         var player = world.GetPlayerById(1)!;
 
@@ -375,7 +385,7 @@ public class MovementSystemTests
             Id = "unit",
             Name = "Unit",
             MaxHealth = 50,
-            MovementSpeed = 0.6f
+            MovementSpeed = (FixedPoint)0.6f
         };
 
         var unit = UnitFactory.Create(

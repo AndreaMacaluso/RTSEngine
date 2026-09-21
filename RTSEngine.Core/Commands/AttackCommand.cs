@@ -11,4 +11,6 @@ public class AttackCommand : ICommand
     public int? TargetEntityId { get; init; }
 
     public GridPosition? TargetPosition { get; init; }
+
+    public FormationType Formation { get; init; } = FormationType.None;
 }

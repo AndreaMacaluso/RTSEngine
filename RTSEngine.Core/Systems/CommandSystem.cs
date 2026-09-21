@@ -134,18 +134,43 @@ public static class CommandSystem
     {
         GameWorld world = context.World;
 
-        foreach (var unitId in command.UnitIds)
+        if (command.Formation == FormationType.None
+            || command.UnitIds.Count == 1)
         {
-            var unit = world.Entities.GetUnitById(unitId);
-
-            if (unit == null)
+            foreach (var unitId in command.UnitIds)
             {
-                continue;
+                var unit = world.Entities.GetUnitById(unitId);
+
+                if (unit == null)
+                {
+                    continue;
+                }
+
+                unit.CurrentTask = EntityState.Moving;
+
+                AssignMoveTarget(unit, command.Target, context);
             }
+        }
+        else
+        {
+            var positions = FormationCalculator.Calculate(
+                command.Formation,
+                command.UnitIds.Count,
+                command.Target);
 
-            unit.CurrentTask = EntityState.Moving;
+            for (int i = 0; i < command.UnitIds.Count; i++)
+            {
+                var unit = world.Entities.GetUnitById(command.UnitIds[i]);
 
-            AssignMoveTarget(unit, command.Target, context);
+                if (unit == null)
+                {
+                    continue;
+                }
+
+                unit.CurrentTask = EntityState.Moving;
+
+                AssignMoveTarget(unit, positions[i], context);
+            }
         }
     }
 
@@ -273,46 +298,74 @@ public static class CommandSystem
     {
         GameWorld world = context.World;
 
-        foreach (var unitId in command.UnitIds)
+        if (command.Formation != FormationType.None
+            && command.UnitIds.Count > 1
+            && command.Mode == AttackMode.AttackMove
+            && command.TargetPosition.HasValue)
         {
-            var unit = world.Entities.GetUnitById(unitId);
+            var positions = FormationCalculator.Calculate(
+                command.Formation,
+                command.UnitIds.Count,
+                command.TargetPosition.Value);
 
-            if (unit == null || unit.IsDead)
+            for (int i = 0; i < command.UnitIds.Count; i++)
             {
-                continue;
+                var unit = world.Entities.GetUnitById(command.UnitIds[i]);
+
+                if (unit == null || unit.IsDead)
+                {
+                    continue;
+                }
+
+                unit.CurrentTask = EntityState.Attacking;
+                unit.Combat.Clear();
+                unit.Combat.Phase = CombatPhase.AttackMoving;
+                AssignMoveTarget(unit, positions[i], context);
             }
-
-            switch (command.Mode)
+        }
+        else
+        {
+            foreach (var unitId in command.UnitIds)
             {
-                case AttackMode.Entity:
-                    HandleAttackEntity(world, unit, command.TargetEntityId!.Value);
-                    break;
+                var unit = world.Entities.GetUnitById(unitId);
 
-                case AttackMode.Guard:
-                    unit.CurrentTask = EntityState.Attacking;
-                    unit.Combat.Clear();
-                    unit.Combat.Phase = CombatPhase.Guarding;
-                    unit.Movement.PathQueue.Clear();
-                    unit.Movement.CurrentStep = null;
-                    break;
+                if (unit == null || unit.IsDead)
+                {
+                    continue;
+                }
 
-                case AttackMode.AttackMove:
-                    unit.CurrentTask = EntityState.Attacking;
-                    unit.Combat.Clear();
-                    unit.Combat.Phase = CombatPhase.AttackMoving;
-                    AssignMoveTarget(unit, command.TargetPosition!.Value, context);
-                    break;
+                switch (command.Mode)
+                {
+                    case AttackMode.Entity:
+                        HandleAttackEntity(world, unit, command.TargetEntityId!.Value);
+                        break;
 
-                case AttackMode.Ground:
-                    if (unit.Definition.Category != EntityCategory.Siege)
-                    {
-                        continue;
-                    }
-                    unit.CurrentTask = EntityState.Attacking;
-                    unit.Combat.Clear();
-                    unit.Combat.TargetGroundPosition = command.TargetPosition!.Value;
-                    unit.Combat.Phase = CombatPhase.MovingToTarget;
-                    break;
+                    case AttackMode.Guard:
+                        unit.CurrentTask = EntityState.Attacking;
+                        unit.Combat.Clear();
+                        unit.Combat.Phase = CombatPhase.Guarding;
+                        unit.Movement.PathQueue.Clear();
+                        unit.Movement.CurrentStep = null;
+                        break;
+
+                    case AttackMode.AttackMove:
+                        unit.CurrentTask = EntityState.Attacking;
+                        unit.Combat.Clear();
+                        unit.Combat.Phase = CombatPhase.AttackMoving;
+                        AssignMoveTarget(unit, command.TargetPosition!.Value, context);
+                        break;
+
+                    case AttackMode.Ground:
+                        if (unit.Definition.Category != EntityCategory.Siege)
+                        {
+                            continue;
+                        }
+                        unit.CurrentTask = EntityState.Attacking;
+                        unit.Combat.Clear();
+                        unit.Combat.TargetGroundPosition = command.TargetPosition!.Value;
+                        unit.Combat.Phase = CombatPhase.MovingToTarget;
+                        break;
+                }
             }
         }
     }

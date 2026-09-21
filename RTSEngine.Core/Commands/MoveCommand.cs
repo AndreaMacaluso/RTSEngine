@@ -7,4 +7,6 @@ public class MoveCommand : ICommand
     public required List<int> UnitIds { get; init; }
 
     public required GridPosition Target { get; init; }
+
+    public FormationType Formation { get; init; } = FormationType.None;
 }

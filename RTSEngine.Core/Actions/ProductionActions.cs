@@ -90,7 +90,7 @@ public static class ProductionActions
             context.Events.Publish(new GameEvent
             {
                 Tick = world.CurrentTick,
-                Type = (int)EventType.UnitSpawned,
+                Type = EventType.UnitSpawned,
                 EntityId = unit.Id,
                 OwnerId = building.OwnerId,
                 Position = unit.Position

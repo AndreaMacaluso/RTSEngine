@@ -59,7 +59,7 @@ public static class CleanupSystem
                 context.Events.Publish(new GameEvent
                 {
                     Tick = world.CurrentTick,
-                    Type = (int)EventType.UnitRemoved,
+                    Type = EventType.UnitRemoved,
                     EntityId = unit.Id,
                     OwnerId = unit.OwnerId,
                     Position = unit.Position
@@ -92,7 +92,7 @@ public static class CleanupSystem
                 context.Events.Publish(new GameEvent
                 {
                     Tick = world.CurrentTick,
-                    Type = (int)EventType.BuildingRemoved,
+                    Type = EventType.BuildingRemoved,
                     EntityId = building.Id,
                     OwnerId = building.OwnerId,
                     Position = building.Position

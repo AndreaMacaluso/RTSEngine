@@ -105,7 +105,7 @@ public static class ConstructionSystem
         context.Events.Publish(new GameEvent
         {
             Tick = context.World.CurrentTick,
-            Type = (int)EventType.ConstructionCompleted,
+            Type = EventType.ConstructionCompleted,
             EntityId = building.Id,
             OwnerId = building.OwnerId,
             Position = building.Position

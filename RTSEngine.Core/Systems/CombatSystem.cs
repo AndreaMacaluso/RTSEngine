@@ -6,6 +6,8 @@ using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Events;
 using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Map.Visibility;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.Entities.Runtime;
 using RTSEngine.Core.Actions;
 using RTSEngine.Core.Players;
@@ -14,6 +16,8 @@ namespace RTSEngine.Core.Systems;
 
 public static class CombatSystem
 {
+    private const int DefensiveChaseDistance = 5;
+
     public static void Update(RuntimeContext context)
     {
         GameWorld world = context.World;
@@ -37,7 +41,7 @@ public static class CombatSystem
                 context.Events.Publish(new GameEvent
                 {
                     Tick = world.CurrentTick,
-                    Type = (int)EventType.UnitDied,
+                    Type = EventType.UnitDied,
                     EntityId = unit.Id,
                     OwnerId = unit.OwnerId,
                     Position = unit.Position
@@ -67,7 +71,18 @@ public static class CombatSystem
                     if (unit.Definition.CanAttack
                         && unit.Definition.Category != EntityCategory.Villager)
                     {
-                        HandleAutoAttack(world, unit);
+                        switch (unit.Stance)
+                        {
+                            case UnitStance.Aggressive:
+                                HandleAutoAttack(context, unit);
+                                break;
+                            case UnitStance.Defensive:
+                                HandleDefensiveAutoAttack(context, unit);
+                                break;
+                            case UnitStance.StandGround:
+                                HandleStandGroundAutoAttack(context, unit);
+                                break;
+                        }
                     }
                     break;
 
@@ -98,7 +113,7 @@ public static class CombatSystem
                 context.Events.Publish(new GameEvent
                 {
                     Tick = context.World.CurrentTick,
-                    Type = (int)EventType.BuildingDied,
+                    Type = EventType.BuildingDied,
                     EntityId = building.Id,
                     OwnerId = building.OwnerId,
                     Position = building.Position
@@ -108,16 +123,31 @@ public static class CombatSystem
     }
 
     private static Unit? FindFirstEnemyInRange(
-        GameWorld world, int ownerId, GridPosition position, int range)
+        RuntimeContext context, int ownerId, GridPosition position, int range)
     {
+        GameWorld world = context.World;
         var player = world.GetPlayerById(ownerId);
         if (player == null) return null;
 
-        foreach (var enemy in world.Entities.GetEnemyUnits(player))
+        bool useFog = context.Settings.Visibility == VisibilityMode.FogOfWar;
+
+        if (useFog && world.Fog.TryGetValue(ownerId, out var fog))
         {
-            int distance = WorldQueries.ChebyshevDistance(position, enemy.Position);
-            if (distance <= range)
-                return enemy;
+            foreach (var enemy in world.Entities.GetEnemyUnits(player, fog))
+            {
+                int distance = WorldQueries.ChebyshevDistance(position, enemy.Position);
+                if (distance <= range)
+                    return enemy;
+            }
+        }
+        else
+        {
+            foreach (var enemy in world.Entities.GetEnemyUnits(player))
+            {
+                int distance = WorldQueries.ChebyshevDistance(position, enemy.Position);
+                if (distance <= range)
+                    return enemy;
+            }
         }
 
         return null;
@@ -170,7 +200,7 @@ public static class CombatSystem
                         target.Id,
                         target.Position,
                         DamageCalculator.CalculateDamage(building.Combat, target),
-                        FixedPoint.FromFloat(2.0f));
+                        building.Definition.ProjectileSpeed);
                     building.Combat.ResetCooldown();
                 }
 
@@ -181,7 +211,7 @@ public static class CombatSystem
                 continue;
 
             var enemy = FindFirstEnemyInRange(
-                world, building.OwnerId, building.Position, building.Combat.AttackRange);
+                context, building.OwnerId, building.Position, building.Combat.AttackRange);
 
             if (enemy != null)
             {
@@ -194,7 +224,7 @@ public static class CombatSystem
                     enemy.Id,
                     enemy.Position,
                     DamageCalculator.CalculateDamage(building.Combat, enemy),
-                    FixedPoint.FromFloat(2.0f));
+                    building.Definition.ProjectileSpeed);
                 building.Combat.ResetCooldown();
             }
             else
@@ -215,7 +245,7 @@ public static class CombatSystem
             if (unit.Combat.Phase == CombatPhase.AttackMoving)
             {
                 var enemy = FindFirstEnemyInRange(
-                    world, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+                    context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
                 if (enemy != null)
                     BeginAttack(world, unit, enemy.Id);
             }
@@ -223,17 +253,40 @@ public static class CombatSystem
         }
 
         var newEnemy = FindFirstEnemyInRange(
-            world, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
         if (newEnemy != null)
             BeginAttack(world, unit, newEnemy.Id);
     }
 
-    private static void HandleAutoAttack(GameWorld world, Unit unit)
+    private static void HandleAutoAttack(RuntimeContext context, Unit unit)
     {
         var enemy = FindFirstEnemyInRange(
-            world, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
         if (enemy != null)
-            BeginAttack(world, unit, enemy.Id);
+            BeginAttack(context.World, unit, enemy.Id);
+    }
+
+    private static void HandleDefensiveAutoAttack(RuntimeContext context, Unit unit)
+    {
+        var enemy = FindFirstEnemyInRange(
+            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+        if (enemy != null)
+        {
+            unit.Combat.GuardPosition = unit.Position;
+            BeginAttack(context.World, unit, enemy.Id);
+        }
+    }
+
+    private static void HandleStandGroundAutoAttack(RuntimeContext context, Unit unit)
+    {
+        var enemy = FindFirstEnemyInRange(
+            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+        if (enemy != null)
+        {
+            unit.CurrentTask = EntityState.Attacking;
+            unit.Combat.TargetEntityId = enemy.Id;
+            unit.Combat.Phase = CombatPhase.Attacking;
+        }
     }
 
     private static void HandleGuarding(RuntimeContext context, Unit unit)
@@ -247,7 +300,7 @@ public static class CombatSystem
         }
 
         var enemy = FindFirstEnemyInRange(
-            world, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
         if (enemy != null)
             BeginAttack(world, unit, enemy.Id);
     }
@@ -283,6 +336,26 @@ public static class CombatSystem
         if (targetDistance <= unit.Combat.AttackRange)
         {
             EnterAttackingPhase(unit);
+            return;
+        }
+
+        if (unit.Stance == UnitStance.Defensive && unit.Combat.GuardPosition.HasValue)
+        {
+            int chaseDistance = WorldQueries.ChebyshevDistance(
+                unit.Combat.GuardPosition.Value, unit.Position);
+            if (chaseDistance >= DefensiveChaseDistance)
+            {
+                var returnTarget = unit.Combat.GuardPosition.Value;
+                unit.Combat.Clear();
+                unit.CurrentTask = EntityState.Moving;
+                CommandSystem.AssignMoveTarget(unit, returnTarget, context);
+                return;
+            }
+        }
+
+        if (unit.Stance == UnitStance.StandGround)
+        {
+            StopAttacking(unit);
             return;
         }
 
@@ -345,7 +418,7 @@ public static class CombatSystem
             context.Events.Publish(new GameEvent
             {
                 Tick = context.World.CurrentTick,
-                Type = (int)EventType.DamageDealt,
+                Type = EventType.DamageDealt,
                 EntityId = target.Id,
                 OwnerId = unit.OwnerId,
                 Position = target.Position,
@@ -384,11 +457,7 @@ public static class CombatSystem
 
     private static FixedPoint GetProjectileSpeed(Unit unit)
     {
-        return unit.Definition.Category switch
-        {
-            EntityCategory.Siege => FixedPoint.FromFloat(0.8f),
-            _ => FixedPoint.FromFloat(2.0f)
-        };
+        return unit.Definition.ProjectileSpeed;
     }
 
     private static void HandleGroundAttack(RuntimeContext context, Unit unit)

@@ -6,17 +6,28 @@ namespace RTSEngine.Core.Triggers;
 public sealed class TriggerHandler
 {
     private readonly Dictionary<string, ITrigger> _triggers = new();
+    private readonly List<ITrigger> _sortedTriggers = new();
+    private bool _dirty = true;
 
     public int TriggerCount => _triggers.Count;
 
     public void RegisterTrigger(ITrigger trigger)
     {
         _triggers[trigger.Id] = trigger;
+        _dirty = true;
     }
 
     public void Update(RuntimeContext context)
     {
-        foreach (var trigger in _triggers.Values.OrderBy(t => t.Id).ToList())
+        if (_dirty)
+        {
+            _sortedTriggers.Clear();
+            _sortedTriggers.AddRange(_triggers.Values);
+            _sortedTriggers.Sort((a, b) => a.Id.CompareTo(b.Id));
+            _dirty = false;
+        }
+
+        foreach (var trigger in _sortedTriggers)
         {
             try
             {
@@ -26,8 +37,7 @@ public sealed class TriggerHandler
 
                 DebugSession.Log.Debug($"[Trigger] Evaluating: {trigger.Id} (Tick: {context.World.CurrentTick})");
 
-                // If no conditions, trigger always fires (by design - LINQ All() returns true for empty collections)
-                var allConditionsMet = trigger.Conditions.Count == 0 || trigger.Conditions.All(c => c.Evaluate(context));
+                var allConditionsMet = trigger.Conditions.Count == 0 || AllConditionsMet(trigger, context);
                 if (!allConditionsMet)
                 {
                     DebugSession.Log.Debug($"[Trigger] {trigger.Id}: conditions NOT met");
@@ -49,6 +59,14 @@ public sealed class TriggerHandler
                 DebugSession.Log.Debug($"Trigger {trigger.Id} failed: {ex}");
             }
         }
+    }
+
+    private static bool AllConditionsMet(ITrigger trigger, RuntimeContext context)
+    {
+        foreach (var c in trigger.Conditions)
+            if (!c.Evaluate(context))
+                return false;
+        return true;
     }
 
     public void Disable(string triggerId)

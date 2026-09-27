@@ -11,10 +11,8 @@ public sealed class EventBus
         _pending.Enqueue(gameEvent);
     }
 
-    public IReadOnlyList<GameEvent> Flush()
+    public void Flush()
     {
-        var events = _pending.ToArray();
         _pending.Clear();
-        return events;
     }
 }

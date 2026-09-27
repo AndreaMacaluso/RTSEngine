@@ -24,9 +24,12 @@ public struct GridPosition : IEquatable<GridPosition>
             && Equals(other);
     }
 
+    // Deterministic hash: HashCode.Combine uses a randomized seed per process,
+    // which breaks cross-run determinism needed for multiplayer.
+    // This manual hash guarantees same input → same output, always.
     public override int GetHashCode()
     {
-        return HashCode.Combine(X, Y);
+        return (X * 397) ^ Y;
     }
 
     public static bool operator ==(

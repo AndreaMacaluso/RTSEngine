@@ -1,3 +1,4 @@
+using RTSEngine.Core.Actions;
 using RTSEngine.Core.AI.Actions;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Runtime;
@@ -20,7 +21,7 @@ public class ProductionBrain : AIBrain
             return ThinkMilitia(context, player);
         }
 
-        return ThinkVillager(player, tc);
+        return ThinkVillager(context, player, tc);
     }
 
     private string ThinkMilitia(RuntimeContext context, Player player)
@@ -31,16 +32,20 @@ public class ProductionBrain : AIBrain
         int militiaCount = UnitQueries.CountUnits(context.World, player, EntityIds.Militia);
         if (militiaCount >= GameConfig.TargetMilitiaCount) return BrainActions.None;
         if (barracks.Production.IsProducing) return BrainActions.None;
-        if (!player.Economy.Has(ResourceType.Food, GameConfig.MilitiaCostFood)) return BrainActions.None;
+
+        var militiaDef = context.UnitRepository.Get(EntityIds.Militia);
+        if (!EconomyActions.CanAfford(player, militiaDef.Costs)) return BrainActions.None;
 
         return BrainActions.TrainMilitia;
     }
 
-    private string ThinkVillager(Player player, Building townCenter)
+    private string ThinkVillager(RuntimeContext context, Player player, Building townCenter)
     {
         if (player.Population.Current >= player.Population.Capacity) return BrainActions.None;
         if (townCenter.Production.IsProducing) return BrainActions.None;
-        if (!player.Economy.Has(ResourceType.Food, GameConfig.VillagerCostFood)) return BrainActions.None;
+
+        var villagerDef = context.UnitRepository.Get(EntityIds.Villager);
+        if (!EconomyActions.CanAfford(player, villagerDef.Costs)) return BrainActions.None;
 
         return BrainActions.TrainVillager;
     }

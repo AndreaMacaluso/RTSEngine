@@ -24,7 +24,8 @@ public static class SimulationHost
             simulation.Tick();
 
             RenderFrame(world, context);
-            Thread.Sleep(300 / (int)context.Settings.Speed);
+            int sleepMs = Math.Max(1, 300 / Math.Max(1, (int)context.Settings.Speed));
+            Thread.Sleep(sleepMs);
         }
     }
 

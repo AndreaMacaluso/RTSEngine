@@ -137,11 +137,10 @@ public static class GatherActions
         return GatherResult.ContinueGathering;
     }
 
-    // NOTE: DepositInventory returns void. If the player or resource type is
-    // null, the inventory is never cleared and resources are never transferred.
-    // The caller (HandleDepositing) has no way to detect this failure.
-    // Consider returning bool for error handling.
-    public static void DepositInventory(
+    // Returns true if the deposit succeeded. If the owner or carried resource
+    // is missing, returns false so the caller can handle the failure instead
+    // of silently keeping a full inventory forever.
+    public static bool DepositInventory(
     GameWorld world,
     Unit unit)
     {
@@ -149,15 +148,16 @@ public static class GatherActions
 
         if (owner is not Player player)
         {
-            return;
+            return false;
         }
        
         if (unit.Gather.CarriedResource is not ResourceType gatheredResource)
         {
-            return;
+            return false;
         }
         player.Economy.Add(gatheredResource,unit.Gather.CurrentLoad);
         unit.Gather.ClearInventory();
+        return true;
     }
 
     public static bool CanContinueGathering(

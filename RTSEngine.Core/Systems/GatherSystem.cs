@@ -231,7 +231,15 @@ public static class GatherSystem
     Unit unit)
     {
         var world = context.World;
-        GatherActions.DepositInventory(world, unit);
+
+        if (!GatherActions.DepositInventory(world, unit))
+        {
+            // Deposit failed: owner missing or no carried resource.
+            // Clear the inventory and stop to avoid an infinite deposit loop.
+            GatherActions.StopGathering(unit);
+            unit.Gather.ClearInventory();
+            return;
+        }
 
        if (GatherActions.CanContinueGathering(world, unit))
         {

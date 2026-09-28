@@ -1,5 +1,4 @@
 using RTSEngine.Core.Entities.Runtime;
-using RTSEngine.Core.State;
 
 namespace RTSEngine.Core.Triggers;
 

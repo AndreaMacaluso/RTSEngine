@@ -9,4 +9,5 @@ public sealed class EffectDefinition
     public int? LocationY { get; set; }
     public string? Message { get; set; }
     public int? TriggerId { get; set; }
+    public List<int>? PlayerIds { get; set; }
 }

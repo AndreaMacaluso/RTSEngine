@@ -377,6 +377,51 @@ public class TriggerSystemTests
 
     [Fact]
     [Trait("Category", "Triggers")]
+    public void AssignVictoryEffect_ShouldSetPlayersAsWinners()
+    {
+        var player1 = _world.GetPlayerById(1)!;
+        var player2 = _world.GetPlayerById(2)!;
+
+        var effect = new AssignVictoryEffect(new[] { 1 });
+        effect.Execute(_context);
+
+        Assert.True(player1.IsWinner);
+        Assert.False(player2.IsWinner);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void VictoryScoreJson_ShouldGiveVictoryToPlayer1_WhenScoreReached()
+    {
+        var path = Path.Combine(AppContext.BaseDirectory, "Data", "Triggers", "CoreTrigger", "victory_score.json");
+        Assert.True(File.Exists(path), $"File not found: {path}");
+
+        var mission = MissionLoader.Load(path);
+
+        var handler = new TriggerHandler();
+        foreach (var triggerDef in mission.Triggers)
+        {
+            handler.RegisterTrigger(TriggerFactory.Create(triggerDef));
+        }
+
+        var player1 = _world.GetPlayerById(1)!;
+        var player2 = _world.GetPlayerById(2)!;
+
+        var townCenter = BuildingFactory.Create(TestDefinitionFactory.CreateTownCenter(), 2, new GridPosition(3, 3));
+        townCenter.IsCompleted = true;
+        _world.Entities.Add(townCenter, player2);
+
+        player1.Score = 1000;
+
+        handler.Update(_context);
+
+        Assert.True(player1.IsWinner);
+        Assert.False(player2.IsWinner);
+        Assert.Equal(WorldState.Finished, _world.State);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
     public void ConditionFactory_ShouldCreateLastWithBuildingsCondition_WhenValidDefinition()
     {
         var definition = new ConditionDefinition
@@ -417,5 +462,20 @@ public class TriggerSystemTests
         var effect = EffectFactory.Create(definition);
 
         Assert.IsType<EndGameEffect>(effect);
+    }
+
+    [Fact]
+    [Trait("Category", "Triggers")]
+    public void EffectFactory_ShouldCreateAssignVictoryEffect_WhenValidDefinition()
+    {
+        var definition = new EffectDefinition
+        {
+            EffectType = 100,
+            PlayerIds = new List<int> { 1 }
+        };
+
+        var effect = EffectFactory.Create(definition);
+
+        Assert.IsType<AssignVictoryEffect>(effect);
     }
 }

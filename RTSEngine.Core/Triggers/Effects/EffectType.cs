@@ -7,5 +7,6 @@ public enum EffectType
     TaskMovementObject = 2,
     SendChat = 5,
     EndGame = 99,
-    AttackMove = 28
+    AttackMove = 28,
+    AssignVictory = 100
 }

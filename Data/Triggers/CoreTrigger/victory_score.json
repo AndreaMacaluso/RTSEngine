@@ -10,6 +10,7 @@
         { "ConditionType": 21, "PlayerId": 1, "ScoreTarget": 1000 }
       ],
       "Effects": [
+        { "EffectType": 100, "PlayerIds": [1] },
         { "EffectType": 99 }
       ]
     },
@@ -21,6 +22,7 @@
         { "ConditionType": 21, "PlayerId": 2, "ScoreTarget": 1000 }
       ],
       "Effects": [
+        { "EffectType": 100, "PlayerIds": [2] },
         { "EffectType": 99 }
       ]
     }

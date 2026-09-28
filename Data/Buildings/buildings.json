@@ -14,7 +14,8 @@
     "costs": [],
     "buildTimeTicks": 100,
     "produces": ["villager"],
-    "acceptedResources": ["Wood", "Food", "Gold", "Stone"]
+    "acceptedResources": ["Wood", "Food", "Gold", "Stone"],
+    "sightRange": 10
   },
   {
     "id": "house",
@@ -29,7 +30,8 @@
     "attackCooldownTicks": 0,
     "populationBonus": 5,
     "costs": [{ "Type": "Wood", "Amount": 50 }],
-    "buildTimeTicks": 10
+    "buildTimeTicks": 10,
+    "sightRange": 4
   },
   {
     "id": "barracks",
@@ -44,7 +46,8 @@
     "attackCooldownTicks": 0,
     "costs": [{ "Type": "Wood", "Amount": 100 }],
     "produces": ["militia", "swordsman", "spearman"],
-    "buildTimeTicks": 15
+    "buildTimeTicks": 15,
+    "sightRange": 5
   },
   {
     "id": "lumber_camp",
@@ -59,7 +62,8 @@
     "attackCooldownTicks": 0,
     "costs": [{ "Type": "Wood", "Amount": 100 }],
     "acceptedResources": ["Wood"],
-    "buildTimeTicks": 10
+    "buildTimeTicks": 10,
+    "sightRange": 5
   },
   {
     "id": "mine_camp",
@@ -74,7 +78,8 @@
     "attackCooldownTicks": 0,
     "costs": [{ "Type": "Wood", "Amount": 100 }],
     "acceptedResources": ["Gold", "Stone"],
-    "buildTimeTicks": 10
+    "buildTimeTicks": 10,
+    "sightRange": 5
   },
   {
     "id": "mill",
@@ -89,7 +94,8 @@
     "attackCooldownTicks": 0,
     "costs": [{ "Type": "Wood", "Amount": 100 }],
     "acceptedResources": ["Food"],
-    "buildTimeTicks": 10
+    "buildTimeTicks": 10,
+    "sightRange": 5
   },
   {
     "id": "archery_range",
@@ -104,7 +110,8 @@
     "attackCooldownTicks": 0,
     "costs": [{ "Type": "Wood", "Amount": 100 }],
     "produces": ["archer", "javelineer"],
-    "buildTimeTicks": 15
+    "buildTimeTicks": 15,
+    "sightRange": 5
   },
   {
     "id": "stable",
@@ -119,7 +126,8 @@
     "attackCooldownTicks": 0,
     "costs": [{ "Type": "Wood", "Amount": 100 }],
     "produces": ["scout", "knight"],
-    "buildTimeTicks": 15
+    "buildTimeTicks": 15,
+    "sightRange": 5
   },
   {
     "id": "siege_workshop",
@@ -137,7 +145,8 @@
       { "Type": "Gold", "Amount": 100 }
     ],
     "produces": ["ram", "catapult"],
-    "buildTimeTicks": 20
+    "buildTimeTicks": 20,
+    "sightRange": 5
   },
   {
     "id": "watch_tower",
@@ -154,6 +163,8 @@
       { "Type": "Wood", "Amount": 100 },
       { "Type": "Stone", "Amount": 50 }
     ],
-    "buildTimeTicks": 20
+    "buildTimeTicks": 20,
+    "projectileSpeed": 2.0,
+    "sightRange": 8
   }
 ]

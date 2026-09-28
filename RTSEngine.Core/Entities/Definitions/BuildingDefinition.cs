@@ -1,3 +1,4 @@
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 namespace RTSEngine.Core.Entities.Definitions;
 
@@ -31,6 +32,10 @@ public class BuildingDefinition
     public int Attack { get; init; }
     public int AttackRange { get; init; }
     public int AttackCooldownTicks { get; init; } = 2;
+
+    public FixedPoint ProjectileSpeed { get; init; } = FixedPoint.FromFloat(2f);
+
+    public int SightRange { get; init; } = 5;
 
     public bool CanAttack => Attack > 0;
 }

@@ -27,6 +27,10 @@ public class UnitDefinition
     public EntityCategory? BonusVs { get; set; }
     public int BonusDamage { get; set; }
 
+    public FixedPoint ProjectileSpeed { get; set; } = FixedPoint.FromFloat(2f);
+
+    public int SightRange { get; set; } = 4;
+
     public bool CanGather => GatherCapacity > 0;
     public bool CanBuild => BuildableBuildings.Count > 0;
     public bool CanAttack => MeleeAttack > 0 || RangedAttack > 0;

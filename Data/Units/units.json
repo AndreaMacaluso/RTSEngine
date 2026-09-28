@@ -19,7 +19,8 @@
     "buildableBuildings": [
       "towncenter",
       "house"
-    ]
+    ],
+    "sightRange": 4
   },
   {
     "id": "militia",
@@ -39,7 +40,8 @@
       { "Type": "Food", "Amount": 60 },
       { "Type": "Gold", "Amount": 20 }
     ],
-    "productionTimeTicks": 20
+    "productionTimeTicks": 20,
+    "sightRange": 4
   },
   {
     "id": "swordsman",
@@ -59,7 +61,8 @@
       { "Type": "Food", "Amount": 90 },
       { "Type": "Gold", "Amount": 30 }
     ],
-    "productionTimeTicks": 25
+    "productionTimeTicks": 25,
+    "sightRange": 4
   },
   {
     "id": "spearman",
@@ -78,7 +81,8 @@
     "costs": [
       { "Type": "Wood", "Amount": 35 }
     ],
-    "productionTimeTicks": 15
+    "productionTimeTicks": 15,
+    "sightRange": 4
   },
   {
     "id": "archer",
@@ -98,7 +102,9 @@
       { "Type": "Wood", "Amount": 25 },
       { "Type": "Gold", "Amount": 45 }
     ],
-    "productionTimeTicks": 20
+    "productionTimeTicks": 20,
+    "projectileSpeed": 2.0,
+    "sightRange": 5
   },
   {
     "id": "javelineer",
@@ -118,7 +124,9 @@
       { "Type": "Wood", "Amount": 35 },
       { "Type": "Gold", "Amount": 45 }
     ],
-    "productionTimeTicks": 20
+    "productionTimeTicks": 20,
+    "projectileSpeed": 2.0,
+    "sightRange": 5
   },
   {
     "id": "scout",
@@ -137,7 +145,8 @@
     "costs": [
       { "Type": "Food", "Amount": 30 }
     ],
-    "productionTimeTicks": 15
+    "productionTimeTicks": 15,
+    "sightRange": 6
   },
   {
     "id": "knight",
@@ -157,7 +166,8 @@
       { "Type": "Food", "Amount": 60 },
       { "Type": "Gold", "Amount": 75 }
     ],
-    "productionTimeTicks": 30
+    "productionTimeTicks": 30,
+    "sightRange": 5
   },
   {
     "id": "ram",
@@ -176,7 +186,8 @@
     "costs": [
       { "Type": "Wood", "Amount": 150 }
     ],
-    "productionTimeTicks": 30
+    "productionTimeTicks": 30,
+    "sightRange": 4
   },
   {
     "id": "catapult",
@@ -196,6 +207,8 @@
       { "Type": "Wood", "Amount": 150 },
       { "Type": "Gold", "Amount": 100 }
     ],
-    "productionTimeTicks": 40
+    "productionTimeTicks": 40,
+    "projectileSpeed": 0.8,
+    "sightRange": 4
   }
 ]

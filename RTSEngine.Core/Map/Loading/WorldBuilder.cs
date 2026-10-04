@@ -12,6 +12,7 @@ public class WorldBuilder
         }
 
         var builder = new TileMapBuilder();
+        var builder = new TileMapBuilder();
 
         var tileMap = builder.Build(data);
        

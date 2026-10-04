@@ -3,6 +3,8 @@ using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map;
 using RTSEngine.Core.Map.Definitions;
+using RTSEngine.Core.Map.Visibility;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.Buildings;
@@ -13,9 +15,14 @@ namespace RTSEngine.DebugClient.Renders;
 
 public static class ConsoleRenderer
 {
+    // For now we prefer to see every player in the debug render: leave
+    // playerId null (the default) and the fog is ignored, drawing all
+    // players' units and buildings. Pass an id to watch the world through
+    // that player's fog view instead.
     public static void Render(
         GameWorld world,
-        RenderMode mode = RenderMode.Extended)
+        RenderMode mode = RenderMode.Extended,
+        int? playerId = null)
     {
         Console.WriteLine();
 
@@ -23,12 +30,12 @@ public static class ConsoleRenderer
         {
             for (int x = 0; x < world.Map.Width; x++)
             {
-                RenderTile(world, x, y, mode);
+                RenderTile(world, x, y, mode, playerId);
             }
 
             Console.WriteLine();
         }
-        RenderPlayerStats(world); 
+        RenderPlayerStats(world);
         Console.ResetColor();
     }
 
@@ -36,16 +43,32 @@ public static class ConsoleRenderer
         GameWorld world,
         int x,
         int y,
-        RenderMode mode)
+        RenderMode mode,
+        int? playerId)
     {
-        var tile = world.Map.GetTile(x, y);
-
         var position = new GridPosition(x, y);
+        var visibility = playerId is int viewer
+            ? world.Fog.Get(viewer, position)
+            : TileVisibility.Visible;
+
+        if (visibility == TileVisibility.Hidden)
+        {
+            Console.ForegroundColor = ConsoleColor.DarkGray;
+            Console.Write("░░");
+            return;
+        }
+
+        // On Explored you see the terrain but not enemy units and not
+        // projectiles. Resources stay drawable. dimmed only gates what is
+        // drawn; console colors stay the same for visible and explored.
+        bool dimmed = visibility == TileVisibility.Explored;
+
+        var tile = world.Map.GetTile(x, y);
 
         var unit = world.Entities.Units
             .FirstOrDefault(entity => entity.Position == position);
 
-        if (unit != null)
+        if (unit != null && (unit.OwnerId == playerId || !dimmed))
         {
             RenderUnit(unit);
 
@@ -55,7 +78,10 @@ public static class ConsoleRenderer
         var building = world.Entities.Buildings
             .FirstOrDefault(entity => BuildingQueries.OccupiesTile(entity, position));
 
-        if (building != null)
+        if (building != null
+            && (building.OwnerId == playerId
+                || !dimmed
+                || IsRemembered(world, playerId, building)))
         {
             RenderBuilding(building, position);
 
@@ -90,7 +116,7 @@ public static class ConsoleRenderer
                 p.X.Raw / 1000 == x &&
                 p.Y.Raw / 1000 == y);
 
-        if (projectile != null)
+        if (projectile != null && !dimmed)
         {
             RenderProjectile(projectile);
 
@@ -99,6 +125,12 @@ public static class ConsoleRenderer
 
         RenderTerrain(tile.TerrainType, mode);
     }
+
+    private static bool IsRemembered(GameWorld world, int? playerId, Building building)
+        => playerId is int viewer
+            && world.GetPlayerById(viewer)
+                ?.RememberedEnemyBuildingIds
+                .Contains(building.Id) == true;
 
     private static void RenderTerrain(
         TileType type,

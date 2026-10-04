@@ -1,10 +1,13 @@
 namespace RTSEngine.Core.Map.Loading;
 
 using RTSEngine.Core.Map.Generation;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.State;
 public class WorldBuilder
 {
-    public static GameWorld Build(Definitions.MapData data)
+    public static GameWorld Build(
+        Definitions.MapData data,
+        MapVisibility visibility = MapVisibility.AllVisible)
     {
         if (data.Generation is not null)
         {
@@ -21,7 +24,8 @@ public class WorldBuilder
         return new GameWorld(
             tileMap,
             resources,
-            data.Spawns);
+            data.Spawns,
+            visibility: visibility);
     }
         
 }

@@ -8,6 +8,7 @@ public sealed class Player
     public ConsoleColor Color { get; set; }
     public PlayerControllerType Controller { get; set; }
     public int Score { get; set; } = 0;
+    public bool IsWinner { get; internal set; }
     public EconomyState Economy { get; }
     public PopulationState Population { get; }
     public PlayerAIState AI { get; }
@@ -17,6 +18,17 @@ public sealed class Player
 
     public IReadOnlyList<int> UnitIds => _unitIds;
     public IReadOnlyList<int> BuildingIds => _buildingIds;
+
+    /// <summary>
+    /// Enemy buildings seen at least once: they stay known after the tile
+    /// falls back behind the fog.
+    ///
+    /// Only Contains/Add/Remove in the simulation; the save iterates it sorted
+    /// by id, so the set order never enters the computation and two clients
+    /// cannot diverge in lockstep. VisibilitySystem clears it on death -
+    /// no other writer exists.
+    /// </summary>
+    public HashSet<int> RememberedEnemyBuildingIds { get; } = [];
 
     public Player(
         int id,

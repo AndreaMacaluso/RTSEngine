@@ -126,28 +126,15 @@ public static class CombatSystem
         RuntimeContext context, int ownerId, GridPosition position, int range)
     {
         GameWorld world = context.World;
-        var player = world.GetPlayerById(ownerId);
-        if (player == null) return null;
+        if (world.GetPlayerById(ownerId) == null) return null;
 
-        bool useFog = context.Settings.Visibility == VisibilityMode.FogOfWar;
+        var scope = world.Fog.ScopeFor(ownerId);
 
-        if (useFog && world.Fog.TryGetValue(ownerId, out var fog))
+        foreach (var enemy in FogQueries.GetVisibleEnemies(world, scope))
         {
-            foreach (var enemy in world.Entities.GetEnemyUnits(player, fog))
-            {
-                int distance = WorldQueries.ChebyshevDistance(position, enemy.Position);
-                if (distance <= range)
-                    return enemy;
-            }
-        }
-        else
-        {
-            foreach (var enemy in world.Entities.GetEnemyUnits(player))
-            {
-                int distance = WorldQueries.ChebyshevDistance(position, enemy.Position);
-                if (distance <= range)
-                    return enemy;
-            }
+            int distance = WorldQueries.ChebyshevDistance(position, enemy.Position);
+            if (distance <= range)
+                return enemy;
         }
 
         return null;
@@ -171,7 +158,9 @@ public static class CombatSystem
             {
                 var target = world.Entities.GetUnitById(building.Combat.TargetEntityId.Value);
 
-                if (target == null || target.IsDead)
+                if (target == null
+                    || target.IsDead
+                    || !FogQueries.IsVisible(world, building, target.Position))
                 {
                     building.Combat.Clear();
                     building.CurrentTask = EntityState.Idle;
@@ -440,6 +429,14 @@ public static class CombatSystem
         var target = world.Entities.GetEntityById(targetId);
 
         if (target == null || target is not IHittable hittable || hittable.IsDead)
+        {
+            StopAttacking(unit);
+            return null;
+        }
+
+        // The lock drops as soon as the target leaves the view.
+        // In AllVisible the gate is a bypass, so it never drops.
+        if (!FogQueries.IsVisible(world, unit, hittable.Position))
         {
             StopAttacking(unit);
             return null;

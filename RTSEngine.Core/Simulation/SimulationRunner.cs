@@ -36,6 +36,8 @@ public class SimulationRunner
 
         MovementSystem.Update(_context);
 
+        VisibilitySystem.Update(_context);
+
         CombatSystem.Update(_context);
 
         ProjectileSystem.Update(_context);

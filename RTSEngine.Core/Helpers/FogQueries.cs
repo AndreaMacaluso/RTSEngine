@@ -1,3 +1,4 @@
+using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Units;
@@ -63,6 +64,66 @@ public static class FogQueries
                 yield return building;
             }
         }
+    }
+
+    public static Building? FindEnemyBuilding(
+        GameWorld world,
+        VisionScope scope,
+        string buildingId)
+    {
+        return GetKnownEnemyBuildings(world, scope)
+            .FirstOrDefault(b =>
+                b.Definition.Id == buildingId
+                && b.IsCompleted);
+    }
+
+    public static (Entity Entity, int OwnerId)? FindNearestEnemyEntity(
+        GameWorld world,
+        VisionScope scope,
+        GridPosition position)
+    {
+        Entity? bestEntity = null;
+        int bestOwnerId = 0;
+        int bestDist = int.MaxValue;
+
+        foreach (var unit in GetVisibleEnemies(world, scope))
+        {
+            int dist = WorldQueries.ChebyshevDistance(position, unit.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestEntity = unit;
+                bestOwnerId = unit.OwnerId;
+            }
+        }
+
+        foreach (var building in GetKnownEnemyBuildings(world, scope))
+        {
+            int dist = WorldQueries.ChebyshevDistance(position, building.Position);
+            if (dist < bestDist)
+            {
+                bestDist = dist;
+                bestEntity = building;
+                bestOwnerId = building.OwnerId;
+            }
+        }
+
+        return bestEntity is not null
+            ? (bestEntity, bestOwnerId)
+            : null;
+    }
+
+    public static bool HasEnemies(
+        GameWorld world,
+        VisionScope scope)
+    {
+        foreach (var _ in GetVisibleEnemies(world, scope))
+            return true;
+
+        foreach (var _ in GetKnownEnemyBuildings(world, scope))
+            return true;
+
+        return false;
     }
 
     /// Counts on Explored, never on Hidden. Ties break on the lowest Id,

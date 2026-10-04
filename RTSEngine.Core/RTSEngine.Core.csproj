@@ -6,4 +6,10 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <!-- Il modulo fog dichiara i suoi tipi `internal` (FogOfWarState, il projector);
+       i test del nucleo devono poterli nominare. -->
+  <ItemGroup>
+    <InternalsVisibleTo Include="RTSEngine.Tests" />
+  </ItemGroup>
+
 </Project>

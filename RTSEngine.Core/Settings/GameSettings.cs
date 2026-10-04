@@ -8,7 +8,7 @@ public sealed class GameSettings
     public int NumPlayers { get; set; } = 2;
     public int PopulationCap { get; set; } = 200;
     public GameSpeed Speed { get; set; } = GameSpeed.Normal;
-    public VisibilityMode Visibility { get; set; } = VisibilityMode.FullMap;
+    public MapVisibility Visibility { get; set; } = MapVisibility.Normal;
     public GameMode Mode { get; set; } = GameMode.RandomMap;
     public VictoryType Victory { get; set; } = VictoryType.Conquest;
     //@ToDo ScoreTarget should be read from trigger definition, not settings

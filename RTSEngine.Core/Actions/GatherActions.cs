@@ -197,8 +197,9 @@ public static class GatherActions
             return false;
         }
 
-        var nextResource = WorldQueries.FindClosestResource(
+        var nextResource = FogQueries.FindClosestVisibleResource(
             world,
+            world.Fog.ScopeFor(owner.Id),
             unit.Position,
             resourceType);
 

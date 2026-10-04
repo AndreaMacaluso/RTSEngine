@@ -145,37 +145,6 @@ public class RuntimeEntities
         }
     }
 
-    public IEnumerable<Unit> GetEnemyUnits(Player player)
-    {
-        foreach (var p in _players)
-        {
-            if (p.Id == player.Id)
-                continue;
-
-            foreach (var id in p.UnitIds)
-            {
-                var unit = FindById(_units, id);
-                if (unit != null && !unit.IsDead)
-                    yield return unit;
-            }
-        }
-    }
-
-    public IEnumerable<Building> GetEnemyBuildings(Player player)
-    {
-        foreach (var p in _players)
-        {
-            if (p.Id == player.Id)
-                continue;
-
-            foreach (var id in p.BuildingIds)
-            {
-                var building = FindById(_buildings, id);
-                if (building != null && !building.IsDead)
-                    yield return building;
-            }
-        }
-    }
 
     public Unit? GetUnitById(int id) => FindById(_units, id);
 

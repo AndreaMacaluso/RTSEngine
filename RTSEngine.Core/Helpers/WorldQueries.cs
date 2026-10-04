@@ -111,36 +111,6 @@ public static class WorldQueries
         return best;
     }
 
-    public static ResourceNode? FindClosestResource(
-        GameWorld world,
-        GridPosition center)
-    {
-        return FindClosestResource(world, center, null);
-    }
-
-    public static ResourceNode? FindClosestResource(
-        GameWorld world,
-        GridPosition center,
-        ResourceType? resourceType)
-    {
-        ResourceNode? closest = null;
-        int bestDist = int.MaxValue;
-
-        foreach (var r in world.Entities.Resources)
-        {
-            if (r.IsDepleted) continue;
-            if (resourceType.HasValue && r.ResourceType != resourceType.Value) continue;
-
-            int dist = DistanceSquared(center, r.Position);
-            if (dist < bestDist || (dist == bestDist && (closest is null || r.Id < closest.Id)))
-            {
-                bestDist = dist;
-                closest = r;
-            }
-        }
-        return closest;
-    }
-
     public static List<ResourceNode> FindDepletedResources(GameWorld world)
     {
         return world.Entities.Resources
@@ -212,17 +182,6 @@ public static class WorldQueries
             .FirstOrDefault(building =>
                 building.Definition.Id == buildingId &&
                 building.IsCompleted);
-    }
-
-    public static Building? FindEnemyBuilding(
-        GameWorld world,
-        Player player,
-        string buildingId)
-    {
-        return world.Entities.GetEnemyBuildings(player)
-            .FirstOrDefault(b =>
-                b.Definition.Id == buildingId
-                && b.IsCompleted);
     }
 
     public static bool HasBuilding(
@@ -306,50 +265,6 @@ public static class WorldQueries
         }
 
         return false;
-    }
-
-    public static (Entity Entity, int OwnerId)? FindNearestEnemyEntity(
-        GameWorld world,
-        Player player,
-        GridPosition position)
-    {
-        Entity? bestEntity = null;
-        int bestOwnerId = 0;
-        int bestDist = int.MaxValue;
-
-        foreach (var unit in world.Entities.GetEnemyUnits(player))
-        {
-            int dist = ChebyshevDistance(position, unit.Position);
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                bestEntity = unit;
-                bestOwnerId = unit.OwnerId;
-            }
-        }
-
-        foreach (var building in world.Entities.GetEnemyBuildings(player))
-        {
-            int dist = ChebyshevDistance(position, building.Position);
-            if (dist < bestDist)
-            {
-                bestDist = dist;
-                bestEntity = building;
-                bestOwnerId = building.OwnerId;
-            }
-        }
-
-        return bestEntity is not null
-            ? (bestEntity, bestOwnerId)
-            : null;
-    }
-
-    public static bool HasEnemies(
-        GameWorld world,
-        Player player)
-    {
-        return world.Entities.GetEnemyUnits(player).Any()
-            || world.Entities.GetEnemyBuildings(player).Any();
     }
 
     public static GridPosition? FindBuildPosition(

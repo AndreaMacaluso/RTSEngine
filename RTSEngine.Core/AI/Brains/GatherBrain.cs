@@ -59,6 +59,7 @@ public class GatherBrain : AIBrain
     {
         var assignments = new List<(Unit, ResourceNode)>();
         var assignedVillagers = new HashSet<Unit>();
+        var scope = context.World.Fog.ScopeFor(player.Id);
 
         foreach (var resourceType in PriorityOrder)
         {
@@ -74,7 +75,8 @@ public class GatherBrain : AIBrain
                 if (villager.Gather.CurrentLoad > 0 && villager.Gather.CarriedResource.HasValue)
                     continue;
 
-                var resource = WorldQueries.FindClosestResource(context.World, villager.Position, resourceType);
+                var resource = FogQueries.FindClosestVisibleResource(
+                    context.World, scope, villager.Position, resourceType);
                 if (resource == null) break;
 
                 assignments.Add((villager, resource));

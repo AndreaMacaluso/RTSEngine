@@ -35,7 +35,9 @@ public static class SimulationBootstrap
 
         var world = string.IsNullOrEmpty(settings.MapPath)
             ? CreateEmptyMap(settings)
-            : LoadWorld(Path.Combine(baseDirectory, settings.MapPath));
+            : LoadWorld(
+                Path.Combine(baseDirectory, settings.MapPath),
+                settings.Visibility);
 
         foreach (var spawn in world.Spawns)
         {
@@ -74,7 +76,8 @@ public static class SimulationBootstrap
         }
 
         var spawns = GenerateSpawnPoints(settings);
-        return new GameWorld(map, spawns: spawns);
+        // La modalità vive nel mondo: è l'unico posto che ha le settings.
+        return new GameWorld(map, spawns: spawns, visibility: settings.Visibility);
     }
 
     private static List<SpawnPointDefinition> GenerateSpawnPoints(GameSettings settings)
@@ -105,12 +108,12 @@ public static class SimulationBootstrap
         return spawns;
     }
 
-    private static GameWorld LoadWorld(string mapPath)
+    private static GameWorld LoadWorld(string mapPath, MapVisibility visibility)
     {
         var mapLoader = new JsonMapLoader();
         var mapData = mapLoader.Load(mapPath);
 
-        return WorldBuilder.Build(mapData);
+        return WorldBuilder.Build(mapData, visibility);
     }
 
     private static UnitDefinitionRepository LoadUnitRepository(

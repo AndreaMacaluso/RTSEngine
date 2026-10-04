@@ -4,6 +4,7 @@ using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Players;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.State;
 
 namespace RTSEngine.Core.AI.Brains;
@@ -15,7 +16,10 @@ public class CombatBrain : AIBrain
 
     protected override string Think(RuntimeContext context, Player player)
     {
-        if (!WorldQueries.HasEnemies(context.World, player))
+        // Built once: every query below reads this player's grid.
+        var scope = context.World.Fog.ScopeFor(player.Id);
+
+        if (!FogQueries.HasEnemies(context.World, scope))
             return BrainActions.None;
 
         var idleMilitary = UnitQueries.FindIdleMilitary(context.World, player);
@@ -23,12 +27,12 @@ public class CombatBrain : AIBrain
         if (idleMilitary.Count == 0)
             return BrainActions.None;
 
-        var enemyTC = WorldQueries.FindEnemyBuilding(context.World, player, EntityIds.TownCenter);
+        var enemyTC = FogQueries.FindEnemyBuilding(context.World, scope, EntityIds.TownCenter);
 
         foreach (var unit in idleMilitary)
         {
-            var nearestEnemy = WorldQueries.FindNearestEnemyEntity(
-                context.World, player, unit.Position);
+            var nearestEnemy = FogQueries.FindNearestEnemyEntity(
+                context.World, scope, unit.Position);
 
             if (nearestEnemy.HasValue)
             {

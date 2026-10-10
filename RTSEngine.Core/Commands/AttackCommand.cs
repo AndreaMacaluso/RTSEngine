@@ -6,6 +6,8 @@ public class AttackCommand : ICommand
 {
     public required List<int> UnitIds { get; init; }
 
+    public required int PlayerId { get; init; }
+
     public required AttackMode Mode { get; init; }
 
     public int? TargetEntityId { get; init; }

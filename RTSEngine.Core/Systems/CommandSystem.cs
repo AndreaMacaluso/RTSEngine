@@ -3,6 +3,7 @@ using RTSEngine.Core.State;
 using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Entities.Buildings;
+using RTSEngine.Core.Events;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Entities.States;
 using RTSEngine.Core.Helpers;
@@ -20,8 +21,169 @@ public static class CommandSystem
 
             if (command is null) break;
 
+            if (!ValidateCommand(command, context, out var reason))
+            {
+                context.Events.Publish(new GameEvent
+                {
+                    Tick = context.World.CurrentTick,
+                    Type = EventType.CommandRejected,
+                    Payload = $"{reason}:{command.GetType().Name}"
+                });
+                continue;
+            }
+
             ProcessCommand(context, command);
         }
+    }
+
+    private static bool ValidateCommand(
+        ICommand command,
+        RuntimeContext context,
+        out CommandRejectReason reason)
+    {
+        int maxUnits = context.Engine.MaxUnitsPerCommand;
+
+        switch (command)
+        {
+            case MoveCommand move:
+                if (!ValidateUnitCount(move.UnitIds, maxUnits, out reason))
+                    return false;
+                return ValidateOwnership(move.UnitIds, move.PlayerId, context, out reason);
+
+            case AttackCommand attack:
+                if (!ValidateUnitCount(attack.UnitIds, maxUnits, out reason))
+                    return false;
+                if (!ValidateOwnership(attack.UnitIds, attack.PlayerId, context, out reason))
+                    return false;
+                if (attack.Mode == AttackMode.Entity && !attack.TargetEntityId.HasValue)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                if ((attack.Mode == AttackMode.AttackMove || attack.Mode == AttackMode.Ground)
+                    && !attack.TargetPosition.HasValue)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                reason = CommandRejectReason.None;
+                return true;
+
+            case GatherCommand gather:
+                if (!ValidateUnitCount(gather.UnitIds, maxUnits, out reason))
+                    return false;
+                if (!ValidateOwnership(gather.UnitIds, gather.PlayerId, context, out reason))
+                    return false;
+                if (gather.ResourceId <= 0)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                reason = CommandRejectReason.None;
+                return true;
+
+            case BuildCommand build:
+                if (!ValidateUnitCount(build.UnitIds, maxUnits, out reason))
+                    return false;
+                if (!ValidateOwnership(build.UnitIds, build.PlayerId, context, out reason))
+                    return false;
+                if (build.BuildingId <= 0)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                reason = CommandRejectReason.None;
+                return true;
+
+            case StopCommand stop:
+                if (!ValidateUnitCount(stop.UnitIds, maxUnits, out reason))
+                    return false;
+                return ValidateOwnership(stop.UnitIds, stop.PlayerId, context, out reason);
+
+            case StanceCommand stance:
+                if (!ValidateUnitCount(stance.UnitIds, maxUnits, out reason))
+                    return false;
+                return ValidateOwnership(stance.UnitIds, stance.PlayerId, context, out reason);
+
+            case ProductionCommand production:
+                if (production.BuildingId <= 0)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                var building = context.World.Entities.GetBuildingById(production.BuildingId);
+                if (building != null && building.OwnerId != production.PlayerId)
+                {
+                    reason = CommandRejectReason.NotOwner;
+                    return false;
+                }
+                if (production.Action == ProductionActionType.QueueUnit
+                    && string.IsNullOrEmpty(production.ProductId))
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                if (production.Action == ProductionActionType.SetSpawnPoint
+                    && !production.Target.HasValue)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                if (production.Action == ProductionActionType.SetRallyPoint
+                    && !production.Target.HasValue)
+                {
+                    reason = CommandRejectReason.MissingTarget;
+                    return false;
+                }
+                reason = CommandRejectReason.None;
+                return true;
+
+            default:
+                reason = CommandRejectReason.UnknownCommand;
+                return false;
+        }
+    }
+
+    private static bool ValidateOwnership(
+        List<int> unitIds,
+        int playerId,
+        RuntimeContext context,
+        out CommandRejectReason reason)
+    {
+        foreach (var unitId in unitIds)
+        {
+            var unit = context.World.Entities.GetUnitById(unitId);
+
+            if (unit != null && unit.OwnerId != playerId)
+            {
+                reason = CommandRejectReason.NotOwner;
+                return false;
+            }
+        }
+
+        reason = CommandRejectReason.None;
+        return true;
+    }
+
+    private static bool ValidateUnitCount(
+        List<int> unitIds,
+        int maxUnits,
+        out CommandRejectReason reason)
+    {
+        if (unitIds.Count == 0)
+        {
+            reason = CommandRejectReason.Empty;
+            return false;
+        }
+
+        if (unitIds.Count > maxUnits)
+        {
+            reason = CommandRejectReason.TooManyUnits;
+            return false;
+        }
+
+        reason = CommandRejectReason.None;
+        return true;
     }
 
     private static void ProcessCommand(

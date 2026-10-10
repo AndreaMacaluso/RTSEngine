@@ -71,6 +71,7 @@ public class GatherAIActionsTests
         queue.Enqueue(new GatherCommand
         {
             UnitIds = [999],
+            PlayerId = 1,
             ResourceId = 999
         });
 

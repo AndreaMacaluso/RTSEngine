@@ -233,6 +233,7 @@ public class GatheringSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
@@ -304,6 +305,7 @@ public class GatheringSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager.Id],
+            PlayerId = 1,
             ResourceId = tree1.Id
         });
 
@@ -361,12 +363,14 @@ public class GatheringSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager1.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager2.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
@@ -429,12 +433,14 @@ public class GatheringSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager1.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager2.Id],
+            PlayerId = 2,
             ResourceId = tree.Id
         });
 

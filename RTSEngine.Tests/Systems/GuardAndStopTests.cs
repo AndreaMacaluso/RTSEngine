@@ -57,6 +57,7 @@ public class GuardAndStopTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             Mode = AttackMode.Guard
         });
 
@@ -110,6 +111,7 @@ public class GuardAndStopTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [guard.Id],
+            PlayerId = 1,
             Mode = AttackMode.Guard
         });
 
@@ -167,6 +169,7 @@ public class GuardAndStopTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [guard.Id],
+            PlayerId = 1,
             Mode = AttackMode.Guard
         });
 
@@ -205,7 +208,8 @@ public class GuardAndStopTests
 
         context.CommandQueue.Enqueue(new StopCommand
         {
-            UnitIds = [unit.Id]
+            UnitIds = [unit.Id],
+            PlayerId = 1
         });
 
         CommandSystem.Update(context);
@@ -260,7 +264,8 @@ public class GuardAndStopTests
 
         context.CommandQueue.Enqueue(new StopCommand
         {
-            UnitIds = [unit.Id]
+            UnitIds = [unit.Id],
+            PlayerId = 1
         });
 
         CommandSystem.Update(context);
@@ -389,6 +394,7 @@ public class GuardAndStopTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             Mode = AttackMode.AttackMove,
             TargetPosition = new GridPosition(10, 10)
         });
@@ -443,6 +449,7 @@ public class GuardAndStopTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             Mode = AttackMode.AttackMove,
             TargetPosition = new GridPosition(10, 10)
         });

@@ -14,6 +14,7 @@ public static class GatherAIActions
         commandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager.Id],
+            PlayerId = villager.OwnerId,
             ResourceId = resource.Id
         });
     }

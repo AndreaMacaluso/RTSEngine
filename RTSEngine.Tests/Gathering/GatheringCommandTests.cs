@@ -57,6 +57,7 @@ public class GatherCommandTests
             new GatherCommand
             {
                 UnitIds = [unit.Id],
+                PlayerId = 1,
                 ResourceId = tree.Id
             });
 

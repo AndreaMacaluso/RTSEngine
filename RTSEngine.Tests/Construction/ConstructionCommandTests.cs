@@ -69,6 +69,7 @@ public class ConstructionCommandTests
             new BuildCommand
             {
                 UnitIds = [unit.Id],
+                PlayerId = 1,
                 BuildingId = building.Id
             });
 

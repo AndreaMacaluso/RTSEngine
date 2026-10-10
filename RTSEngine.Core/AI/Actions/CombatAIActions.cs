@@ -14,6 +14,7 @@ public static class CombatAIActions
         commandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = unit.OwnerId,
             Mode = AttackMode.Entity,
             TargetEntityId = targetEntityId
         });
@@ -27,6 +28,7 @@ public static class CombatAIActions
         commandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = unit.OwnerId,
             Target = target
         });
     }

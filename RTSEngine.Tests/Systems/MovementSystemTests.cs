@@ -252,6 +252,7 @@ public class MovementSystemTests
         queue.Enqueue(new MoveCommand
         {
             UnitIds = [villager.Id],
+            PlayerId = 1,
             Target = new GridPosition(5, 2)
         });
 

@@ -48,6 +48,7 @@ public class CommandSystemTests
         _context.CommandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             Target = new GridPosition(5,5)
         });
 
@@ -78,6 +79,7 @@ public class CommandSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
@@ -108,6 +110,7 @@ public class CommandSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
@@ -138,6 +141,7 @@ public class CommandSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 
@@ -162,6 +166,7 @@ public class CommandSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             ResourceId = 999
         });
 
@@ -184,6 +189,7 @@ public class CommandSystemTests
         _context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [999],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
 

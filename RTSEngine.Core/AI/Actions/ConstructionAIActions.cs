@@ -103,6 +103,7 @@ public static class ConstructionAIActions
         commandQueue.Enqueue(new BuildCommand
         {
             UnitIds = [builder.Id],
+            PlayerId = player.Id,
             BuildingId = building.Id
         });
 

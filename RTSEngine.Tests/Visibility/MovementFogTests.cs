@@ -39,6 +39,7 @@ public class MovementFogTests
         context.CommandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = 1,
             Target = destination
         });
 

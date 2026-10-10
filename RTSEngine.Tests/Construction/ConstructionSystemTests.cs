@@ -105,6 +105,7 @@ public class ConstructionSystemTests
         _context.CommandQueue.Enqueue(new BuildCommand
         {
             UnitIds = [_villager.Id],
+            PlayerId = 1,
             BuildingId = building.Id
         });
 

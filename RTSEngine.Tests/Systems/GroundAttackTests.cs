@@ -66,6 +66,7 @@ public class GroundAttackTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [catapult.Id],
+            PlayerId = 1,
             Mode = AttackMode.Ground,
             TargetPosition = new GridPosition(10, 5)
         });
@@ -209,6 +210,7 @@ public class GroundAttackTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [catapult.Id],
+            PlayerId = 1,
             Mode = AttackMode.Ground,
             TargetPosition = new GridPosition(20, 5)
         });
@@ -246,6 +248,7 @@ public class GroundAttackTests
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [militia.Id],
+            PlayerId = 1,
             Mode = AttackMode.Ground,
             TargetPosition = new GridPosition(10, 5)
         });

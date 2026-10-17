@@ -1,11 +1,10 @@
 using RTSEngine.Core.Commands;
-using RTSEngine.Core.Entities;
 using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Definitions;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Runtime;
-using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Events;
+using RTSEngine.Core.Helpers;
 using RTSEngine.Core.Map.Runtime;
 using RTSEngine.Core.Map.Visibility;
 using RTSEngine.Core.Players;
@@ -22,7 +21,7 @@ namespace RTSEngine.Tests.Simulation;
 [Trait("Category", "Determinism")]
 public class DeterminismTests
 {
-    private static RuntimeContext CreateContext(GameWorld world, bool fog)
+    private static RuntimeContext CreateContext(GameWorld world)
     {
         var unitRepo = new UnitDefinitionRepository(new[]
         {
@@ -41,18 +40,17 @@ public class DeterminismTests
             BuildingRepository = buildingRepo,
             CommandQueue = new CommandQueue(),
             PathFinder = new AStarPathFinder(new GroundMovementFilter()),
-            Settings = new GameSettings
-            {
-                Visibility = fog ? VisibilityMode.FogOfWar : VisibilityMode.FullMap
-            },
+            Settings = new GameSettings(),
             Events = new EventBus()
         };
     }
 
-    private static (GameWorld World, RuntimeContext Context) BuildScenario(bool fog = false)
+    private static (GameWorld World, RuntimeContext Context) BuildScenario(
+        MapVisibility visibility = MapVisibility.AllVisible)
     {
-        var world = TestWorldFactory.CreateWorldWithTwoPlayers(width: 40, height: 40);
-        var context = CreateContext(world, fog);
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers(
+            width: 40, height: 40, visibility: visibility);
+        var context = CreateContext(world);
 
         var p1 = world.GetPlayerById(1)!;
         var p2 = world.GetPlayerById(2)!;
@@ -83,17 +81,20 @@ public class DeterminismTests
         context.CommandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [m1.Id],
+            PlayerId = 1,
             Target = new GridPosition(15, 15)
         });
         context.CommandQueue.Enqueue(new AttackCommand
         {
             UnitIds = [m2.Id],
+            PlayerId = 1,
             Mode = AttackMode.Entity,
             TargetEntityId = enemy.Id
         });
         context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [villager.Id],
+            PlayerId = 1,
             ResourceId = tree.Id
         });
         ProductionActions.TryTrainUnit(context, tc, "villager");
@@ -107,6 +108,32 @@ public class DeterminismTests
         for (int i = 0; i < ticks; i++)
             simulation.Step();
     }
+
+    /// Bit-a-bit digest of every player's fog state, ordered by playerId so
+    /// the string does not depend on dictionary order.
+    private static string GridSnapshot(GameWorld world)
+    {
+        var parts = world.Fog.States
+            .OrderBy(kv => kv.Key)
+            .Select(kv => kv.Key + ":" + string.Join(",", kv.Value.Flatten()));
+
+        return string.Join("|", parts);
+    }
+
+    private static string VisibleUnitIds(GameWorld world, int playerId)
+    {
+        var scope = world.Fog.ScopeFor(playerId);
+
+        return string.Join(",", world.Entities.Units
+            .Where(u => u.OwnerId == playerId
+                || FogQueries.IsVisible(world, scope, u.Position))
+            .OrderBy(u => u.Id)
+            .Select(u => u.Id));
+    }
+
+    // ------------------------------------------------------------------
+    // simulation state
+    // ------------------------------------------------------------------
 
     private static void AssertWorldEqual(GameWorld a, GameWorld b)
     {
@@ -126,7 +153,6 @@ public class DeterminismTests
             Assert.Equal(ua.Position, ub.Position);
             Assert.Equal(ua.Health.CurrentHealth, ub.Health.CurrentHealth);
             Assert.Equal(ua.CurrentTask, ub.CurrentTask);
-            Assert.Equal(ua.Stance, ub.Stance);
             Assert.Equal(ua.Combat.Phase, ub.Combat.Phase);
             Assert.Equal(ua.Combat.TargetEntityId, ub.Combat.TargetEntityId);
             Assert.Equal(ua.Gather.Phase, ub.Gather.Phase);
@@ -167,23 +193,6 @@ public class DeterminismTests
             Assert.Equal(pa.Population.Current, pb.Population.Current);
             Assert.Equal(pa.Population.Capacity, pb.Population.Capacity);
             Assert.Equal(pa.Population.Reserved, pb.Population.Reserved);
-        }
-    }
-
-    private static void AssertFogEqual(GameWorld a, GameWorld b)
-    {
-        Assert.Equal(a.Fog.Count, b.Fog.Count);
-        foreach (var kvp in a.Fog)
-        {
-            var fb = b.Fog[kvp.Key];
-            var fa = kvp.Value;
-            for (int x = 0; x < fa.Width; x++)
-            {
-                for (int y = 0; y < fa.Height; y++)
-                {
-                    Assert.Equal(fa.Get(x, y), fb.Get(x, y));
-                }
-            }
         }
     }
 
@@ -241,18 +250,6 @@ public class DeterminismTests
     }
 
     [Fact]
-    public void Visibility_ShouldBeDeterministic_AcrossRuns()
-    {
-        var (worldA, ctxA) = BuildScenario(fog: true);
-        var (worldB, ctxB) = BuildScenario(fog: true);
-
-        RunTicks(ctxA, 50);
-        RunTicks(ctxB, 50);
-
-        AssertFogEqual(worldA, worldB);
-    }
-
-    [Fact]
     public void Trigger_ShouldBeDeterministic_AcrossRuns()
     {
         var (worldA, ctxA) = BuildScenario();
@@ -280,5 +277,109 @@ public class DeterminismTests
         RunTicks(ctxB, 30);
 
         AssertWorldEqual(worldA, worldB);
+    }
+
+    // ------------------------------------------------------------------
+    // fog of war (bit-a-bit deterministic for lockstep)
+    // ------------------------------------------------------------------
+
+    [Fact]
+    public void FogOfWar_SameInput_ProducesIdenticalGrids()
+    {
+        var (worldA, ctxA) = BuildScenario(MapVisibility.Normal);
+        var (worldB, ctxB) = BuildScenario(MapVisibility.Normal);
+
+        RunTicks(ctxA, 150);
+        RunTicks(ctxB, 150);
+
+        Assert.True(worldA.Fog.IsEnabled);
+        Assert.True(worldB.Fog.IsEnabled);
+        Assert.Equal(GridSnapshot(worldA), GridSnapshot(worldB));
+        Assert.NotEmpty(GridSnapshot(worldA));
+    }
+
+    [Fact]
+    public void FogOfWar_SameInput_ProducesIdenticalVisibleSets()
+    {
+        var (worldA, ctxA) = BuildScenario(MapVisibility.Normal);
+        var (worldB, ctxB) = BuildScenario(MapVisibility.Normal);
+
+        RunTicks(ctxA, 150);
+        RunTicks(ctxB, 150);
+
+        foreach (var playerId in new[] { 1, 2 })
+        {
+            Assert.Equal(
+                VisibleUnitIds(worldA, playerId),
+                VisibleUnitIds(worldB, playerId));
+        }
+    }
+
+    [Fact]
+    public void FogOfWar_SameInput_ProducesIdenticalWorldState()
+    {
+        var (worldA, ctxA) = BuildScenario(MapVisibility.Normal);
+        var (worldB, ctxB) = BuildScenario(MapVisibility.Normal);
+
+        RunTicks(ctxA, 150);
+        RunTicks(ctxB, 150);
+
+        AssertWorldEqual(worldA, worldB);
+        Assert.Equal(
+            GameSnapshot.Capture(worldA).Serialize(),
+            GameSnapshot.Capture(worldB).Serialize());
+    }
+
+    [Fact]
+    public void FogOfWar_GridTracksSources()
+    {
+        var (worldA, ctxA) = BuildScenario(MapVisibility.Normal);
+        var (worldB, ctxB) = BuildScenario(MapVisibility.Normal);
+
+        RunTicks(ctxA, 60);
+        RunTicks(ctxB, 60);
+
+        // the two grids start out identical.
+        Assert.Equal(GridSnapshot(worldA), GridSnapshot(worldB));
+
+        // and in B I move a source: the grid has to follow it
+        worldB.Entities.Units.First(u => u.OwnerId == 1)
+            .Position = new GridPosition(35, 35);
+
+        RunTicks(ctxA, 5);
+        RunTicks(ctxB, 5);
+
+        Assert.NotEqual(GridSnapshot(worldA), GridSnapshot(worldB));
+    }
+
+    [Fact]
+    public void AllVisible_DoesNotAllocateAnyGrid()
+    {
+        var (world, context) = BuildScenario(MapVisibility.AllVisible);
+
+        RunTicks(context, 60);
+
+        Assert.False(world.Fog.IsEnabled);
+        Assert.Empty(world.Fog.States);
+        Assert.Equal(string.Empty, GridSnapshot(world));
+    }
+
+    [Fact]
+    public void FogOfWarAndAllVisible_ShareTheSameSimulationRules()
+    {
+        // the gate must not introduce non-deterministic divergence: two runs
+        // in AllVisible and two in Normal each stay internally identical.
+        var (fogA, fogCtxA) = BuildScenario(MapVisibility.Normal);
+        var (fogB, fogCtxB) = BuildScenario(MapVisibility.Normal);
+        var (fullA, fullCtxA) = BuildScenario(MapVisibility.AllVisible);
+        var (fullB, fullCtxB) = BuildScenario(MapVisibility.AllVisible);
+
+        RunTicks(fogCtxA, 90);
+        RunTicks(fogCtxB, 90);
+        RunTicks(fullCtxA, 90);
+        RunTicks(fullCtxB, 90);
+
+        Assert.Equal(GridSnapshot(fogA), GridSnapshot(fogB));
+        AssertWorldEqual(fullA, fullB);
     }
 }

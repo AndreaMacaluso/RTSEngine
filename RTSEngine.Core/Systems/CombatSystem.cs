@@ -16,8 +16,6 @@ namespace RTSEngine.Core.Systems;
 
 public static class CombatSystem
 {
-    private const int DefensiveChaseDistance = 5;
-
     public static void Update(RuntimeContext context)
     {
         GameWorld world = context.World;
@@ -71,18 +69,7 @@ public static class CombatSystem
                     if (unit.Definition.CanAttack
                         && unit.Definition.Category != EntityCategory.Villager)
                     {
-                        switch (unit.Stance)
-                        {
-                            case UnitStance.Aggressive:
-                                HandleAutoAttack(context, unit);
-                                break;
-                            case UnitStance.Defensive:
-                                HandleDefensiveAutoAttack(context, unit);
-                                break;
-                            case UnitStance.StandGround:
-                                HandleStandGroundAutoAttack(context, unit);
-                                break;
-                        }
+                        HandleAutoAttack(context, unit);
                     }
                     break;
 
@@ -249,33 +236,11 @@ public static class CombatSystem
 
     private static void HandleAutoAttack(RuntimeContext context, Unit unit)
     {
+        // Acquire within sight radius, not attack radius (ADR-022).
         var enemy = FindFirstEnemyInRange(
-            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
+            context, unit.OwnerId, unit.Position, unit.Definition.SightRange);
         if (enemy != null)
             BeginAttack(context.World, unit, enemy.Id);
-    }
-
-    private static void HandleDefensiveAutoAttack(RuntimeContext context, Unit unit)
-    {
-        var enemy = FindFirstEnemyInRange(
-            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
-        if (enemy != null)
-        {
-            unit.Combat.GuardPosition = unit.Position;
-            BeginAttack(context.World, unit, enemy.Id);
-        }
-    }
-
-    private static void HandleStandGroundAutoAttack(RuntimeContext context, Unit unit)
-    {
-        var enemy = FindFirstEnemyInRange(
-            context, unit.OwnerId, unit.Position, unit.Combat.AttackRange);
-        if (enemy != null)
-        {
-            unit.CurrentTask = EntityState.Attacking;
-            unit.Combat.TargetEntityId = enemy.Id;
-            unit.Combat.Phase = CombatPhase.Attacking;
-        }
     }
 
     private static void HandleGuarding(RuntimeContext context, Unit unit)
@@ -325,26 +290,6 @@ public static class CombatSystem
         if (targetDistance <= unit.Combat.AttackRange)
         {
             EnterAttackingPhase(unit);
-            return;
-        }
-
-        if (unit.Stance == UnitStance.Defensive && unit.Combat.GuardPosition.HasValue)
-        {
-            int chaseDistance = WorldQueries.ChebyshevDistance(
-                unit.Combat.GuardPosition.Value, unit.Position);
-            if (chaseDistance >= DefensiveChaseDistance)
-            {
-                var returnTarget = unit.Combat.GuardPosition.Value;
-                unit.Combat.Clear();
-                unit.CurrentTask = EntityState.Moving;
-                CommandSystem.AssignMoveTarget(unit, returnTarget, context);
-                return;
-            }
-        }
-
-        if (unit.Stance == UnitStance.StandGround)
-        {
-            StopAttacking(unit);
             return;
         }
 
@@ -525,11 +470,18 @@ public static class CombatSystem
         Unit unit,
         int targetEntityId)
     {
-        if (unit.Combat.Phase != CombatPhase.Guarding
-            && unit.Combat.Phase != CombatPhase.AttackMoving)
+        if (unit.Combat.Phase == CombatPhase.Guarding
+            || unit.Combat.Phase == CombatPhase.AttackMoving)
+        {
+            // Keep the player's order across the engagement.
+            unit.Combat.ResumePhase = unit.Combat.Phase;
+            unit.Combat.ResumeDestination = unit.Movement.Destination;
+        }
+        else
         {
             unit.CurrentTask = EntityState.Attacking;
         }
+
         unit.Combat.TargetEntityId = targetEntityId;
         unit.Combat.Phase = CombatPhase.MovingToTarget;
         unit.Movement.PathQueue.Clear();
@@ -542,9 +494,22 @@ public static class CombatSystem
         unit.Combat.TargetGroundPosition = null;
         unit.Combat.CooldownTicks = 0;
 
-        if (unit.Combat.Phase == CombatPhase.Guarding
-            || unit.Combat.Phase == CombatPhase.AttackMoving)
+        if (unit.Combat.ResumePhase is CombatPhase resumePhase)
         {
+            // Resume the player's order: the march refills its path on the
+            // next movement tick, the guard simply stands again.
+            var resumeDestination = unit.Combat.ResumeDestination;
+            unit.Combat.ResumePhase = null;
+            unit.Combat.ResumeDestination = null;
+            unit.Combat.Phase = resumePhase;
+
+            if (resumePhase == CombatPhase.AttackMoving
+                && resumeDestination is GridPosition destination)
+            {
+                unit.Movement.Destination = destination;
+                unit.Movement.NeedsRepath = true;
+            }
+
             return;
         }
 

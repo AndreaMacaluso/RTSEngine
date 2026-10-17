@@ -100,11 +100,6 @@ public static class CommandSystem
                     return false;
                 return ValidateOwnership(stop.UnitIds, stop.PlayerId, context, out reason);
 
-            case StanceCommand stance:
-                if (!ValidateUnitCount(stance.UnitIds, maxUnits, out reason))
-                    return false;
-                return ValidateOwnership(stance.UnitIds, stance.PlayerId, context, out reason);
-
             case ProductionCommand production:
                 if (production.BuildingId <= 0)
                 {
@@ -320,7 +315,7 @@ public static class CommandSystem
                 command.UnitIds.Count,
                 command.Target);
 
-            for (int i = 0; i < command.UnitIds.Count; i++)
+            for (int i = 0; i < command.UnitIds.Count && i < positions.Count; i++)
             {
                 var unit = world.Entities.GetUnitById(command.UnitIds[i]);
 
@@ -470,7 +465,7 @@ public static class CommandSystem
                 command.UnitIds.Count,
                 command.TargetPosition.Value);
 
-            for (int i = 0; i < command.UnitIds.Count; i++)
+            for (int i = 0; i < command.UnitIds.Count && i < positions.Count; i++)
             {
                 var unit = world.Entities.GetUnitById(command.UnitIds[i]);
 
@@ -569,5 +564,4 @@ public static class CommandSystem
             unit.Movement.CurrentStep = null;
         }
     }
-
 }

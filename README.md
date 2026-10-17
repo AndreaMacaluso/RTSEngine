@@ -166,9 +166,6 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] TriggerHandler — condition-driven evaluation (AND logic)
 - [x] TriggerFactory / ConditionFactory / EffectFactory
 - [x] A* blocked target handling (nearest walkable fallback)
-- [ ] More condition types (PlayerDefeated, ObjectsInArea)
-- [ ] More effect types (DeclareVictory)
-- [ ] Event-driven triggers (via EventBus)
 
 ---
 
@@ -180,8 +177,6 @@ Build a deterministic, renderer-independent RTS simulation core.
 - [x] Unit factory
 - [x] Building definitions from JSON
 - [x] Building definition loader
-- [ ] Runtime unit state model
-- [ ] Runtime building state model
 
 ---
 
@@ -361,12 +356,14 @@ Build a deterministic, renderer-independent RTS simulation core.
 
 - [x] Score system
 - [x] Victory condition (Conquest + Score Limit)
+- [x] Winner determination (EndGameEffect sets IsWinner)
 
 ### Vision
 
-- [ ] Fog of war
-- [ ] Vision memory
-- [ ] Visibility updates
+- [x] Fog of war
+- [x] Vision memory
+- [x] Visibility updates
+- [x] Visibility filters (hidden enemies, combat cannot target fog)
 
 ### Progression
 
@@ -461,6 +458,11 @@ Goal: clean up architecture, fix known issues, prepare for Lua integration.
 - [x] TimerCondition — added StartTick field
 - [x] EffectType — removed unimplemented types
 - [x] TaskObjectEffect — renamed to TaskMovementObjectEffect
+- [x] AI cost mismatch — read costs from definition (ProductionBrain)
+- [x] Projectile speed from definition (not hardcoded)
+- [x] Division by zero guard (SimulationHost speed)
+- [x] GameEvent.Type int → EventType enum
+- [x] DepositInventory failure handling (returns bool)
 - [ ] CombatSystem — re-path when target moves out of range (deferred)
 - [ ] BasicAi — brain instantiation optimization (deferred)
 
@@ -497,16 +499,26 @@ Goal: complete core infrastructure before plugins.
 
 ## Event System
 
-- [ ] Event bus (publish/subscribe)
-- [ ] Event types (UnitSpawned, BuildingCompleted, etc.)
-- [ ] Event registry (event → trigger mapping)
-- [ ] Trigger interface (Evaluate + Execute)
+- [x] Event bus (publish/flush)
+- [x] Event types as typed enum (EventType)
+- [x] Event publishing from combat, cleanup, construction, production
+- [ ] Event consumers for game logic
+- [ ] Event history for replay
 
 ## Determinism
 
-- [ ] Fixed-point math verification
-- [ ] Seeded RNG
-- [ ] Determinism test suite
+- [x] Fixed-point math type
+- [x] Fixed-point in movement and pathfinding
+- [x] Deterministic entity iteration (sorted by ID)
+- [x] Deterministic tie-breaking (ID-based)
+- [x] Deterministic trigger ordering
+- [x] Spatial index rebuilt each tick
+- [x] Determinism test suite (cross-run verification)
+- [x] Seeded RNG verification
+- [x] Deterministic GridPosition hash (no randomized HashCode.Combine)
+- [x] Event bus flush without per-tick allocation
+- [x] Command validation (bounds, mode/target checks)
+
 
 ---
 

@@ -20,6 +20,10 @@ public class CombatState
     public int BonusDamage { get; set; }
     public GridPosition? TargetGroundPosition { get; set; }
 
+    // Player order (attack-move / guard) kept across an engagement; persisted in the save.
+    public CombatPhase? ResumePhase { get; set; }
+    public GridPosition? ResumeDestination { get; set; }
+
     public bool IsOnCooldown => CooldownTicks > 0;
     public bool IsRanged => AttackRange > 1;
 
@@ -70,5 +74,7 @@ public class CombatState
         TargetEntityId = null;
         TargetGroundPosition = null;
         CooldownTicks = 0;
+        ResumePhase = null;
+        ResumeDestination = null;
     }
 }

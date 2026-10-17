@@ -29,6 +29,7 @@ public sealed class TaskMovementObjectEffect : ITriggerEffect
         var command = new MoveCommand
         {
             UnitIds = unitIds,
+            PlayerId = _playerId,
             Target = new GridPosition(_targetX, _targetY)
         };
 

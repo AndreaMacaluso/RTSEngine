@@ -45,6 +45,7 @@ public sealed class AttackMoveEffect : ITriggerEffect
         var command = new AttackCommand
         {
             UnitIds = unitIds,
+            PlayerId = _playerId,
             Mode = AttackMode.AttackMove,
             TargetPosition = new GridPosition(_targetX, _targetY)
         };

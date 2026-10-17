@@ -9,5 +9,6 @@ public enum EventType
     BuildingDied = 4,
     BuildingRemoved = 5,
     ConstructionCompleted = 6,
-    DamageDealt = 7
+    DamageDealt = 7,
+    CommandRejected = 8
 }

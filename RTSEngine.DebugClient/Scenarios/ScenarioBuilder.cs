@@ -92,6 +92,7 @@ public static class ScenarioBuilder
         context.CommandQueue.Enqueue(new MoveCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = ownerId,
             Target = targetPosition
         });
     }
@@ -119,6 +120,7 @@ public static class ScenarioBuilder
         context.CommandQueue.Enqueue(new GatherCommand
         {
             UnitIds = [unit.Id],
+            PlayerId = ownerId,
             ResourceId = resourceId
         });
     }

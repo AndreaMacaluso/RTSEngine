@@ -3,6 +3,7 @@ using RTSEngine.DebugClient.Bootstrap;
 using RTSEngine.DebugClient.Runtime;
 using RTSEngine.DebugClient.Scenarios;
 using RTSEngine.Core.Diagnostics;
+using RTSEngine.Core.Events;
 namespace RTSEngine.DebugClient;
 
 class Program
@@ -23,11 +24,20 @@ class Program
 
         var context = SimulationBootstrap.Create(MatchPresets.WaveBattle);
 
-        // var context = SimulationBootstrap.Create(MatchPresets.RandomMapConquest);
+        //var context = SimulationBootstrap.Create(MatchPresets.RandomMapConquest);
 
         var logger = new Logger(context.Engine.DebugMode);
         logger.AddSink(new FileLogSink(logPath));
         DebugSession.Initialize(logger);
+
+        context.Events.Subscribe(gameEvent =>
+        {
+            if (gameEvent.Type == EventType.CommandRejected)
+            {
+                DebugSession.Log.Warning(
+                    $"Command rejected at tick {gameEvent.Tick}: {gameEvent.Payload}");
+            }
+        });
 
         DebugSession.Log.Info("Simulation Starting");
 

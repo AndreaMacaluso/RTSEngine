@@ -100,7 +100,7 @@ public class CombatFogTests
         Tick(context);
 
         // AllVisible bypasses the fog gate, but the acquire radius is still
-        // the unit's own SightRange (ADR-022): visible, yet not acquired.
+        // the unit's own SightRange: visible, yet not acquired.
         Assert.True(world.Fog.IsVisible(1, target.Position));
         Assert.Null(attacker.Combat.TargetEntityId);
         Assert.Equal(CombatPhase.Idle, attacker.Combat.Phase);

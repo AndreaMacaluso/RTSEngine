@@ -83,6 +83,16 @@ public class GameWorld
         State = WorldState.Finished;
     }
 
+    internal void RestoreTick(int tick)
+    {
+        CurrentTick = tick;
+    }
+
+    internal void RestoreState(WorldState state)
+    {
+        State = state;
+    }
+
     public Player? GetPlayerById(int id)
     {
         return _players.FirstOrDefault(p => p.Id == id);

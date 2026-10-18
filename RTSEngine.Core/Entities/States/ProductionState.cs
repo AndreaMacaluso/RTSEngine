@@ -23,4 +23,6 @@ public sealed class ProductionState
         if(_queue.Count > 0)
             _queue.Dequeue();
     }
+
+    internal IEnumerable<ProductionTask> AllTasks => _queue;
 }

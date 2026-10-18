@@ -20,4 +20,11 @@ public class ProjectileState
         _projectiles.Clear();
         _nextProjectileId = 1;
     }
+
+    internal void RestoreProjectiles(IEnumerable<Projectile> projectiles, int nextId)
+    {
+        _projectiles.Clear();
+        _projectiles.AddRange(projectiles);
+        _nextProjectileId = nextId;
+    }
 }

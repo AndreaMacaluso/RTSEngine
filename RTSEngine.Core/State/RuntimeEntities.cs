@@ -3,6 +3,7 @@ using RTSEngine.Core.Entities.Buildings;
 using RTSEngine.Core.Entities.Resources;
 using RTSEngine.Core.Entities.Units;
 using RTSEngine.Core.Helpers;
+using RTSEngine.Core.Map.Visibility;
 using RTSEngine.Core.Players;
 using RTSEngine.Core.Systems;
 
@@ -102,6 +103,34 @@ public class RuntimeEntities
         _spatialDirty = true;
     }
 
+    internal void AddRestored(Unit unit, Player player, int id)
+    {
+        unit.Id = id;
+        InsertSorted(_units, unit);
+        player.AddUnit(id);
+        _spatialDirty = true;
+    }
+
+    internal void AddRestored(Building building, Player player, int id)
+    {
+        building.Id = id;
+        InsertSorted(_buildings, building);
+        player.AddBuilding(id);
+        _spatialDirty = true;
+    }
+
+    internal void AddRestored(ResourceNode resource, int id)
+    {
+        resource.Id = id;
+        InsertSorted(_resources, resource);
+        _spatialDirty = true;
+    }
+
+    internal void SetNextEntityId(int nextId)
+    {
+        _idGenerator.Reset(nextId);
+    }
+
     public void Remove(Unit unit, Player player)
     {
         int index = BinarySearchById(_units, unit.Id);
@@ -145,6 +174,9 @@ public class RuntimeEntities
         }
     }
 
+    // By-id lookups return any player's entity, fog included: filtering what a
+    // player may see is FogQueries' job, so a consumer that resolves an enemy
+    // here and acts on it bypasses the gate.
 
     public Unit? GetUnitById(int id) => FindById(_units, id);
 

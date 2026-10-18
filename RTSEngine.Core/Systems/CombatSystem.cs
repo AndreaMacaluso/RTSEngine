@@ -236,7 +236,7 @@ public static class CombatSystem
 
     private static void HandleAutoAttack(RuntimeContext context, Unit unit)
     {
-        // Acquire within sight radius, not attack radius (ADR-022).
+        // Acquire within sight radius, not attack radius.
         var enemy = FindFirstEnemyInRange(
             context, unit.OwnerId, unit.Position, unit.Definition.SightRange);
         if (enemy != null)

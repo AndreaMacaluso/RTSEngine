@@ -463,4 +463,131 @@ public class GuardAndStopTests
 
         Assert.Equal(CombatPhase.MovingToTarget, unit.Combat.Phase);
     }
+
+    [Fact]
+    [Trait("Category", "AttackMove")]
+    public void AttackMove_ShouldResumeMarch_AfterKill()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
+
+        var unitDef = new UnitDefinition
+        {
+            Id = "militia",
+            Name = "Militia",
+            MaxHealth = 60,
+            MovementSpeed = (FixedPoint)1.1f,
+            Category = EntityCategory.Infantry,
+            MeleeAttack = 6,
+            AttackRange = 1,
+            MeleeArmor = 1,
+            RangedArmor = 0
+        };
+
+        var enemyDef = new UnitDefinition
+        {
+            Id = "militia-passive",
+            Name = "Militia Passive",
+            MaxHealth = 60,
+            MovementSpeed = (FixedPoint)1.1f,
+            Category = EntityCategory.Infantry,
+            MeleeAttack = 0,
+            AttackRange = 1,
+            MeleeArmor = 1,
+            RangedArmor = 0
+        };
+
+        var unit = UnitFactory.Create(unitDef, 1, new GridPosition(5, 5));
+        var enemy = UnitFactory.Create(enemyDef, 2, new GridPosition(5, 6));
+
+        world.Entities.Add(unit, player1);
+        world.Entities.Add(enemy, player2);
+
+        context.CommandQueue.Enqueue(new AttackCommand
+        {
+            UnitIds = [unit.Id],
+            PlayerId = 1,
+            Mode = AttackMode.AttackMove,
+            TargetPosition = new GridPosition(8, 8)
+        });
+
+        CommandSystem.Update(context);
+
+        for (int i = 0; i < 300; i++)
+        {
+            CombatSystem.Update(context);
+            MovementSystem.Update(context);
+        }
+
+        Assert.True(enemy.IsDead, "enemy should die within 300 ticks");
+        Assert.True(
+            unit.Movement.PathQueue.Count > 0 || unit.Position == new GridPosition(8, 8),
+            $"attack-move march not resumed: task={unit.CurrentTask}, " +
+            $"phase={unit.Combat.Phase}, pos={unit.Position}, " +
+            $"dest={unit.Movement.Destination}");
+    }
+
+    [Fact]
+    [Trait("Category", "Guard")]
+    public void Guard_ShouldResumeGuarding_AfterKill()
+    {
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
+        var context = CreateContext(world);
+        var player1 = world.GetPlayerById(1)!;
+        var player2 = world.GetPlayerById(2)!;
+
+        var unitDef = new UnitDefinition
+        {
+            Id = "militia",
+            Name = "Militia",
+            MaxHealth = 60,
+            MovementSpeed = (FixedPoint)1.1f,
+            Category = EntityCategory.Infantry,
+            MeleeAttack = 6,
+            AttackRange = 1,
+            MeleeArmor = 1,
+            RangedArmor = 0
+        };
+
+        var enemyDef = new UnitDefinition
+        {
+            Id = "militia-passive",
+            Name = "Militia Passive",
+            MaxHealth = 60,
+            MovementSpeed = (FixedPoint)1.1f,
+            Category = EntityCategory.Infantry,
+            MeleeAttack = 0,
+            AttackRange = 1,
+            MeleeArmor = 1,
+            RangedArmor = 0
+        };
+
+        var unit = UnitFactory.Create(unitDef, 1, new GridPosition(5, 5));
+        var enemy = UnitFactory.Create(enemyDef, 2, new GridPosition(5, 6));
+
+        world.Entities.Add(unit, player1);
+        world.Entities.Add(enemy, player2);
+
+        context.CommandQueue.Enqueue(new AttackCommand
+        {
+            UnitIds = [unit.Id],
+            PlayerId = 1,
+            Mode = AttackMode.Guard
+        });
+
+        CommandSystem.Update(context);
+
+        for (int i = 0; i < 100; i++)
+        {
+            CombatSystem.Update(context);
+            MovementSystem.Update(context);
+        }
+
+        Assert.True(enemy.IsDead, "enemy should die within 100 ticks");
+        Assert.Equal(CombatPhase.Guarding, unit.Combat.Phase);
+        Assert.Equal(EntityState.Attacking, unit.CurrentTask);
+        Assert.Null(unit.Combat.ResumePhase);
+    }
 }

@@ -89,7 +89,7 @@ public class CombatFogTests
     }
 
     [Fact]
-    public void Acquisition_InAllVisible_NoRestriction()
+    public void Acquisition_InAllVisible_StillRespectsSightRadius()
     {
         var world = CreateAllVisibleWorld();
         var attacker = Spawn(world, 1, new GridPosition(20, 20), attackRange: 6, sightRange: 1);
@@ -99,8 +99,11 @@ public class CombatFogTests
 
         Tick(context);
 
-        // sight 1 but AllVisible: the gate is a bypass
-        Assert.Equal(target.Id, attacker.Combat.TargetEntityId);
+        // AllVisible bypasses the fog gate, but the acquire radius is still
+        // the unit's own SightRange (ADR-022): visible, yet not acquired.
+        Assert.True(world.Fog.IsVisible(1, target.Position));
+        Assert.Null(attacker.Combat.TargetEntityId);
+        Assert.Equal(CombatPhase.Idle, attacker.Combat.Phase);
     }
 
     // ------------------------------------------------------------------

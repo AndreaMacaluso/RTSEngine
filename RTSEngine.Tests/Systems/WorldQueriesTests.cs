@@ -61,7 +61,7 @@ public class WorldQueriesTests
     [Fact]
     public void FindClosestResource_ShouldReturnNearestResource()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
 
         var tree = new Tree(new GridPosition(5, 5));
         var gold = new GoldMine(new GridPosition(20, 20));
@@ -70,8 +70,9 @@ public class WorldQueriesTests
         world.Entities.Add(gold);
 
         var result =
-            WorldQueries.FindClosestResource(
+            FogQueries.FindClosestVisibleResource(
                 world,
+                world.Fog.ScopeFor(1),
                 new GridPosition(3, 3));
 
         Assert.Equal(tree.Id, result!.Id);
@@ -80,7 +81,7 @@ public class WorldQueriesTests
     [Fact]
     public void FindClosestResourceByType_ShouldReturnCorrectType()
     {
-        var world = TestWorldFactory.CreateWorld();
+        var world = TestWorldFactory.CreateWorldWithTwoPlayers();
 
         var tree = new Tree(new GridPosition(5, 5));
         var gold = new GoldMine(new GridPosition(6, 6));
@@ -89,8 +90,9 @@ public class WorldQueriesTests
         world.Entities.Add(gold);
         
         var result =
-            WorldQueries.FindClosestResource(
+            FogQueries.FindClosestVisibleResource(
                 world,
+                world.Fog.ScopeFor(1),
                 new GridPosition(3, 3),
                 ResourceType.Gold);
         Assert.NotNull(result);

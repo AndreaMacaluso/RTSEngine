@@ -1,5 +1,6 @@
 using RTSEngine.Core.Map;
 using RTSEngine.Core.Map.Runtime;
+using RTSEngine.Core.Settings;
 using RTSEngine.Core.State;
 using RTSEngine.Core.Players;
 namespace RTSEngine.Tests.TestHelpers;
@@ -28,7 +29,13 @@ public static class TestWorldFactory
         return new GameWorld(map);
     }
 
-    public static GameWorld CreateWorldWithTwoPlayers( TileType tileType = TileType.Grass, int width = 10, int height = 10 )
+    /// `visibility` is explicit: the default stays AllVisible, so tests that
+    /// are not about the fog allocate no grid. Fog tests pass Normal.
+    public static GameWorld CreateWorldWithTwoPlayers(
+        TileType tileType = TileType.Grass,
+        int width = 10,
+        int height = 10,
+        MapVisibility visibility = MapVisibility.AllVisible)
     {
         var map = new TileMap(width, height);
 
@@ -43,7 +50,7 @@ public static class TestWorldFactory
                 map.SetTile(x, y, tile);
             }
         }
-        GameWorld world = new GameWorld(map);
+        GameWorld world = new GameWorld(map, visibility: visibility);
 
         Player player1 = new Player(1, "", ConsoleColor.Gray, PlayerControllerType.Human);
 
